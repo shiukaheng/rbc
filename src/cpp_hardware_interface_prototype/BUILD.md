@@ -1,0 +1,1 @@
+g++ -g main.cpp -o ../../build/cpp_hardware_interface_prototype/interface
