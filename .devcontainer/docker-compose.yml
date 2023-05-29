@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/robocock
+      - ./.bashrc:/home/ros/.bashrc
+      - ../ros:/home/ros/catkin_ws/src
+      - /home/ros/catkin_ws/.catkin_tools
+      - /home/ros/catkin_ws/build
+      - /home/ros/catkin_ws/devel
+      - /home/ros/catkin_ws/install
+      - /home/ros/catkin_ws/logs
+    # Keep alive entrypoint
+    entrypoint: tail -f /dev/null
