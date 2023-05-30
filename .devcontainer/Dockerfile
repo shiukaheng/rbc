@@ -7,6 +7,10 @@ RUN adduser --disabled-password --gecos '' ros && \
     adduser ros sudo && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+RUN chown -R ros:ros /home/ros
+RUN adduser ros dialout
+RUN adduser ros tty
+
 USER ros
 
 RUN sudo apt-get update && sudo apt-get install -y \
@@ -17,6 +21,7 @@ RUN sudo apt-get update && sudo apt-get install -y \
     ros-noetic-rosserial\
     ros-noetic-rosserial-arduino
 
+# Should be redundant, but just in case
 RUN mkdir -p /home/ros/catkin_ws/src
 RUN mkdir -p /home/ros/catkin_ws/devel
 RUN mkdir -p /home/ros/catkin_ws/build
