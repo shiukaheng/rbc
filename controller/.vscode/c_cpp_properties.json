@@ -4,6 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
+                "/home/ros/Arduino/libraries/ros_lib/**",                
                 "/opt/ros/noetic/include/**",
                 "/home/ros/.arduino15/packages/arduino/hardware/avr/1.8.6/cores/arduino/**",
                 "/home/ros/.arduino15/packages/arduino/hardware/avr/**"

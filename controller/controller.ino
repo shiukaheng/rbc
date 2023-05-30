@@ -2,14 +2,12 @@
 #include "rbc_config.h"
 #include <math.h>
 #include <Arduino.h>
-#include <ros.h>
-#include <std_msgs/String.h>
 
 // Limits
 #define RPM_LIMIT 80.
 #define PWM_LIMIT 255.
 
-SerialPIDClient2* client;
+ROSSerialClient* client;
 
 void isr1() {
     client->isr1();
@@ -58,7 +56,7 @@ void setup() {
     const RBCConfig config = createConfig(motor_pinouts, ppr, gear_ratio, smoothener_window_size, kp, ki, kd);
 
     // Create client
-    client = new SerialPIDClient2(config);
+    client = new ROSSerialClient(config);
 
     // Attach interrupts
     attachInterrupt(digitalPinToInterrupt(motor_pinouts[0][2]), isr1, RISING);

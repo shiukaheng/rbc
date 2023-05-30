@@ -8,6 +8,7 @@
 #include "src/motors/pid_motor.h"
 #include "src/clients/client.h"
 #include "src/clients/client2.h"
+#include "src/clients/ros_serial_client.h"
 #include "src/utils/clock.h"
 
 #endif

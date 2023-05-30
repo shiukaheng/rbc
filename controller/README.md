@@ -7,3 +7,5 @@ In order to compile and upload the code to the arduino, you will need to install
 - ROS noetic (for C++ dependencies): `sudo apt install ros-noetic-ros-base`
 - rosserial: `sudo apt install ros-noetic-rosserial`
 - rosserial_arduino: `sudo apt install ros-noetic-rosserial-arduino`
+## Rosserial server
+`rosrun rosserial_arduino serial_node.py _port:=/dev/ttyACM0`
