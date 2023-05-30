@@ -38,4 +38,7 @@ RUN /home/ros/bin/arduino-cli core install arduino:avr
 RUN /home/ros/bin/arduino-cli board install arduino:avr:mega
 RUN /home/ros/bin/arduino-cli lib install "FireTimer"
 RUN /home/ros/bin/arduino-cli lib install "ArduPID"
-RUN /home/ros/bin/arduino-cli lib install "Rosserial Arduino Library"
+
+# Initialize rosserial
+WORKDIR /home/ros/Arduino/libraries
+RUN rosrun rosserial_arduino make_libraries.py .

@@ -1,6 +1,9 @@
 #include "rbc.h"
 #include "rbc_config.h"
 #include <math.h>
+#include <Arduino.h>
+#include <ros.h>
+#include <std_msgs/String.h>
 
 // Limits
 #define RPM_LIMIT 80.
