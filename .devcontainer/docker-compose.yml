@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ..:/robocock
+      - ..:/home/ros/robocock
       - ./.bashrc:/home/ros/.bashrc
       - ../ros:/home/ros/catkin_ws/src
       - /home/ros/catkin_ws/.catkin_tools
