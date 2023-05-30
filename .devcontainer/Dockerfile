@@ -13,7 +13,9 @@ RUN sudo apt-get update && sudo apt-get install -y \
     python3-catkin-tools\
     nano\
     curl\
-    git
+    git\
+    ros-noetic-rosserial\
+    ros-noetic-rosserial-arduino
 
 RUN mkdir -p /home/ros/catkin_ws/src
 RUN mkdir -p /home/ros/catkin_ws/devel
@@ -26,3 +28,9 @@ RUN mkdir -p /home/ros/robocock
 # Go to user home
 WORKDIR /home/ros
 RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+RUN /home/ros/bin/arduino-cli core update-index
+RUN /home/ros/bin/arduino-cli core install arduino:avr
+RUN /home/ros/bin/arduino-cli board install arduino:avr:mega
+RUN /home/ros/bin/arduino-cli lib install "FireTimer"
+RUN /home/ros/bin/arduino-cli lib install "ArduPID"
+RUN /home/ros/bin/arduino-cli lib install "Rosserial Arduino Library"

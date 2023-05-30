@@ -4,7 +4,7 @@
 	"name": "Robocock Dev Container",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "dev",
-	"workspaceFolder": "/home/ros/catkin_ws",
+	"workspaceFolder": "/home/ros/robocock",
 	"settings": {},
 	"extensions": []
 }
