@@ -118,3 +118,30 @@ fi
 
 # Source ROS
 source /opt/ros/noetic/setup.bash
+
+run_in_directory() {
+  local command="$1"
+  local directory="$2"
+
+  # Store the current working directory
+  local current_dir="$(pwd)"
+
+  # Change to the specified directory
+  cd "$directory" || return
+
+  # Run the command
+  eval "$command"
+
+  # Return to the original working directory
+  cd "$current_dir" || return
+}
+
+# Aliases
+alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "/home/ros/robocock/controller"'
+alias au='run_in_directory "arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega" "/home/ros/robocock/controller"'
+alias acu='ac && au'
+alias cb='run_in_directory "catkin build" "/home/ros/catkin_ws"'
+alias refreshenv='source ~/.bashrc'
+alias editbashrc='nano ~/.bashrc'
+alias cdrepo='cd /home/ros/robocock'
+alias cdws='cd /home/ros/catkin_ws'
