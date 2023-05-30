@@ -23,7 +23,7 @@ class ROSSerialClient {
         String _rpm_target_strings[4];
         ros::NodeHandle _nh;
         std_msgs::String _str_msg;
-        ros::Publisher _wheel_velocities_pub("wheel_velocities", &_str_msg);
+        ros::Publisher _wheel_velocities_pub = ros::Publisher("wheel_velocities", &_str_msg);
     public:
         ROSSerialClient(RBCConfig config);
         ~ROSSerialClient();

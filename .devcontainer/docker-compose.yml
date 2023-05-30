@@ -15,7 +15,7 @@ services:
       - /home/ros/catkin_ws/install
       - /home/ros/catkin_ws/logs
       # - ../.arduino15:/home/ros/.arduino15
-    devices:
-      - /dev/ttyACM0:/dev/ttyACM0
+    # devices:
+      # - /dev/ttyACM0:/dev/ttyACM0
     # Keep alive entrypoint
     entrypoint: tail -f /dev/null

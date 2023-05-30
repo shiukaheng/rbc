@@ -41,4 +41,4 @@ RUN /home/ros/bin/arduino-cli lib install "ArduPID"
 
 # Initialize rosserial
 WORKDIR /home/ros/Arduino/libraries
-RUN rosrun rosserial_arduino make_libraries.py .
+RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && rosrun rosserial_arduino make_libraries.py ."
