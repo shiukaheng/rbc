@@ -140,14 +140,29 @@ run_in_directory() {
   cd "$current_dir" || return
 }
 
+# Add /root/bin to PATH
+export PATH=$PATH:/root/bin
+
 # Aliases
-alias refreshenv='source ~/.bashrc'
-alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "/root/robocock/controller"'
-alias au='run_in_directory "arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega" "/root/robocock/controller"'
-alias acu='ac && au'
-alias cb='run_in_directory "catkin build" "/root/catkin_ws" && refreshenv'
-alias editbashrc='nano ~/.bashrc'
-alias cdrepo='cd /root/robocock'
-alias cdws='cd /root/catkin_ws'
-alias abl='rosrun rosserial_arduino make_libraries.py /root/Arduino/libraries'
-alias acm='cb && abl && ac'
+alias refreshenv='source ~/.bashrc' # Refresh environment
+alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "/root/robocock/controller"' # Arduino Compile
+alias au='run_in_directory "arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega" "/root/robocock/controller"' # Arduino Upload
+alias acu='ac && au' # Arduino Compile and Upload
+alias cb='run_in_directory "catkin build" "/root/catkin_ws" && refreshenv' # Catkin Build and refresh environment
+alias editbashrc='nano ~/.bashrc' # Edit bashrc
+alias cdrepo='cd /root/robocock' # CD to repo
+alias cdws='cd /root/catkin_ws' # CD to workspace
+alias abl='rosrun rosserial_arduino make_libraries.py /root/Arduino/libraries' # Arduino Build Libraries
+alias acm='cb && abl && ac' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
+
+# Check if /root/.dev has init.lock file. If it doesnt, initialize and create the file, otherwise do nothing
+if [ ! -f /root/.dev/init.lock ]; then
+  # Echo in cyan initializing dev environment
+  echo -e "\e[36mInitializing dev environment...\e[0m"   
+  run_in_directory "catkin build" "/root/catkin_ws" # Build catkin workspace
+  source /root/catkin_ws/devel/setup.bash # Source catkin workspace
+  abl # Build Arduino libraries
+  ac # Compile Arduino sketch
+  touch /root/.dev/init.lock
+  echo -e "\e[36mDev environment initialized, compiled catkin_ws, arduino rosserial libraries, and arduino sketch.\e[0m"
+fi

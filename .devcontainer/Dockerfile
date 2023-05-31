@@ -9,11 +9,11 @@ RUN apt-get update && sudo apt-get install -y \
     git\
     ros-noetic-rosserial\
     ros-noetic-rosserial-arduino\
-    ros-noetic-rqt-ez-publisher
+    ros-noetic-rqt-ez-publisher\
+    x11-apps
 
 RUN mkdir -p /root/catkin_ws/src
 
-# Go to user home
 WORKDIR /root
 RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
 RUN /root/bin/arduino-cli core update-index
@@ -22,8 +22,8 @@ RUN /root/bin/arduino-cli board install arduino:avr:mega
 RUN /root/bin/arduino-cli lib install "FireTimer"
 RUN /root/bin/arduino-cli lib install "ArduPID"
 
-# Initialize rosserial
-WORKDIR /root/Arduino/libraries
-RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && rosrun rosserial_arduino make_libraries.py ."
-
-RUN apt-get install x11-apps -y
+# Copying source code over
+COPY .. /root/robocock
+COPY ./.bashrc /root/.bashrc
+RUN mkdir -p /root/catkin_ws
+RUN ln -s /root/robocock/ros /root/catkin_ws/src

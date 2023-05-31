@@ -7,7 +7,6 @@ services:
     volumes:
       - ..:/root/robocock
       - ./.bashrc:/root/.bashrc
-      - ../ros:/root/catkin_ws/src
       - /root/catkin_ws/.catkin_tools
       - /root/catkin_ws/build
       - /root/catkin_ws/devel
@@ -15,6 +14,8 @@ services:
       - /root/catkin_ws/logs
       - '/tmp/.X11-unix:/tmp/.X11-unix:rw'
       - /root/.vscode-server
+      - /root/.dev
+      - /root/.bash_history
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
       - /dev/dri
