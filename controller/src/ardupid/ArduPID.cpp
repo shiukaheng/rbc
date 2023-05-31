@@ -180,7 +180,7 @@ void ArduPID::setBias(const double& _bias)
 
 void ArduPID::setCoefficients(const double& _p, const double& _i, const double& _d)
 {
-	if (_p >= 0 && _i >= 0 && _d >= 0)
+	if (_p >= 0 && _i >= 0 && _d >= 0) // Check if coefficients are positive
 	{
 		pIn = _p;
 		iIn = _i;
