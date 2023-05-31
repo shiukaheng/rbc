@@ -118,6 +118,10 @@ fi
 
 # Source ROS
 source /opt/ros/noetic/setup.bash
+# Source overlay IF it exists
+if [ -f ~/catkin_ws/devel/setup.bash ]; then
+  source ~/catkin_ws/devel/setup.bash
+fi
 
 run_in_directory() {
   local command="$1"
@@ -137,11 +141,12 @@ run_in_directory() {
 }
 
 # Aliases
+alias refreshenv='source ~/.bashrc'
 alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "/home/ros/robocock/controller"'
 alias au='run_in_directory "arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega" "/home/ros/robocock/controller"'
 alias acu='ac && au'
-alias cb='run_in_directory "catkin build" "/home/ros/catkin_ws"'
-alias refreshenv='source ~/.bashrc'
+alias cb='run_in_directory "catkin build" "/home/ros/catkin_ws" && refreshenv'
 alias editbashrc='nano ~/.bashrc'
 alias cdrepo='cd /home/ros/robocock'
 alias cdws='cd /home/ros/catkin_ws'
+alias abl='rosrun rosserial_arduino make_libraries.py /home/ros/Arduino/libraries'
