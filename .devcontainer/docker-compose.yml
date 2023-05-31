@@ -14,8 +14,14 @@ services:
       - /home/ros/catkin_ws/devel
       - /home/ros/catkin_ws/install
       - /home/ros/catkin_ws/logs
+      - '/tmp/.X11-unix:/tmp/.X11-unix:rw'
       # - ../.arduino15:/home/ros/.arduino15
-    # devices:
-      # - /dev/ttyACM0:/dev/ttyACM0
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+      - /dev/dri
+    environment:
+      - DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - HOST_OS=linux
     # Keep alive entrypoint
     entrypoint: tail -f /dev/null

@@ -19,7 +19,8 @@ RUN sudo apt-get update && sudo apt-get install -y \
     curl\
     git\
     ros-noetic-rosserial\
-    ros-noetic-rosserial-arduino
+    ros-noetic-rosserial-arduino\
+    ros-noetic-rqt-ez-publisher
 
 # Should be redundant, but just in case
 RUN mkdir -p /home/ros/catkin_ws/src
@@ -42,3 +43,5 @@ RUN /home/ros/bin/arduino-cli lib install "ArduPID"
 # Initialize rosserial
 WORKDIR /home/ros/Arduino/libraries
 RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && rosrun rosserial_arduino make_libraries.py ."
+
+RUN sudo apt-get install x11-apps -y

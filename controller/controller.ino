@@ -35,9 +35,13 @@ void setup() {
     Serial.begin(115200);
 
     // General PID parameters
-    double kp = 0.06;
-    double ki = 0.015;
-    double kd = 0.08;
+    // double kp = 0.06;
+    // double ki = 0.015;
+    // double kd = 0.08;
+
+    double kp = 0.01;
+    double ki = 0.01;
+    double kd = 0.0;
 
     // Motor configurations
     double gear_ratio = 1./82.;

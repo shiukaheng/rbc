@@ -9,12 +9,12 @@ PIDMotor::PIDMotor(PIDMotorConfig config) {
     _hall_b_pin = config.motor_pinout.hall_b_pin;
     _gear_ratio = config.gear_ratio;
     // PID variables
-    _setpoint = 0;
-    _input = 0;
-    _output = 0;
+    setpoint = 0;
+    input = 0;
+    output = 0;
     // Initialize PID controller
     _pid_controller.setOutputLimits(-255, 255);
-    _pid_controller.begin(&_input, &_output, &_setpoint, config.kp, config.ki, config.kd);
+    _pid_controller.begin(&input, &output, &setpoint, config.kp, config.ki, config.kd);
     // Initialize encoder
     _encoder = new EncoderReader(config.motor_pinout.hall_a_pin, config.motor_pinout.hall_b_pin, config.ppr, config.gear_ratio);
     // Initialize motor
@@ -43,26 +43,26 @@ void PIDMotor::setPWM(int pwm_value) {
 
 void PIDMotor::setRPM(float rpm) {
     _pid_controller.start();
-    _setpoint = rpm;
+    setpoint = rpm;
 }
 
 void PIDMotor::update() {
     // Update encoder
     _encoder->update();
     // Update PID
-    _input = _encoder->getRPM(); // TODO: Integrate gear ratio as parameter to encoder class
+    input = _encoder->getRPM(); // TODO: Integrate gear ratio as parameter to encoder class
     _pid_controller.compute();
     // Stalling prevention
     // If setpoint is 0, smoothened_rpm is below threshold, but PWM is not 0, then reset PID
-    double smoothened_rpm = _stall_smoothener->update(_input);
-    if (_setpoint == 0 && smoothened_rpm < 0.01 && _output != 0 && _stall_prevention_triggered == false) {
+    double smoothened_rpm = _stall_smoothener->update(input);
+    if (setpoint == 0 && smoothened_rpm < 0.01 && output != 0 && _stall_prevention_triggered == false) {
         _pid_controller.reset();
         _stall_prevention_triggered = true;
     } else {
         _stall_prevention_triggered = false;
     }
     // Update motor
-    _motor->setPWM(_output);
+    _motor->setPWM(output);
     _motor->update();
 }
 

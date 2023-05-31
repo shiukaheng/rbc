@@ -40,15 +40,15 @@ class PIDMotor {
         PIDMotorConfig motor_config;
         // PID functions and variables
         ArduPID getPID();
+        double setpoint;
+        double input;
+        double output;
     private:
         // Internal PID variables
         ArduPID _pid_controller;
         EncoderReader* _encoder;
         ExpTimeSmoothener* _stall_smoothener;
         bool _stall_prevention_triggered = false;
-        double _setpoint;
-        double _input;
-        double _output;
         // Motor parameters
         int _lpwm_pin; // Left pwm pin
         int _rpwm_pin; // Right pwm pin

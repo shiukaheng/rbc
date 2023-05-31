@@ -6,7 +6,7 @@ find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg message_gen
 
 add_message_files(
     FILES
-    WheelVelocities.msg
+    WheelStates.msg
     TargetWheelVelocities.msg
     WheelPIDParameters.msg
 )

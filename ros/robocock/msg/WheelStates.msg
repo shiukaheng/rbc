@@ -1,0 +1,15 @@
+float32 wheel1_velocity
+float32 wheel1_setpoint
+float32 wheel1_output
+
+float32 wheel2_velocity
+float32 wheel2_setpoint
+float32 wheel2_output
+
+float32 wheel3_velocity
+float32 wheel3_setpoint
+float32 wheel3_output
+
+float32 wheel4_velocity
+float32 wheel4_setpoint
+float32 wheel4_output
