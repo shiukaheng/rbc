@@ -46,7 +46,7 @@ void setup() {
     // Motor configurations
     double gear_ratio = 1./82.;
     int ppr = 16;
-    int smoothener_window_size = 5;
+    int smoothener_window_size = 4;
 
     // Pinouts: { lpwm_pin, rpwm_pin, hall_a_pin, hall_b_pin }
     int motor_pinouts[4][4] = {

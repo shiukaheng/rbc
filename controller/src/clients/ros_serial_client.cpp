@@ -11,6 +11,10 @@ ROSSerialClient::ROSSerialClient(RBCConfig config) {
     _nh.advertise(_wheel_states_pub);
     _nh.subscribe(_target_wheel_velocities_sub);
     _nh.subscribe(_wheel_pid_parameters_sub);
+    _motor1->getPID().setOutputLimits(0,0);
+    _motor2->getPID().setOutputLimits(0,0);
+    _motor3->getPID().setOutputLimits(0,0);
+    _motor4->getPID().setOutputLimits(0,0);
 }
 
 ROSSerialClient::~ROSSerialClient() {
@@ -44,21 +48,12 @@ void ROSSerialClient::_targetWheelVelocitiesCallback(const robocock::TargetWheel
 }
 
 void ROSSerialClient::_wheelPIDParametersCallback(const robocock::WheelPIDParameters& msg) {
-    _motor1->motor_config.kp = msg.wheel1_p;
-    _motor1->motor_config.ki = msg.wheel1_i;
-    _motor1->motor_config.kd = msg.wheel1_d;
-
-    _motor2->motor_config.kp = msg.wheel2_p;
-    _motor2->motor_config.ki = msg.wheel2_i;
-    _motor2->motor_config.kd = msg.wheel2_d;
-
-    _motor3->motor_config.kp = msg.wheel3_p;
-    _motor3->motor_config.ki = msg.wheel3_i;
-    _motor3->motor_config.kd = msg.wheel3_d;
-
-    _motor4->motor_config.kp = msg.wheel4_p;
-    _motor4->motor_config.ki = msg.wheel4_i;
-    _motor4->motor_config.kd = msg.wheel4_d;
+    // _motor1->getPID().setCoefficients(msg.wheel1_p, msg.wheel1_i, msg.wheel1_d);
+    // _motor2->getPID().setCoefficients(msg.wheel2_p, msg.wheel2_i, msg.wheel2_d);
+    // _motor3->getPID().setCoefficients(msg.wheel3_p, msg.wheel3_i, msg.wheel3_d);
+    // _motor4->getPID().setCoefficients(msg.wheel4_p, msg.wheel4_i, msg.wheel4_d);
+    // Set all to 0 for debugging
+    _motor1->getPID().setCoefficients(0, 0, 0);    
 }
 
 void ROSSerialClient::update() {
