@@ -1,0 +1,164 @@
+{
+  "keys": {},
+  "groups": {
+    "mainwindow": {
+      "keys": {
+        "geometry": {
+          "repr(QByteArray.hex)": "QtCore.QByteArray(b'01d9d0cb00030000000000000000003600000bb7000007cf000000000000008000000bb7000007cf00000000000000000bb8000000000000008000000bb7000007cf')",
+          "type": "repr(QByteArray.hex)",
+          "pretty-print": "       6                         "
+        },
+        "state": {
+          "repr(QByteArray.hex)": "QtCore.QByteArray(b'000000ff00000000fd000000010000000300000bb80000070cfc0100000001fc0000000000000bb8000005aa00fffffffc0200000002fb00000042007200710074005f0070006c006f0074005f005f0050006c006f0074005f005f0031005f005f00440061007400610050006c006f0074005700690064006700650074010000002200000507000000ed00fffffffb0000006a007200710074005f0065007a005f007000750062006c00690073006800650072005f005f0045007a005000750062006c00690073006800650072005f005f0031005f005f0045007a005000750062006c006900730068006500720050006c007500670069006e005500690100000535000001f9000001e500ffffff00000bb80000000000000004000000040000000800000008fc00000001000000030000000100000036004d0069006e0069006d0069007a006500640044006f0063006b00570069006400670065007400730054006f006f006c0062006100720000000000ffffffff0000000000000000')",
+          "type": "repr(QByteArray.hex)",
+          "pretty-print": "                                                                \"                                                               5                                                              "
+        }
+      },
+      "groups": {
+        "toolbar_areas": {
+          "keys": {
+            "MinimizedDockWidgetsToolbar": {
+              "repr": "8",
+              "type": "repr"
+            }
+          },
+          "groups": {}
+        }
+      }
+    },
+    "pluginmanager": {
+      "keys": {
+        "running-plugins": {
+          "repr": "{'rqt_ez_publisher/EzPublisher': [1], 'rqt_plot/Plot': [1]}",
+          "type": "repr"
+        }
+      },
+      "groups": {
+        "plugin__rqt_ez_publisher__EzPublisher__1": {
+          "keys": {},
+          "groups": {
+            "dock_widget__EzPublisherPluginUi": {
+              "keys": {
+                "dock_widget_title": {
+                  "repr": "''",
+                  "type": "repr"
+                },
+                "dockable": {
+                  "repr": "True",
+                  "type": "repr"
+                },
+                "parent": {
+                  "repr": "None",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            },
+            "plugin": {
+              "keys": {
+                "configurable": {
+                  "repr": "True",
+                  "type": "repr"
+                },
+                "publish_interval": {
+                  "repr": "100",
+                  "type": "repr"
+                },
+                "texts": {
+                  "repr": "['/target_wheel_velocities/wheel1', '/target_wheel_velocities/wheel2', '/target_wheel_velocities/wheel3', '/target_wheel_velocities/wheel4']",
+                  "type": "repr"
+                }
+              },
+              "groups": {
+                "target_wheel_velocities": {
+                  "keys": {
+                    "wheel1_is_repeat": {
+                      "repr": "False",
+                      "type": "repr"
+                    },
+                    "wheel1_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel2_is_repeat": {
+                      "repr": "False",
+                      "type": "repr"
+                    },
+                    "wheel2_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel3_is_repeat": {
+                      "repr": "False",
+                      "type": "repr"
+                    },
+                    "wheel3_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel4_is_repeat": {
+                      "repr": "False",
+                      "type": "repr"
+                    },
+                    "wheel4_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    }
+                  },
+                  "groups": {}
+                }
+              }
+            }
+          }
+        },
+        "plugin__rqt_plot__Plot__1": {
+          "keys": {},
+          "groups": {
+            "dock_widget__DataPlotWidget": {
+              "keys": {
+                "dock_widget_title": {
+                  "repr": "'MatPlot'",
+                  "type": "repr"
+                },
+                "dockable": {
+                  "repr": "False",
+                  "type": "repr"
+                },
+                "parent": {
+                  "repr": "None",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            },
+            "plugin": {
+              "keys": {
+                "autoscroll": {
+                  "repr": "True",
+                  "type": "repr"
+                },
+                "plot_type": {
+                  "repr": "1",
+                  "type": "repr"
+                },
+                "topics": {
+                  "repr": "['/wheel_states/wheel1_velocity', '/wheel_states/wheel1_setpoint', '/wheel_states/wheel1_output', '/wheel_states/wheel2_velocity', '/wheel_states/wheel2_setpoint', '/wheel_states/wheel2_output', '/wheel_states/wheel3_velocity', '/wheel_states/wheel3_setpoint', '/wheel_states/wheel3_output', '/wheel_states/wheel4_velocity', '/wheel_states/wheel4_setpoint', '/wheel_states/wheel4_output']",
+                  "type": "repr"
+                },
+                "x_limits": {
+                  "repr": "[135.99284267425537, 136.99284267425537]",
+                  "type": "repr"
+                },
+                "y_limits": {
+                  "repr": "[0.0, 1.0]",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}
