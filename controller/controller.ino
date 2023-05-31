@@ -35,17 +35,17 @@ void setup() {
     Serial.begin(115200);
 
     // General PID parameters
-    const double kp = 0.06;
-    const double ki = 0.015;
-    const double kd = 0.08;
+    double kp = 0.06;
+    double ki = 0.015;
+    double kd = 0.08;
 
     // Motor configurations
-    const double gear_ratio = 1./82.;
-    const int ppr = 16;
-    const int smoothener_window_size = 5;
+    double gear_ratio = 1./82.;
+    int ppr = 16;
+    int smoothener_window_size = 5;
 
     // Pinouts: { lpwm_pin, rpwm_pin, hall_a_pin, hall_b_pin }
-    const int motor_pinouts[4][4] = {
+    int motor_pinouts[4][4] = {
         { 2, 7, 18, 30},    // Wheel 1  - { 2, 3, 18, 19 } in final config
         { 3, 8, 19, 31 }, // Wheel 2
         { 5, 11, 20, 32 }, // Wheel 3
@@ -53,7 +53,7 @@ void setup() {
     };
 
     // Create config
-    const RBCConfig config = createConfig(motor_pinouts, ppr, gear_ratio, smoothener_window_size, kp, ki, kd);
+    RBCConfig config = createConfig(motor_pinouts, ppr, gear_ratio, smoothener_window_size, kp, ki, kd);
 
     // Create client
     client = new ROSSerialClient(config);
