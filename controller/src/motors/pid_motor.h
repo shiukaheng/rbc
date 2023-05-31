@@ -37,6 +37,7 @@ class PIDMotor {
         void update();
         void isr();
         double getRPM();
+        PIDMotorConfig motor_config;
         // PID functions and variables
         ArduPID getPID();
     private:

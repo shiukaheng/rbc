@@ -1,6 +1,7 @@
 #include "pid_motor.h"
 
 PIDMotor::PIDMotor(PIDMotorConfig config) {
+    motor_config = config;
     // Set parameter variables
     _lpwm_pin = config.motor_pinout.lpwm_pin;
     _rpwm_pin = config.motor_pinout.rpwm_pin;
