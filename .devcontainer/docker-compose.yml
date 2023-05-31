@@ -1,21 +1,20 @@
 version: '3'
-
 services:
   dev:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ..:/home/ros/robocock
-      - ./.bashrc:/home/ros/.bashrc
-      - ../ros:/home/ros/catkin_ws/src
-      - /home/ros/catkin_ws/.catkin_tools
-      - /home/ros/catkin_ws/build
-      - /home/ros/catkin_ws/devel
-      - /home/ros/catkin_ws/install
-      - /home/ros/catkin_ws/logs
+      - ..:/root/robocock
+      - ./.bashrc:/root/.bashrc
+      - ../ros:/root/catkin_ws/src
+      - /root/catkin_ws/.catkin_tools
+      - /root/catkin_ws/build
+      - /root/catkin_ws/devel
+      - /root/catkin_ws/install
+      - /root/catkin_ws/logs
       - '/tmp/.X11-unix:/tmp/.X11-unix:rw'
-      # - ../.arduino15:/home/ros/.arduino15
+      - /root/.vscode-server
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
       - /dev/dri

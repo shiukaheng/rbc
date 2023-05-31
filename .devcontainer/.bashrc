@@ -142,12 +142,12 @@ run_in_directory() {
 
 # Aliases
 alias refreshenv='source ~/.bashrc'
-alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "/home/ros/robocock/controller"'
-alias au='run_in_directory "arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega" "/home/ros/robocock/controller"'
+alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "/root/robocock/controller"'
+alias au='run_in_directory "arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega" "/root/robocock/controller"'
 alias acu='ac && au'
-alias cb='run_in_directory "catkin build" "/home/ros/catkin_ws" && refreshenv'
+alias cb='run_in_directory "catkin build" "/root/catkin_ws" && refreshenv'
 alias editbashrc='nano ~/.bashrc'
-alias cdrepo='cd /home/ros/robocock'
-alias cdws='cd /home/ros/catkin_ws'
-alias abl='rosrun rosserial_arduino make_libraries.py /home/ros/Arduino/libraries'
+alias cdrepo='cd /root/robocock'
+alias cdws='cd /root/catkin_ws'
+alias abl='rosrun rosserial_arduino make_libraries.py /root/Arduino/libraries'
 alias acm='cb && abl && ac'

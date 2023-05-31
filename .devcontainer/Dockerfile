@@ -2,18 +2,7 @@ FROM shiukaheng/ros-base:latest
 
 ENTRYPOINT [ "/usr/bin/env" ]
 
-# Add ros as user, without password, and add to sudo group
-RUN adduser --disabled-password --gecos '' ros && \
-    adduser ros sudo && \
-    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-RUN chown -R ros:ros /home/ros
-RUN adduser ros dialout
-RUN adduser ros tty
-
-USER ros
-
-RUN sudo apt-get update && sudo apt-get install -y \
+RUN apt-get update && sudo apt-get install -y \
     python3-catkin-tools\
     nano\
     curl\
@@ -22,26 +11,19 @@ RUN sudo apt-get update && sudo apt-get install -y \
     ros-noetic-rosserial-arduino\
     ros-noetic-rqt-ez-publisher
 
-# Should be redundant, but just in case
-RUN mkdir -p /home/ros/catkin_ws/src
-RUN mkdir -p /home/ros/catkin_ws/devel
-RUN mkdir -p /home/ros/catkin_ws/build
-RUN mkdir -p /home/ros/catkin_ws/install
-RUN mkdir -p /home/ros/catkin_ws/logs
-RUN mkdir -p /home/ros/catkin_ws/.catkin_tools
-RUN mkdir -p /home/ros/robocock
+RUN mkdir -p /root/catkin_ws/src
 
 # Go to user home
-WORKDIR /home/ros
+WORKDIR /root
 RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-RUN /home/ros/bin/arduino-cli core update-index
-RUN /home/ros/bin/arduino-cli core install arduino:avr
-RUN /home/ros/bin/arduino-cli board install arduino:avr:mega
-RUN /home/ros/bin/arduino-cli lib install "FireTimer"
-RUN /home/ros/bin/arduino-cli lib install "ArduPID"
+RUN /root/bin/arduino-cli core update-index
+RUN /root/bin/arduino-cli core install arduino:avr
+RUN /root/bin/arduino-cli board install arduino:avr:mega
+RUN /root/bin/arduino-cli lib install "FireTimer"
+RUN /root/bin/arduino-cli lib install "ArduPID"
 
 # Initialize rosserial
-WORKDIR /home/ros/Arduino/libraries
+WORKDIR /root/Arduino/libraries
 RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && rosrun rosserial_arduino make_libraries.py ."
 
-RUN sudo apt-get install x11-apps -y
+RUN apt-get install x11-apps -y
