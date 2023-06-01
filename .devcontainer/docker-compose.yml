@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    network_mode: host
     volumes:
       - ..:/root/robocock
       - ./.bashrc:/root/.bashrc
@@ -13,7 +14,7 @@ services:
       - /root/catkin_ws/install
       - /root/catkin_ws/logs
       - '/tmp/.X11-unix:/tmp/.X11-unix:rw'
-      - /root/.vscode-server
+      - '$HOME/.Xauthority:/root/.Xauthority:rw'
       - /root/.dev
       - /root/.bash_history
     devices:
