@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "../catkin_ws/src"
+		},
+		{
+			"path": "controller"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"functional": "cpp"
+		}
+	}
+}
