@@ -32,6 +32,9 @@ add_executable(listener src/listener.cpp)
 target_link_libraries(listener ${catkin_LIBRARIES})
 # add_dependencies(listener robocock_generate_messages_cpp)
 
+add_executable(control_parameter_server src/control/control_parameter_server/main.cpp)
+target_link_libraries(control_parameter_server ${catkin_LIBRARIES})
+
 install(DIRECTORY config/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
   FILES_MATCHING PATTERN "*.perspective"
