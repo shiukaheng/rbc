@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <launch>
+    <!-- Wheel Control -->
     <node pkg="rosserial_arduino" type="serial_node.py" name="rosserial_node" output="screen">
         <param name="port" value="/dev/ttyACM0" />
+        <param name="baud" value="115200" />
     </node>
+    <!-- Debug GUI -->
     <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/wheel_debug.perspective" launch-prefix="bash -c 'sleep 5; $0 $@'"/>
 </launch>

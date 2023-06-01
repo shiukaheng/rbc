@@ -34,13 +34,9 @@ void setup() {
     // Start serial
     Serial.begin(115200);
 
-    // General PID parameters
-    // double kp = 0.06;
-    // double ki = 0.015;
-    // double kd = 0.08;
-
-    double kp = 0.01;
-    double ki = 0.01;
+    // Initial PID parameters (0,0,0) so that the wheels don't move on startup, instead we wait for the first message
+    double kp = 0.0;
+    double ki = 0.0;
     double kd = 0.0;
 
     // Motor configurations
@@ -50,10 +46,10 @@ void setup() {
 
     // Pinouts: { lpwm_pin, rpwm_pin, hall_a_pin, hall_b_pin }
     int motor_pinouts[4][4] = {
-        { 2, 7, 18, 30},    // Wheel 1  - { 2, 3, 18, 19 } in final config
-        { 3, 8, 19, 31 }, // Wheel 2
-        { 5, 11, 20, 32 }, // Wheel 3
-        { 6, 12, 21, 33 }  // Wheel 4
+        { 2, 7, 18, 30 },   // Wheel 1
+        { 3, 8, 19, 31 },   // Wheel 2
+        { 5, 11, 20, 32 },  // Wheel 3
+        { 6, 12, 21, 33 }   // Wheel 4
     };
 
     // Create config

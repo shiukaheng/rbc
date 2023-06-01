@@ -39,7 +39,7 @@ class PIDMotor {
         double getRPM();
         PIDMotorConfig motor_config;
         // PID functions and variables
-        ArduPID getPID();
+        ArduPID& getPID();
         double setpoint;
         double input;
         double output;

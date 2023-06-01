@@ -74,6 +74,6 @@ double PIDMotor::getRPM() {
     return _encoder->getRPM();
 }
 
-ArduPID PIDMotor::getPID() {
+ArduPID& PIDMotor::getPID() {
     return _pid_controller;
 }
