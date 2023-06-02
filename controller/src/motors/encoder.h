@@ -23,7 +23,7 @@
  *       void loop() {
  *          ...
  *          encoder->update();
- *          double rpm = encoder->getRPS();
+ *          double rps = encoder->getRPS();
  *          ...
  *       }
  */

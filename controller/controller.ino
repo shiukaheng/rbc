@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 // Limits
-#define RPM_LIMIT 80.
+#define RPS_LIMIT 80.
 #define PWM_LIMIT 255.
 
 ROSSerialClient* client;

@@ -17,7 +17,7 @@ void SerialPIDClient::isr() {
 
 void SerialPIDClient::update() {
     _motor->update();
-    Serial.println(_motor->getRPM());
+    Serial.println(_motor->getRPS());
     while (Serial.available() > 0) {
         char inChar = (char)Serial.read();
         _inputBuffer += inChar;
@@ -25,7 +25,7 @@ void SerialPIDClient::update() {
             // Parse the input buffer
             int pwm = _inputBuffer.toInt();
             // TODO: Set the speed
-            _motor->setRPM(pwm);
+            _motor->setRPS(pwm);
             // Clear the buffer
             _inputBuffer = "";
         }
@@ -52,7 +52,7 @@ void SerialPWMClient::isr() {
 void SerialPWMClient::update() {
     _encoderReader->update();
     _motor->update();
-    Serial.println(_encoderReader->getRPM());
+    Serial.println(_encoderReader->getRPS());
     while (Serial.available() > 0) {
         char inChar = (char)Serial.read();
         _inputBuffer += inChar;
