@@ -41,21 +41,21 @@ void PIDMotor::setPWM(int pwm_value) {
     _motor->setPWM(pwm_value);
 }
 
-void PIDMotor::setRPM(float rpm) {
+void PIDMotor::setRPS(float rps) {
     _pid_controller.start();
-    setpoint = rpm;
+    setpoint = rps;
 }
 
 void PIDMotor::update() {
     // Update encoder
     _encoder->update();
     // Update PID
-    input = _encoder->getRPM(); // TODO: Integrate gear ratio as parameter to encoder class
+    input = _encoder->getRPS(); // TODO: Integrate gear ratio as parameter to encoder class
     _pid_controller.compute();
     // Stalling prevention
-    // If setpoint is 0, smoothened_rpm is below threshold, but PWM is not 0, then reset PID
-    double smoothened_rpm = _stall_smoothener->update(input);
-    if (setpoint == 0 && smoothened_rpm < 0.01 && output != 0 && _stall_prevention_triggered == false) {
+    // If setpoint is 0, smoothened_rps is below threshold, but PWM is not 0, then reset PID
+    double smoothened_rps = _stall_smoothener->update(input);
+    if (setpoint == 0 && smoothened_rps < 0.001 && output != 0 && _stall_prevention_triggered == false) {
         _pid_controller.reset();
         _stall_prevention_triggered = true;
     } else {
@@ -70,8 +70,8 @@ void PIDMotor::isr() {
     _encoder->isr();
 }
 
-double PIDMotor::getRPM() {
-    return _encoder->getRPM();
+double PIDMotor::getRPS() {
+    return _encoder->getRPS();
 }
 
 ArduPID& PIDMotor::getPID() {

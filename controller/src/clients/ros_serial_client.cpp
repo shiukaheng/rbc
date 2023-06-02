@@ -42,10 +42,10 @@ void ROSSerialClient::isr4() {
 }
 
 void ROSSerialClient::_targetWheelVelocitiesCallback(const robocock::TargetWheelVelocities& msg) {
-    _motor1->setRPM(msg.wheel1);
-    _motor2->setRPM(msg.wheel2);
-    _motor3->setRPM(msg.wheel3);
-    _motor4->setRPM(msg.wheel4);
+    _motor1->setRPS(msg.wheel1);
+    _motor2->setRPS(msg.wheel2);
+    _motor3->setRPS(msg.wheel3);
+    _motor4->setRPS(msg.wheel4);
 }
 
 void ROSSerialClient::_wheelPIDParametersCallback(const robocock::WheelPIDParameters& msg) {
@@ -61,24 +61,24 @@ void ROSSerialClient::update() {
     _motor3->update();
     _motor4->update();
 
-    float rpm1 = _motor1->getRPM();
-    float rpm2 = _motor2->getRPM();
-    float rpm3 = _motor3->getRPM();
-    float rpm4 = _motor4->getRPM();
+    float rps1 = _motor1->getRPS();
+    float rps2 = _motor2->getRPS();
+    float rps3 = _motor3->getRPS();
+    float rps4 = _motor4->getRPS();
 
-    _wheel_states_msg.wheel1_velocity = rpm1;
+    _wheel_states_msg.wheel1_velocity = rps1;
     _wheel_states_msg.wheel1_setpoint = _motor1->setpoint;
     _wheel_states_msg.wheel1_output = _motor1->output;
 
-    _wheel_states_msg.wheel2_velocity = rpm2;
+    _wheel_states_msg.wheel2_velocity = rps2;
     _wheel_states_msg.wheel2_setpoint = _motor2->setpoint;
     _wheel_states_msg.wheel2_output = _motor2->output;
 
-    _wheel_states_msg.wheel3_velocity = rpm3;
+    _wheel_states_msg.wheel3_velocity = rps3;
     _wheel_states_msg.wheel3_setpoint = _motor3->setpoint;
     _wheel_states_msg.wheel3_output = _motor3->output;
 
-    _wheel_states_msg.wheel4_velocity = rpm4;
+    _wheel_states_msg.wheel4_velocity = rps4;
     _wheel_states_msg.wheel4_setpoint = _motor4->setpoint;
     _wheel_states_msg.wheel4_output = _motor4->output;
 

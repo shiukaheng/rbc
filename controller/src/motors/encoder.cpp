@@ -32,14 +32,14 @@ int read_dt(int current_index, int offset, int max_index, long pulse_time_histor
 }
 
 /**
- * @brief Converts the pulse period to wheel RPM
+ * @brief Converts the pulse period to wheel rad/s
  * 
  * @param period The pulse period
- * @return double The wheel RPM
+ * @return double The wheel rad/s
  */
-double period_to_rpm(int period, int ppr, double gear_ratio) {
-    // Microseconds in a second / period / pulses per revolution / gear down ratio * 60 (to get RPM)
-    return 1e6 / period / ppr * gear_ratio * 60;
+double period_to_rads_per_sec(int period, int ppr, double gear_ratio) {
+    // Microseconds in a second / period / pulses per revolution / gear down ratio
+    return (2 * M_PI) / (period / 1e6) / ppr * gear_ratio;
 }
 
 // ========== IMPLEMENTATION ==========
@@ -117,7 +117,7 @@ void EncoderReader::update() {
     // i. Predicting the next pulse time to choose which method to use (that's why initially its only loaded with one value)
     // ii. Computing the average pulse time duration (same variable will be recycled to save memory, by recursively updating it using weighted average)
     double first_pulse_period = read_dt(index, 0, _ppr, pulse_time_history, pulse_cws);
-    double avg_rpm = period_to_rpm(first_pulse_period, _ppr, _gear_ratio);
+    double avg_radps = period_to_rads_per_sec(first_pulse_period, _ppr, _gear_ratio);
     int num_added = 1;
 
     long last_pulse_time = pulse_time_history[index]; // For convenience
@@ -132,7 +132,7 @@ void EncoderReader::update() {
 
     However, if the predicted pulse should have already happened, but it hasn't (before this update), 
     we assume the motion has stopped or at least significantly slowed down, and we fall back to the average pulse time duration,
-    which is more robust to slow RPMs.
+    which is more robust to slow speeds.
 
     Obviously, there is noise, and there is also the possibility that the motion is actually slowing down, and that the next pulse time
     is just slightly delayed. In this case, we could inflate the the average pulse time duration by a factor of 2, and use that as the
@@ -143,8 +143,8 @@ void EncoderReader::update() {
     
     Conflicting thoughts (VERSION B):
 
-    Using the current system, when the system deccelerates, from a very fast RPM to a fast RPM, it would still trigger the fallback method,
-    which yields a very inaccurate RPM (a window can only capture so many pulses), perhaps we should use a hard threshold to wait for the
+    Using the current system, when the system deccelerates, from a very fast speed to a fast speed, it would still trigger the fallback method,
+    which yields a very inaccurate speed (a window can only capture so many pulses), perhaps we should use a hard threshold to wait for the
     next pulse to happen, and if it doesn't, we fall back to the average pulse time duration.
 
     This could be interpreted as using the fallback method when the velocity is below a certain threshold, which may yield better results if
@@ -172,7 +172,7 @@ void EncoderReader::update() {
     //     Serial.println("Next pulse time is in the past");
     // }
 
-    // Period-based RPM calculation; only update _rpm if the conditions are met
+    // Period-based speed calculation; only update _radps if the conditions are met
     if (use_period_method) {
         // Serial.println("This is the period method");
         _period_method = true;
@@ -180,11 +180,11 @@ void EncoderReader::update() {
             long pulse_dt = read_dt(index, i, _ppr, pulse_time_history, pulse_cws);
             // Serial.println(pulse_dt);
             // Update the average
-            avg_rpm = (avg_rpm * num_added + period_to_rpm(pulse_dt, _ppr, _gear_ratio)) / (num_added + 1);
+            avg_radps = (avg_radps * num_added + period_to_rads_per_sec(pulse_dt, _ppr, _gear_ratio)) / (num_added + 1);
             num_added++;
         }
-        // Calculate the rpm
-        _rpm = avg_rpm;
+        // Calculate the rad/s
+        _radps = avg_radps;
     } else {
         // When we switch from period-based method to window-based method, we need to reset the accumulator to clear irrelevant pulses
         // Serial.println("This is the window method");
@@ -194,25 +194,25 @@ void EncoderReader::update() {
         _period_method = false;
     }
 
-    // Window-based RPM calculation
+    // Window-based speed calculation
     // We use a integer that is incremented every time the ISR is called
-    // Combined with the current time and when the the accumulator was last cleared, we can calculate the RPM
-    // (i.e., RPM = pulses / dt / PPR * 60)
+    // Combined with the current time and when the the accumulator was last cleared, we can calculate the speed
+    // (i.e., speed = pulses / dt / PPR * 60)
     long dt = current_time - _last_update_time;
-    if (dt >= MIN_DT) { // We don't want to update too often, as having a tiny window will yield a very inaccurate RPM, so we set a minimum dt
-        // Calculate the rpm
-        double window_rpm = _current_pulses / (dt / 1e6) / _ppr * _gear_ratio * 60;
+    if (dt >= MIN_DT) { // We don't want to update too often, as having a tiny window will yield a very inaccurate speed, so we set a minimum dt
+        // Calculate the rad/s
+        double window_radps = _current_pulses / (dt / 1e6) / _ppr * _gear_ratio * 60;
         // Reset the number of pulses
         _current_pulses = 0;
         // Update the last update time
         _last_update_time = current_time;
-        // Update the rpm
+        // Update the rad/s
         if (!use_period_method) {
-            _rpm = window_rpm;
+            _radps = window_radps;
         }
     }
 }
 
-double EncoderReader::getRPM() {
-    return _rpm;
+double EncoderReader::getRPS() {
+    return _radps;
 }

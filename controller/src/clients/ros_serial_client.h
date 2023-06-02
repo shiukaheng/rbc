@@ -12,7 +12,7 @@
 #include <robocock/WheelPIDParameters.h>
 
 /**
- * @brief A client that listens for PID RPM targets, and uses closed loop control to achieve them
+ * @brief A client that listens for PID RPS targets, and uses closed loop control to achieve them
  *
  */
 class ROSSerialClient {

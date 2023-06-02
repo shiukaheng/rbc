@@ -154,7 +154,8 @@ alias cdrepo='cd /root/robocock' # CD to repo
 alias cdws='cd /root/catkin_ws' # CD to workspace
 alias abl='rosrun rosserial_arduino make_libraries.py /root/Arduino/libraries' # Arduino Build Libraries
 alias acm='cb && abl && ac' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
-alias md='roslaunch robocock motor_debug.launch' # Motor Debug
+alias mt='roslaunch robocock motor_tune.launch' # Motor Tune
+alias mvel='roslaunch robocock motor_vel.launch' # Motor Velocity
 
 # Check if /root/.dev has init.lock file. If it doesnt, initialize and create the file, otherwise do nothing
 if [ ! -f /root/.dev/init.lock ]; then

@@ -8,7 +8,7 @@
 
 // Potential bug: _dirty not handled properly
 // TODO: Add regular interrupt pin as a parameter
-// TODO: Rename methods for standardization (i.e., isr, update, getRPM)
+// TODO: Rename methods for standardization (i.e., isr, update, getRPS)
 
 /* USAGE:
  * 1. Create an EncoderReader object:
@@ -19,11 +19,11 @@
  *      }
  * 3. Attach the ISR to the interrupt pin:
  *      attachInterrupt(digitalPinToInterrupt(INT_PIN), isr, RISING);
- * 4. Call update() in the main loop and get the RPM:
+ * 4. Call update() in the main loop and get the rad/s:
  *       void loop() {
  *          ...
  *          encoder->update();
- *          double rpm = encoder->getRPM();
+ *          double rps = encoder->getRPS();
  *          ...
  *       }
  */
@@ -31,7 +31,7 @@
 // ========== MAIN CLASS DECLARATION =========
 
 /**
- * @brief A class that monitors the encoder and calculates the RPM
+ * @brief A class that monitors the encoder and calculates the rad/s
  * 
  */
 class EncoderReader {
@@ -56,7 +56,7 @@ class EncoderReader {
         // Update vars
         long _last_update_time = 0;
         bool _first_update = true;
-        double _rpm = 0;
+        double _radps = 0;
         bool _period_method = false;
     public:
         EncoderReader(int hall_a_pin, int hall_b_bin, int ppr = PPR, double gear_ratio = GEAR_RATIO, long min_dt = MIN_DT);
@@ -72,9 +72,9 @@ class EncoderReader {
          */
         void update();
         /**
-         * @brief Gets the RPM
+         * @brief Gets the rad/s
          * 
-         * @return double The RPM
+         * @return double The rad/s
          */
-        double getRPM();
+        double getRPS();
 };

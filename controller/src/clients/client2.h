@@ -7,7 +7,7 @@
 #include "../utils/argtypes.h"
 
 /**
- * @brief A client that listens for PID RPM targets, and uses closed loop control to achieve them
+ * @brief A client that listens for PID RPS targets, and uses closed loop control to achieve them
  * 
  */
 class SerialPIDClient2 {
@@ -17,9 +17,9 @@ class SerialPIDClient2 {
         PIDMotor* _motor2;
         PIDMotor* _motor3;
         PIDMotor* _motor4;
-        float _rpm_targets[4];
-        float _draft_rpm_targets[4];
-        String _rpm_target_strings[4];
+        float _rps_targets[4];
+        float _draft_rps_targets[4];
+        String _rps_target_strings[4];
     public:
         SerialPIDClient2(RBCConfig config);
         ~SerialPIDClient2();
