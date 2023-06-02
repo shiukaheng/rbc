@@ -31,7 +31,11 @@ class RobocockHW : public hardware_interface::RobotHW {
             pos[1] = msg.wheel2_position;
             pos[2] = msg.wheel3_position;
             pos[3] = msg.wheel4_position;
-            // TODO: Add effort
+            // Not sure if PWM is a good measure of effort, but it's the only thing we have for now
+            eff[0] = msg.wheel1_output;
+            eff[1] = msg.wheel2_output;
+            eff[2] = msg.wheel3_output;
+            eff[3] = msg.wheel4_output;
         }
 
         float control_frequency;
