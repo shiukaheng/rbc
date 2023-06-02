@@ -25,18 +25,18 @@ class PIDMotor {
          */
         void setPWM(int pwm_value);
         /**
-         * @brief Set the rpm of the motor (with gearing ratio corrected)
+         * @brief Set the rad/s of the motor (with gearing ratio corrected)
          * 
-         * @param rpm the rpm to set the motor to
+         * @param rps the rad/s to set the motor to
          */
-        void setRPM(float rpm);
+        void setRPS(float rps);
         /**
          * @brief Updates the motor, should be called in the main loop
          * 
          */
         void update();
         void isr();
-        double getRPM();
+        double getRPS();
         PIDMotorConfig motor_config;
         // PID functions and variables
         ArduPID& getPID();
