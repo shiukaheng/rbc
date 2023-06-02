@@ -23,11 +23,15 @@ class RobocockHW : public hardware_interface::RobotHW {
         ros::Subscriber wheel_state_sub;
 
         void wheelStateCallback(const robocock::WheelStates& msg) {
-            // TODO: Position (and possibly effort) feedback
             vel[0] = msg.wheel1_velocity;
             vel[1] = msg.wheel2_velocity;
             vel[2] = msg.wheel3_velocity;
             vel[3] = msg.wheel4_velocity;
+            pos[0] = msg.wheel1_position;
+            pos[1] = msg.wheel2_position;
+            pos[2] = msg.wheel3_position;
+            pos[3] = msg.wheel4_position;
+            // TODO: Add effort
         }
 
         float control_frequency;
