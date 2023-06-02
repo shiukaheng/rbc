@@ -6,5 +6,5 @@
         <param name="baud" value="115200" />
     </node>
     <!-- Debug GUI -->
-    <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/wheel_debug.perspective" launch-prefix="bash -c 'sleep 5; $0 $@'"/>
+    <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/motor_tune.perspective" launch-prefix="bash -c 'sleep 5; $0 $@'"/>
 </launch>
