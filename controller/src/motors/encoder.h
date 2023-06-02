@@ -45,14 +45,12 @@ class EncoderReader {
         // ISR vars
         volatile int _current_pulses = 0;
         volatile int _pulse_time_history_index = -1;
-        // volatile long _pulse_time_history[PPR+1]; // So we will have PPR pulse durations to work with
         volatile long* _pulse_time_history;
-        // volatile bool _pulse_cws[PPR+1];
         volatile bool* _pulse_cws;
         volatile bool _dirty = true;
-        volatile int _total_pulses = 0;
+        volatile int _abs_total_pulses = 0;
         volatile bool _clear_period_vars = false;
-        // volatile bool cws = true;
+        volatile long _net_pulses = 0;
         // Update vars
         long _last_update_time = 0;
         bool _first_update = true;
@@ -77,4 +75,10 @@ class EncoderReader {
          * @return double The rad/s
          */
         double getRPS();
+        /**
+         * @brief Get the cumulative radians
+         * 
+         * @return double The cumulative radians
+         */
+        double getCumulativeRad();
 };
