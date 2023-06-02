@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(robocock)
 
 ## Find catkin and any catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg message_generation controller_manager hardware_interface)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg message_generation controller_manager hardware_interface controller_interface geometry_msgs)
 
 add_message_files(
     FILES
@@ -23,14 +23,6 @@ catkin_package(
 
 ## Build talker and listener
 include_directories(include ${catkin_INCLUDE_DIRS})
-
-add_executable(talker src/talker.cpp)
-target_link_libraries(talker ${catkin_LIBRARIES})
-# add_dependencies(talker robocock_generate_messages_cpp)
-
-add_executable(listener src/listener.cpp)
-target_link_libraries(listener ${catkin_LIBRARIES})
-# add_dependencies(listener robocock_generate_messages_cpp)
 
 add_executable(control_parameter_server src/control/control_parameter_server/main.cpp)
 target_link_libraries(control_parameter_server ${catkin_LIBRARIES})
