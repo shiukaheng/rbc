@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Wheel Control -->
+    <node pkg="rosserial_arduino" type="serial_node.py" name="rosserial_node" output="screen">
+        <param name="port" value="/dev/ttyACM0" />
+        <param name="baud" value="115200" />
+    </node>
+    <!-- Wheel parameter server -->
+    <node pkg="robocock" type="control_parameter_server" name="control_parameter_server" output="screen">
+        <rosparam>
+            wheel1_p: 0.01
+            wheel1_i: 0.025
+            wheel1_d: 0.0
+            wheel2_p: 0.01
+            wheel2_i: 0.025
+            wheel2_d: 0.0
+            wheel3_p: 0.01
+            wheel3_i: 0.025
+            wheel3_d: 0.0
+            wheel4_p: 0.01
+            wheel4_i: 0.025
+            wheel4_d: 0.0
+            regular_update_rate: 5
+        </rosparam>
+    </node>
+    <!-- ros_control -->
+    <node pkg="robocock" type="robocock_hw" name="robocock_hw" output="screen"/>
+    <rosparam file="$(find robocock)/config/controller.yaml" command="load"/>
+</launch>

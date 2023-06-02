@@ -156,7 +156,7 @@ alias abl='rosrun rosserial_arduino make_libraries.py /root/Arduino/libraries' #
 alias acm='cb && abl && ac' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
 alias mt='roslaunch robocock motor_tune.launch' # Motor Tune
 alias mvel='roslaunch robocock motor_vel.launch' # Motor Velocity
-
+alias mrc='roslaunch robocock motor_ros_control.launch' # Motor ros_control
 # Check if /root/.dev has init.lock file. If it doesnt, initialize and create the file, otherwise do nothing
 if [ ! -f /root/.dev/init.lock ]; then
   # Echo in cyan initializing dev environment

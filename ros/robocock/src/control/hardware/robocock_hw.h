@@ -88,6 +88,8 @@ class RobocockHW : public hardware_interface::RobotHW {
             wheel_vel_pub.publish(msg);
         }
         void start() {
+            // Print a message showing that the hardware interface is ready
+            ROS_INFO("Robocock hardware interface ready");
             // Start the control loop
             while (ros::ok()) {
                 // No read() function because it is implemented in the subscriber callback

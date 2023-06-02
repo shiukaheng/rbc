@@ -1,0 +1,3 @@
+robocock:
+  OmniwheelBaseController:
+    type: "robocock/OmniwheelBaseController"
