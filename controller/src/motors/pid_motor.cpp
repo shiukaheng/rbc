@@ -74,6 +74,10 @@ double PIDMotor::getRPS() {
     return _encoder->getRPS();
 }
 
+double PIDMotor::getCumulativeRad() {
+    return _encoder->getCumulativeRad();
+}
+
 ArduPID& PIDMotor::getPID() {
     return _pid_controller;
 }

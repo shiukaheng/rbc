@@ -16,7 +16,7 @@ int remap_index(int current_index, int offset, int max_index) {
 /**
  * @brief Reads the dt from the pulse time history
  * 
- * @param current_index The newest index in the array
+ * @param current_in2,147,483,647dex The newest index in the array
  * @param offset The offset (reading back in time by n offsets), maximum would be max_index - 1 (since for dt, we need to read the current index and the index before it)
  * @param max_index The maximum index of the array
  * @param pulse_time_history The pulse time history array
@@ -42,6 +42,17 @@ double period_to_rads_per_sec(int period, int ppr, double gear_ratio) {
     return (2 * M_PI) / (period / 1e6) / ppr * gear_ratio;
 }
 
+/**
+ * @brief Converts the number of pulses to radians
+ * 
+ * @param pulses The number of pulses
+ * @return double The radians
+ */
+double pulses_to_rads(long pulses, int ppr, double gear_ratio) {
+    double revolutions = (double) pulses / ppr / gear_ratio;
+    return revolutions * 2 * M_PI;
+}
+
 // ========== IMPLEMENTATION ==========
 
 EncoderReader::EncoderReader(int hall_a_pin, int hall_b_bin, int ppr = PPR, double gear_ratio = GEAR_RATIO, long min_dt = MIN_DT) {
@@ -64,7 +75,7 @@ EncoderReader::~EncoderReader() {
 void EncoderReader::isr() {
     if (_clear_period_vars) {
         _pulse_time_history_index = -1;
-        _total_pulses = 0;
+        _abs_total_pulses = 0;
         _clear_period_vars = false;
         // _pulse_time_history and _pulse_cws don't have to be cleared, since they will be overwritten
     }
@@ -82,13 +93,15 @@ void EncoderReader::isr() {
     // Increment the number of pulses
     if (cws) {
         _current_pulses++;
+        _net_pulses++;
         // Serial.println("CWS");
     } else {
         _current_pulses--;
+        _net_pulses--;
         // Serial.println("CCWS");
     }
-    if (_total_pulses < _ppr + 1) { // Capped to prevent overflow
-        _total_pulses++;
+    if (_abs_total_pulses < _ppr + 1) { // Capped to prevent overflow
+        _abs_total_pulses++;
     }
     _dirty = true;
 }
@@ -107,7 +120,7 @@ void EncoderReader::update() {
     int index = _pulse_time_history_index;
     long pulse_time_history[_ppr+1];
     bool pulse_cws[_ppr+1];
-    int total_pulses = _total_pulses;
+    int total_pulses = _abs_total_pulses;
     for (int i = 0; i < _ppr; i++) {
         pulse_time_history[i] = _pulse_time_history[i];
         pulse_cws[i] = _pulse_cws[i];
@@ -215,4 +228,8 @@ void EncoderReader::update() {
 
 double EncoderReader::getRPS() {
     return _radps;
+}
+
+double EncoderReader::getCumulativeRad() {
+    return pulses_to_rads(_net_pulses, _ppr, _gear_ratio);
 }

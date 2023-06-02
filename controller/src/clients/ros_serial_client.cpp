@@ -61,26 +61,25 @@ void ROSSerialClient::update() {
     _motor3->update();
     _motor4->update();
 
-    float rps1 = _motor1->getRPS();
-    float rps2 = _motor2->getRPS();
-    float rps3 = _motor3->getRPS();
-    float rps4 = _motor4->getRPS();
-
-    _wheel_states_msg.wheel1_velocity = rps1;
+    _wheel_states_msg.wheel1_velocity = _motor1->getRPS();
     _wheel_states_msg.wheel1_setpoint = _motor1->setpoint;
     _wheel_states_msg.wheel1_output = _motor1->output;
+    _wheel_states_msg.wheel1_position = _motor1->getCumulativeRad();
 
-    _wheel_states_msg.wheel2_velocity = rps2;
+    _wheel_states_msg.wheel2_velocity = _motor2->getRPS();
     _wheel_states_msg.wheel2_setpoint = _motor2->setpoint;
     _wheel_states_msg.wheel2_output = _motor2->output;
+    _wheel_states_msg.wheel2_position = _motor2->getCumulativeRad();
 
-    _wheel_states_msg.wheel3_velocity = rps3;
+    _wheel_states_msg.wheel3_velocity = _motor3->getRPS();
     _wheel_states_msg.wheel3_setpoint = _motor3->setpoint;
     _wheel_states_msg.wheel3_output = _motor3->output;
+    _wheel_states_msg.wheel3_position = _motor3->getCumulativeRad();
 
-    _wheel_states_msg.wheel4_velocity = rps4;
+    _wheel_states_msg.wheel4_velocity = _motor4->getRPS();
     _wheel_states_msg.wheel4_setpoint = _motor4->setpoint;
     _wheel_states_msg.wheel4_output = _motor4->output;
+    _wheel_states_msg.wheel4_position = _motor4->getCumulativeRad();
 
     _wheel_states_pub.publish(&_wheel_states_msg);
 
