@@ -51,24 +51,24 @@ class ControlParameterServer {
     public:
         ControlParameterServer() {
             
-            // Initialize the publisher and subscriber1
+            // Initialize the publisher and subscriber
             _wheel_pid_parameters_pub = _nh.advertise<robocock::WheelPIDParameters>("wheel_pid_parameters", 1000);
             _set_wheel_pid_parameters_sub = _nh.subscribe("set_wheel_pid_parameters", 1000, &ControlParameterServer::setWheelPIDParametersCallback, this);
 
             // Initialize the parameters of the wheels
-            ros::param::get("~wheel1_p", _wheel1.p);
-            ros::param::get("~wheel1_i", _wheel1.i);
-            ros::param::get("~wheel1_d", _wheel1.d);
-            ros::param::get("~wheel2_p", _wheel2.p);
-            ros::param::get("~wheel2_i", _wheel2.i);
-            ros::param::get("~wheel2_d", _wheel2.d);
-            ros::param::get("~wheel3_p", _wheel3.p);
-            ros::param::get("~wheel3_i", _wheel3.i);
-            ros::param::get("~wheel3_d", _wheel3.d);
-            ros::param::get("~wheel4_p", _wheel4.p);
-            ros::param::get("~wheel4_i", _wheel4.i);
-            ros::param::get("~wheel4_d", _wheel4.d);
-            ros::param::get("~regular_update_rate", _regular_update_rate);
+            _nh.param<float>("~heel1_p", _wheel1.p, 0.0);
+            _nh.param<float>("~heel1_i", _wheel1.i, 0.0);
+            _nh.param<float>("~heel1_d", _wheel1.d, 0.0);
+            _nh.param<float>("~heel2_p", _wheel2.p, 0.0);
+            _nh.param<float>("~heel2_i", _wheel2.i, 0.0);
+            _nh.param<float>("~heel2_d", _wheel2.d, 0.0);
+            _nh.param<float>("~heel3_p", _wheel3.p, 0.0);
+            _nh.param<float>("~heel3_i", _wheel3.i, 0.0);
+            _nh.param<float>("~heel3_d", _wheel3.d, 0.0);
+            _nh.param<float>("~heel4_p", _wheel4.p, 0.0);
+            _nh.param<float>("~heel4_i", _wheel4.i, 0.0);
+            _nh.param<float>("~heel4_d", _wheel4.d, 0.0);
+            _nh.param<float>("~regular_update_rate", _regular_update_rate, 2.0);
 
             // Initialize the timer
             _timer = _nh.createTimer(ros::Duration(_regular_update_rate), &ControlParameterServer::timerCallback, this);

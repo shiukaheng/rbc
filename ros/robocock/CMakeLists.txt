@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(robocock)
 
 ## Find catkin and any catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg message_generation)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg message_generation controller_manager hardware_interface)
 
 add_message_files(
     FILES
@@ -34,6 +34,9 @@ target_link_libraries(listener ${catkin_LIBRARIES})
 
 add_executable(control_parameter_server src/control/control_parameter_server/main.cpp)
 target_link_libraries(control_parameter_server ${catkin_LIBRARIES})
+
+add_executable(robocock_hw src/control/hardware/main.cpp)
+target_link_libraries(robocock_hw ${catkin_LIBRARIES})
 
 install(DIRECTORY config/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config

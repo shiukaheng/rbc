@@ -10,6 +10,8 @@ RUN apt-get update && sudo apt-get install -y \
     ros-noetic-rosserial\
     ros-noetic-rosserial-arduino\
     ros-noetic-rqt-ez-publisher\
+    ros-noetic-ros-control\
+    ros-noetic-ros-controllers\
     x11-apps
 
 RUN mkdir -p /root/catkin_ws/src
