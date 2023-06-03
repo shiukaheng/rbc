@@ -18,7 +18,6 @@ class RobocockHW : public hardware_interface::RobotHW {
         double eff[4] = {0.0, 0.0, 0.0, 0.0};
 
         // ROS node
-        ros::NodeHandle nh;
         ros::Publisher wheel_vel_pub;
         ros::Subscriber wheel_state_sub;
 
@@ -39,11 +38,12 @@ class RobocockHW : public hardware_interface::RobotHW {
         }
 
         float control_frequency;
-        ros::Rate* control_rate;
-        controller_manager::ControllerManager cm;
     
     public:
-        RobocockHW() : cm(this, nh) {
+        ros::NodeHandle nh;
+        ros::Rate* control_rate;
+        RobocockHW() {
+            ROS_INFO("Initializing robocock hardware interface");
             // Register the joints with the state and velocity interfaces
 
             hardware_interface::JointStateHandle state_handle_1("joint1", &pos[0], &vel[0], &eff[0]);
@@ -77,6 +77,8 @@ class RobocockHW : public hardware_interface::RobotHW {
 
             // Initialize the control rate
             control_rate = new ros::Rate(control_frequency);
+
+            ROS_INFO("Robocock hardware interface initialized");
         }
         void write() {
             // Publish the target wheel velocities
@@ -85,19 +87,10 @@ class RobocockHW : public hardware_interface::RobotHW {
             msg.wheel2 = cmd[1];
             msg.wheel3 = cmd[2];
             msg.wheel4 = cmd[3];
-            wheel_vel_pub.publish(msg);
         }
-        void start() {
-            // Print a message showing that the hardware interface is ready
-            ROS_INFO("Robocock hardware interface ready");
-            // Start the control loop
-            while (ros::ok()) {
-                // No read() function because it is implemented in the subscriber callback
-                ros::spinOnce();
-                write();
-                cm.update(ros::Time::now(), control_rate->expectedCycleTime());
-                control_rate->sleep();
-            }
+        void read() {
+            // Read the wheel states
+            // ros::spinOnce();
         }
         ~RobocockHW() {
             delete control_rate;

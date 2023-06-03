@@ -8,23 +8,21 @@
 
 class OmniwheelBaseController : public controller_interface::Controller<hardware_interface::VelocityJointInterface> {
     private:
-        // ros::Subscriber cmd_vel_sub;
-        // realtime_tools::RealtimeBuffer<geometry_msgs::Twist> command_buffer;
-        void cmdVelCallback(const geometry_msgs::Twist& msg) {
-            // command_buffer.writeFromNonRT(msg);
-        }
         hardware_interface::JointHandle vel_handle_1;
-        hardware_interface::JointHandle vel_handle_2;
     public:
+        OmniwheelBaseController() {
+            ROS_INFO_STREAM("Constructing OmniwheelBaseController");
+        }
         bool init(hardware_interface::VelocityJointInterface* hw, ros::NodeHandle& nh) {
-            // cmd_vel_sub = nh.subscribe("cmd_vel", 1, &OmniwheelBaseController::cmdVelCallback, this);
+            ROS_INFO_STREAM("Initializing OmniwheelBaseController");
+            vel_handle_1 = hw->getHandle("joint1");
+            ROS_INFO_STREAM("Got handle for joint1");
             return true;
         }
         void update(const ros::Time& time, const ros::Duration& period) {
-            // geometry_msgs::Twist command = *(command_buffer.readFromRT());
+            ROS_INFO_STREAM("Updating OmniwheelBaseController");
         }
         void starting(const ros::Time& time) {
-            // Print a message whenever the controller is started
             ROS_INFO_STREAM("Starting OmniwheelBaseController");
         }
 };

@@ -5,7 +5,8 @@
         <param name="port" value="/dev/ttyACM0" />
         <param name="baud" value="115200" />
     </node>
-    <!-- Wheel parameter server -->
+    <!-- Wheel parameter server (Custom node to easily set PID parameters using rosparam, 
+    as well as switching on the fly with rostopics) -->
     <node pkg="robocock" type="control_parameter_server" name="control_parameter_server" output="screen">
         <rosparam>
             wheel1_p: 0.01
@@ -23,7 +24,12 @@
             regular_update_rate: 5
         </rosparam>
     </node>
-    <!-- ros_control -->
+    <!-- ros_control server, provide ControllerManager which allows controller 
+    plugins (in this case our custom OmniwheelBaseController) to access them -->
     <node pkg="robocock" type="robocock_hw" name="robocock_hw" output="screen"/>
+    <!-- rosparam configuration required to tell ros_control that OmniwheelBaseController is the controller we will use -->
     <rosparam file="$(find robocock)/config/controller.yaml" command="load"/>
+    <!-- Load the controller -->
+    <node pkg="controller_manager" type="spawner" name="controller_spawner" output="screen"
+        args="robocock/OmniwheelBaseController"/>
 </launch>
