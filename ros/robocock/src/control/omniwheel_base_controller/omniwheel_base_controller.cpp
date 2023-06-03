@@ -6,6 +6,8 @@
 #include <geometry_msgs/Twist.h>
 #include <ros/ros.h>
 
+// TODO: Implement cmd_vel and odometry, but remember to use realtime_tools
+
 class OmniwheelBaseController : public controller_interface::Controller<hardware_interface::VelocityJointInterface> {
     private:
         hardware_interface::JointHandle vel_handle_1;
@@ -20,10 +22,13 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
             return true;
         }
         void update(const ros::Time& time, const ros::Duration& period) {
-            ROS_INFO_STREAM("Updating OmniwheelBaseController");
+            // ROS_INFO_STREAM("Updating OmniwheelBaseController");
         }
         void starting(const ros::Time& time) {
             ROS_INFO_STREAM("Starting OmniwheelBaseController");
+        }
+        void stopping(const ros::Time& time) {
+            ROS_INFO_STREAM("Stopping OmniwheelBaseController");
         }
 };
 
