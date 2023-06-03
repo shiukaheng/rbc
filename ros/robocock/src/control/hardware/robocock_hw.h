@@ -87,10 +87,9 @@ class RobocockHW : public hardware_interface::RobotHW {
             msg.wheel2 = cmd[1];
             msg.wheel3 = cmd[2];
             msg.wheel4 = cmd[3];
+            wheel_vel_pub.publish(msg);
         }
         void read() {
-            // Read the wheel states
-            // ros::spinOnce();
         }
         ~RobocockHW() {
             delete control_rate;
