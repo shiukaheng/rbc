@@ -3,6 +3,7 @@ project(robocock)
 
 ## Find catkin and any catkin packages
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg message_generation controller_manager hardware_interface controller_interface geometry_msgs pluginlib)
+find_package(Eigen3 REQUIRED)
 
 add_message_files(
     FILES
@@ -22,7 +23,7 @@ catkin_package(
 )
 
 ## Build talker and listener
-include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(include ${catkin_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS})
 
 add_executable(control_parameter_server src/control/control_parameter_server/main.cpp)
 target_link_libraries(control_parameter_server ${catkin_LIBRARIES})

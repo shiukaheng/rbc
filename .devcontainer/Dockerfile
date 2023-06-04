@@ -12,7 +12,8 @@ RUN apt-get update && sudo apt-get install -y \
     ros-noetic-rqt-ez-publisher\
     ros-noetic-ros-control\
     ros-noetic-ros-controllers\
-    x11-apps
+    x11-apps\
+    libeigen3-dev
 
 RUN mkdir -p /root/catkin_ws/src
 
