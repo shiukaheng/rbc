@@ -32,4 +32,6 @@
     <!-- Load the controller -->
     <node pkg="controller_manager" type="spawner" name="controller_spawner" output="screen"
         args="robocock/OmniwheelBaseController"/>
+    <!-- Debug GUI -->
+    <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/motor_ros_control.perspective" launch-prefix="bash -c 'sleep 5; $0 $@'"/>
 </launch>

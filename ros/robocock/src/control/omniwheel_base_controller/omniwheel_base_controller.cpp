@@ -32,20 +32,20 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
 
             // Configure base
             base.addWheel(
-                Wheel(-0.25, -0.25, 45, 0.06, vel_handle_1)
+                Wheel(-0.25, -0.25, 0, 0.06, vel_handle_1)
             );
             base.addWheel(
-                Wheel(-0.25, 0.25, 315, 0.06, vel_handle_2)
+                Wheel(-0.25, 0.25, 0, 0.06, vel_handle_2)
             );
             base.addWheel(
-                Wheel(0.25, 0.25, 225, 0.06, vel_handle_3)
+                Wheel(0.25, 0.25, 0, 0.06, vel_handle_3)
             );
             base.addWheel(
-                Wheel(0.25, -0.25, 135, 0.06, vel_handle_4)
+                Wheel(0.25, -0.25, 0, 0.06, vel_handle_4)
             );
 
             // Subscribe to cmd_vel
-            cmd_vel_sub = nh.subscribe("cmd_vel", 1, &OmniwheelBaseController::cmd_vel_callback, this);
+            cmd_vel_sub = nh.subscribe("/cmd_vel", 1, &OmniwheelBaseController::cmd_vel_callback, this);
             return true;
         }
         void cmd_vel_callback(const geometry_msgs::Twist& cmd_vel) {

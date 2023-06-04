@@ -1,0 +1,415 @@
+{
+  "keys": {},
+  "groups": {
+    "mainwindow": {
+      "keys": {
+        "geometry": {
+          "repr(QByteArray.hex)": "QtCore.QByteArray(b'01d9d0cb0003000000000000000000000000077f00000437000000000000001c0000077f0000043700000001000000000780000000000000001c0000077f00000437')",
+          "type": "repr(QByteArray.hex)",
+          "pretty-print": "           7       7            7"
+        },
+        "state": {
+          "repr(QByteArray.hex)": "QtCore.QByteArray(b'000000ff00000000fd000000010000000300000780000003f2fc0100000004fc000000000000054d0000011300fffffffc0200000002fc00000014000003f20000009e00fffffffc0100000002fb00000042007200710074005f0070006c006f0074005f005f0050006c006f0074005f005f0031005f005f00440061007400610050006c006f007400570069006400670065007401000000000000054d0000011300fffffffb0000006a007200710074005f0065007a005f007000750062006c00690073006800650072005f005f0045007a005000750062006c00690073006800650072005f005f0032005f005f0045007a005000750062006c006900730068006500720050006c007500670069006e00550069010000035b000004250000000000000000fb0000006a007200710074005f0065007a005f007000750062006c00690073006800650072005f005f0045007a005000750062006c00690073006800650072005f005f0031005f005f0045007a005000750062006c006900730068006500720050006c007500670069006e005500690100000014000003f20000000000000000fb00000058007200710074005f007000750062006c00690073006800650072005f005f005000750062006c00690073006800650072005f005f0031005f005f005000750062006c00690073006800650072005700690064006700650074010000049d000002e30000000000000000fb0000004c007200710074005f0074006f007000690063005f005f0054006f0070006900630050006c007500670069006e005f005f0031005f005f0054006f00700069006300570069006400670065007401000005510000022f0000000000000000fb0000006a007200710074005f0072006f0062006f0074005f007300740065006500720069006e0067005f005f0052006f0062006f0074005300740065006500720069006e0067005f005f0031005f005f0052006f0062006f0074005300740065006500720069006e00670055006901000005530000022d000000e300ffffff000007800000000000000004000000040000000800000008fc00000001000000030000000100000036004d0069006e0069006d0069007a006500640044006f0063006b00570069006400670065007400730054006f006f006c0062006100720000000000ffffffff0000000000000000')",
+          "type": "repr(QByteArray.hex)",
+          "pretty-print": "                   M                    Brqt_plot__Plot__1__DataPlotWidget          jrqt_ez_publisher__EzPublisher__2__EzPublisherPluginUi          jrqt_ez_publisher__EzPublisher__1__EzPublisherPluginUi          Xrqt_publisher__Publisher__1__PublisherWidget          Lrqt_topic__TopicPlugin__1__TopicWidget          jrqt_robot_steering__RobotSteering__1__RobotSteeringUi                            6MinimizedDockWidgetsToolbar        "
+        }
+      },
+      "groups": {
+        "toolbar_areas": {
+          "keys": {
+            "MinimizedDockWidgetsToolbar": {
+              "repr": "8",
+              "type": "repr"
+            }
+          },
+          "groups": {}
+        }
+      }
+    },
+    "pluginmanager": {
+      "keys": {
+        "running-plugins": {
+          "repr": "{'rqt_plot/Plot': [1], 'rqt_robot_steering/RobotSteering': [1]}",
+          "type": "repr"
+        }
+      },
+      "groups": {
+        "plugin__rqt_ez_publisher__EzPublisher__1": {
+          "keys": {},
+          "groups": {
+            "dock_widget__EzPublisherPluginUi": {
+              "keys": {
+                "dock_widget_title": {
+                  "repr": "''",
+                  "type": "repr"
+                },
+                "dockable": {
+                  "repr": "'true'",
+                  "type": "repr"
+                },
+                "parent": {
+                  "repr": "None",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            },
+            "plugin": {
+              "keys": {
+                "configurable": {
+                  "repr": "'true'",
+                  "type": "repr"
+                },
+                "publish_interval": {
+                  "repr": "'100'",
+                  "type": "repr"
+                },
+                "texts": {
+                  "repr": "['/target_wheel_velocities/wheel1', '/target_wheel_velocities/wheel2', '/target_wheel_velocities/wheel3', '/target_wheel_velocities/wheel4']",
+                  "type": "repr"
+                }
+              },
+              "groups": {
+                "target_wheel_velocities": {
+                  "keys": {
+                    "wheel1_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel1_range": {
+                      "repr": "(-10.0, 10.0)",
+                      "type": "repr"
+                    },
+                    "wheel2_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel2_range": {
+                      "repr": "(-10.0, 10.0)",
+                      "type": "repr"
+                    },
+                    "wheel3_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel3_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel4_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel4_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    }
+                  },
+                  "groups": {}
+                }
+              }
+            }
+          }
+        },
+        "plugin__rqt_ez_publisher__EzPublisher__2": {
+          "keys": {},
+          "groups": {
+            "dock_widget__EzPublisherPluginUi": {
+              "keys": {
+                "dock_widget_title": {
+                  "repr": "' (2)'",
+                  "type": "repr"
+                },
+                "dockable": {
+                  "repr": "'true'",
+                  "type": "repr"
+                },
+                "parent": {
+                  "repr": "None",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            },
+            "plugin": {
+              "keys": {
+                "configurable": {
+                  "repr": "'true'",
+                  "type": "repr"
+                },
+                "publish_interval": {
+                  "repr": "'100'",
+                  "type": "repr"
+                },
+                "texts": {
+                  "repr": "['/wheel_pid_parameters/wheel1_p', '/wheel_pid_parameters/wheel1_i', '/wheel_pid_parameters/wheel1_d', '/wheel_pid_parameters/wheel2_p', '/wheel_pid_parameters/wheel2_i', '/wheel_pid_parameters/wheel2_d', '/wheel_pid_parameters/wheel3_p', '/wheel_pid_parameters/wheel3_i', '/wheel_pid_parameters/wheel3_d', '/wheel_pid_parameters/wheel4_p', '/wheel_pid_parameters/wheel4_i', '/wheel_pid_parameters/wheel4_d']",
+                  "type": "repr"
+                }
+              },
+              "groups": {
+                "wheel_pid_parameters": {
+                  "keys": {
+                    "wheel1_d_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel1_d_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel1_i_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel1_i_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel1_p_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel1_p_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel2_d_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel2_d_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel2_i_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel2_i_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel2_p_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel2_p_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel3_d_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel3_d_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel3_i_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel3_i_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel3_p_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel3_p_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel4_d_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel4_d_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel4_i_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel4_i_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    },
+                    "wheel4_p_is_repeat": {
+                      "repr": "'false'",
+                      "type": "repr"
+                    },
+                    "wheel4_p_range": {
+                      "repr": "(-1.0, 1.0)",
+                      "type": "repr"
+                    }
+                  },
+                  "groups": {}
+                }
+              }
+            }
+          }
+        },
+        "plugin__rqt_plot__Plot__1": {
+          "keys": {},
+          "groups": {
+            "dock_widget__DataPlotWidget": {
+              "keys": {
+                "dock_widget_title": {
+                  "repr": "'MatPlot'",
+                  "type": "repr"
+                },
+                "dockable": {
+                  "repr": "False",
+                  "type": "repr"
+                },
+                "parent": {
+                  "repr": "None",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            },
+            "plugin": {
+              "keys": {
+                "autoscroll": {
+                  "repr": "True",
+                  "type": "repr"
+                },
+                "plot_type": {
+                  "repr": "0",
+                  "type": "repr"
+                },
+                "topics": {
+                  "repr": "['/target_wheel_velocities/wheel1', '/target_wheel_velocities/wheel2', '/target_wheel_velocities/wheel3', '/target_wheel_velocities/wheel4']",
+                  "type": "repr"
+                },
+                "x_limits": {
+                  "repr": "[108.9697465538849, 109.15782523155212]",
+                  "type": "repr"
+                },
+                "y_limits": {
+                  "repr": "[-5.46683594722191, 5.151558141528166]",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            }
+          }
+        },
+        "plugin__rqt_publisher__Publisher__1": {
+          "keys": {},
+          "groups": {
+            "dock_widget__PublisherWidget": {
+              "keys": {
+                "dock_widget_title": {
+                  "repr": "'Message Publisher'",
+                  "type": "repr"
+                },
+                "dockable": {
+                  "repr": "'true'",
+                  "type": "repr"
+                },
+                "parent": {
+                  "repr": "None",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            },
+            "plugin": {
+              "keys": {
+                "publishers": {
+                  "repr": "\"[{'topic_name': '/wheel_pid_parameters', 'type_name': 'robocock/WheelPIDParameters', 'rate': 1.0, 'enabled': False, 'publisher_id': 0, 'counter': 0, 'expressions': {'/wheel_pid_parameters/wheel1_p': '0.01', '/wheel_pid_parameters/wheel1_i': '0.025', '/wheel_pid_parameters/wheel2_p': '0.005', '/wheel_pid_parameters/wheel2_i': '0.025'}}]\"",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            }
+          }
+        },
+        "plugin__rqt_robot_steering__RobotSteering__1": {
+          "keys": {},
+          "groups": {
+            "dock_widget__RobotSteeringUi": {
+              "keys": {
+                "dock_widget_title": {
+                  "repr": "'Robot Steering'",
+                  "type": "repr"
+                },
+                "dockable": {
+                  "repr": "True",
+                  "type": "repr"
+                },
+                "parent": {
+                  "repr": "None",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            },
+            "plugin": {
+              "keys": {
+                "topic": {
+                  "repr": "'/cmd_vel'",
+                  "type": "repr"
+                },
+                "vw_max": {
+                  "repr": "3.0",
+                  "type": "repr"
+                },
+                "vw_min": {
+                  "repr": "-3.0",
+                  "type": "repr"
+                },
+                "vx_max": {
+                  "repr": "1.0",
+                  "type": "repr"
+                },
+                "vx_min": {
+                  "repr": "-1.0",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            }
+          }
+        },
+        "plugin__rqt_topic__TopicPlugin__1": {
+          "keys": {},
+          "groups": {
+            "dock_widget__TopicWidget": {
+              "keys": {
+                "dock_widget_title": {
+                  "repr": "'Topic Monitor'",
+                  "type": "repr"
+                },
+                "dockable": {
+                  "repr": "'true'",
+                  "type": "repr"
+                },
+                "parent": {
+                  "repr": "None",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            },
+            "plugin": {
+              "keys": {
+                "tree_widget_header_state": {
+                  "repr(QByteArray.hex)": "QtCore.QByteArray(b'000000ff0000000000000001000000000000000101000000000000000000000000000000000000027e000000050101000100000000000000000500000064ffffffff000000810000000300000005000000bf0000000100000003000000ce00000001000000030000006200000001000000030000002b0000000100000003000000640000000100000003000003e80000000064')",
+                  "type": "repr(QByteArray.hex)",
+                  "pretty-print": "                              d                     b     +     d        "
+                }
+              },
+              "groups": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

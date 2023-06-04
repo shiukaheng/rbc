@@ -31,7 +31,6 @@ class Wheel {
             Eigen::Vector2d base_tangential_velocity_vec = base_angular_velocity * ( jacobian * wheel_position_vec );
             // Deriving wheel angular velocity by adding tangential and linear velocity vectors, then projecting onto wheel direction; finally factoring in wheel radius
             double wheel_angular_velocity = (base_linear_velocity_vec + base_tangential_velocity_vec).dot(wheel_direction_vec) / wheel_radius;
-            // Setting wheel velocity
             wheel_handle.setCommand(wheel_angular_velocity);
         }
     private:
