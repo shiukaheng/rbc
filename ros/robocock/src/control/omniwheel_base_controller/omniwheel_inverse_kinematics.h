@@ -93,15 +93,34 @@ class Wheel {
             wheel_handle.setCommand(0);
         }
     private:
+        /**
+         * @brief Wheel position vector (from center of robot)
+        */
         Eigen::Vector2d wheel_position_vec = Eigen::Vector2d(0, 0);
+        /**
+         * @brief Wheel direction vector (direction it actuates on the floor)
+        */
         Eigen::Vector2d wheel_direction_vec = Eigen::Vector2d(1, 0);
+        /**
+         * @brief Wheel radius (meters)
+        */
         double wheel_radius = 1;
+        /**
+         * @brief Handle to wheel from hardware interface
+        */
         hardware_interface::JointHandle wheel_handle;
+        /**
+         * @brief Last position of wheel
+        */
         double last_pos = 0;
 };
 
 class Base {
     public:
+        Base() {
+            odometry.header.frame_id = "odom";
+            odometry.child_frame_id = "base_link";
+        }
         /**
          * @brief Adds a wheel to the base
          * 
@@ -137,10 +156,42 @@ class Base {
             base_pos.lin.x() += delta_x;
             base_pos.lin.y() += delta_y;
 
+            updateOdometryMessage(time);
+            return odometry;
+        }
+        /**
+         * @brief Breaks all wheels
+        */
+        void breakWheels() {
+            for (auto& wheel : wheels) {
+                wheel.breakWheel();
+            }
+        }
+    private:
+        /**
+         * @brief Vector of wheels on the base
+        */
+        std::vector<Wheel> wheels;
+        /**
+         * @brief Base linear and angular velocity
+        */
+        State2D base_vel;
+        /**
+         * @brief Base linear and angular position
+        */
+        State2D base_pos;
+        /**
+         * @brief Odometry message
+        */
+        nav_msgs::Odometry odometry;
+        /**
+         * @brief Updates odometry message with current base position and velocity
+         * 
+         * @param time Time to set header stamp to
+        */
+        void updateOdometryMessage(const ros::Time& time) {
             // Package into odometry message
             odometry.header.stamp = time;
-            odometry.header.frame_id = "odom";
-            odometry.child_frame_id = "base_link";
             
             // Set position
             odometry.pose.pose.position.x = base_pos.lin.x();
@@ -159,17 +210,5 @@ class Base {
             odometry.twist.twist.angular.x = 0;
             odometry.twist.twist.angular.y = 0;
             odometry.twist.twist.angular.z = base_vel.rot;
-
-            return odometry;
         }
-        void breakWheels() {
-            for (auto& wheel : wheels) {
-                wheel.breakWheel();
-            }
-        }
-    private:
-        std::vector<Wheel> wheels;
-        State2D base_vel;
-        State2D base_pos;
-        nav_msgs::Odometry odometry;
 };
