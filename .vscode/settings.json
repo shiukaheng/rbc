@@ -9,5 +9,11 @@
         "/opt/ros/humble/local/lib/python3.10/dist-packages"
     ],
     "C_Cpp.errorSquiggles": "enabled",
-    "cmake.sourceDirectory": "/root/robocock/ros/robocock"
+    "cmake.sourceDirectory": "/root/robocock/ros/robocock",
+    "files.associations": {
+        "*.ipp": "cpp",
+        "*.tcc": "cpp",
+        "*.txx": "cpp",
+        "dense": "cpp"
+    }
 }

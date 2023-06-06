@@ -55,7 +55,7 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
             // Read cmd_vel
             geometry_msgs::Twist cmd_vel = *(cmd_vel_buffer_.readFromRT());
             // Calculate wheel velocities
-            base.update(cmd_vel);
+            base.update(cmd_vel, time, period);
         }
         void starting(const ros::Time& time) {
             ROS_INFO_STREAM("Starting OmniwheelBaseController");
