@@ -5,7 +5,7 @@
 // #include <realtime_tools/realtime_publisher.h> - will be used later for odometry
 #include <geometry_msgs/Twist.h>
 #include <ros/ros.h>
-#include "./omniwheel_kinematics.h"
+#include "./omniwheel_inverse_kinematics.h"
 
 // TODO: Implement cmd_vel and odometry, but remember to use realtime_tools
 
