@@ -78,7 +78,7 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
                     odom_tf.transform.rotation = odom.pose.pose.orientation;
                     tf_broadcaster.sendTransform(odom_tf);
                 } else {
-                    ROS_WARN_STREAM("Failed to publish odom");
+                    // ROS_WARN_STREAM("Failed to publish odom");
                 }
             }
         }

@@ -10,7 +10,7 @@
 
 const Eigen::Matrix2d jacobian = [](){
     Eigen::Matrix2d jacobian;
-    jacobian << 0, 1, -1, 0;
+    jacobian << 0., 1., -1., 0.;
     return jacobian;
 }();
 
@@ -65,6 +65,8 @@ class Wheel {
          * @return base_updateState2D Base update (partial delta position, rotation)
         */
         State2D update(const geometry_msgs::Twist& twist) {
+            // Calculating desired wheel command:
+
             // Getting variables
             Eigen::Vector2d base_linear_velocity_vec = Eigen::Vector2d(twist.linear.x, twist.linear.y);
             double base_angular_velocity = twist.angular.z;
@@ -72,16 +74,25 @@ class Wheel {
             Eigen::Vector2d origin_tangential_vec = (jacobian * wheel_position_vec);
             Eigen::Vector2d base_tangential_velocity_vec = base_angular_velocity * origin_tangential_vec;
             // Deriving wheel angular velocity by adding tangential and linear velocity vectors, then projecting onto wheel direction; finally factoring in wheel radius
-            double wheel_angular_velocity = (base_linear_velocity_vec + base_tangential_velocity_vec).dot(wheel_direction_vec) / wheel_radius * -1; // Negative because wheel velocity in one direction causes bot to move in opposite direction
+            double wheel_angular_velocity = (base_linear_velocity_vec + base_tangential_velocity_vec).dot(wheel_direction_vec) / wheel_radius * -1.; // Negative because wheel velocity in one direction causes bot to move in opposite direction
             wheel_handle.setCommand(wheel_angular_velocity);
+
+            // Wheel odometry calculation:
+
             // Calculating delta position
             double pos = wheel_handle.getPosition();
             double delta_pos = pos - last_pos;
             last_pos = pos;
             // Calculating wheel update
             State2D wheel_update;
-            wheel_update.lin = wheel_direction_vec * delta_pos * wheel_radius * -1;
+            wheel_update.lin = wheel_direction_vec * delta_pos * wheel_radius * -1.;
             wheel_update.rot = wheel_update.lin.dot(origin_tangential_vec);
+
+            // Log if not zero
+            if (wheel_update.lin.norm() != 0 || wheel_update.rot != 0) {
+                ROS_INFO_STREAM("Pos:" << pos << " Delta:" << delta_pos);
+            }
+
             return wheel_update;
         }
         /**
@@ -96,15 +107,15 @@ class Wheel {
         /**
          * @brief Wheel position vector (from center of robot)
         */
-        Eigen::Vector2d wheel_position_vec = Eigen::Vector2d(0, 0);
+        Eigen::Vector2d wheel_position_vec = Eigen::Vector2d(0., 0.);
         /**
          * @brief Wheel direction vector (direction it actuates on the floor)
         */
-        Eigen::Vector2d wheel_direction_vec = Eigen::Vector2d(1, 0);
+        Eigen::Vector2d wheel_direction_vec = Eigen::Vector2d(1., 0.);
         /**
          * @brief Wheel radius (meters)
         */
-        double wheel_radius = 1;
+        double wheel_radius = 1.;
         /**
          * @brief Handle to wheel from hardware interface
         */
@@ -112,7 +123,7 @@ class Wheel {
         /**
          * @brief Last position of wheel
         */
-        double last_pos = 0;
+        double last_pos = 0.;
 };
 
 class Base {
@@ -120,6 +131,8 @@ class Base {
         Base() {
             odometry.header.frame_id = "odom";
             odometry.child_frame_id = "base_link";
+            base_pos.lin = Eigen::Vector2d(0, 0);
+            base_pos.rot = 0;
         }
         /**
          * @brief Adds a wheel to the base
@@ -151,11 +164,24 @@ class Base {
 
             // Calculate trajectory
             base_pos.rot += base_vel.rot * period.toSec();
-            double delta_x = (base_vel.lin.x() * sin(base_pos.rot + base_vel.rot * period.toSec()) + base_vel.lin.y() * cos(base_pos.rot + base_vel.rot * period.toSec()) - base_vel.lin.x() * sin(base_pos.rot) - base_vel.lin.y() * cos(base_pos.rot)) / base_vel.rot;
-            double delta_y = (base_vel.lin.y() * sin(base_pos.rot + base_vel.rot * period.toSec()) - base_vel.lin.x() * cos(base_pos.rot + base_vel.rot * period.toSec()) - base_vel.lin.y() * sin(base_pos.rot) + base_vel.lin.x() * cos(base_pos.rot)) / base_vel.rot;
+            double delta_x, delta_y;
+            if (base_vel.rot == 0) {
+                delta_x = base_vel.lin.x() * period.toSec();
+                delta_y = base_vel.lin.y() * period.toSec();
+            } else {
+                delta_x = (base_vel.lin.x() * sin(base_pos.rot + base_vel.rot * period.toSec()) + base_vel.lin.y() * cos(base_pos.rot + base_vel.rot * period.toSec()) - base_vel.lin.x() * sin(base_pos.rot) - base_vel.lin.y() * cos(base_pos.rot)) / base_vel.rot;
+                delta_y = (base_vel.lin.y() * sin(base_pos.rot + base_vel.rot * period.toSec()) - base_vel.lin.x() * cos(base_pos.rot + base_vel.rot * period.toSec()) - base_vel.lin.y() * sin(base_pos.rot) + base_vel.lin.x() * cos(base_pos.rot)) / base_vel.rot;
+            }
             base_pos.lin.x() += delta_x;
             base_pos.lin.y() += delta_y;
 
+            // Print pos
+            // ROS_INFO_STREAM("Base pos: " << base_pos.lin.x() << ", " << base_pos.lin.y() << ", " << base_pos.rot);
+            // ROS_INFO_STREAM("Delta pos: " << delta_x << ", " << delta_y << ", " << base_vel.rot * period.toSec());
+            // Print base_vel if it's not zero
+            // if (base_vel.lin.x() != 0 || base_vel.lin.y() != 0 || base_vel.rot != 0) {
+            //     ROS_INFO_STREAM("Base vel: " << base_vel.lin.x() << ", " << base_vel.lin.y() << ", " << base_vel.rot);
+            // }
             updateOdometryMessage(time);
             return odometry;
         }
