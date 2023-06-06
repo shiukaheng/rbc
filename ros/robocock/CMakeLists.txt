@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(robocock)
 
 ## Find catkin and any catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg message_generation controller_manager hardware_interface controller_interface geometry_msgs pluginlib)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg message_generation controller_manager hardware_interface controller_interface geometry_msgs pluginlib tf2_ros tf2_geometry_msgs)
 find_package(Eigen3 REQUIRED)
 
 add_message_files(

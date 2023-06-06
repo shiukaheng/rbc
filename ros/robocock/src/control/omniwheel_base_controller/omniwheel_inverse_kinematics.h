@@ -135,7 +135,7 @@ class Base {
          * @param twist Twist to update base with
          * @return nav_msgs::Odometry Odometry message
         */
-        nav_msgs::Odometry update(const geometry_msgs::Twist& twist, const ros::Time& time, const ros::Duration& period) {
+        const nav_msgs::Odometry& update(const geometry_msgs::Twist& twist, const ros::Time& time, const ros::Duration& period) {
             // Update wheels, get per-wheel velocity and sum to get base twist
             base_vel.lin = Eigen::Vector2d(0, 0);
             base_vel.rot = 0;
