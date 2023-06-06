@@ -40,6 +40,7 @@ class Wheel {
             // Deriving wheel angular velocity by adding tangential and linear velocity vectors, then projecting onto wheel direction; finally factoring in wheel radius
             double wheel_angular_velocity = (base_linear_velocity_vec + base_tangential_velocity_vec).dot(wheel_direction_vec) / wheel_radius * -1; // Negative because wheel velocity in one direction causes bot to move in opposite direction
             wheel_handle.setCommand(wheel_angular_velocity);
+            // Returning the distance moved - assumes no slipping
         }
         void breakWheel() {
             wheel_handle.setCommand(0);
@@ -49,9 +50,10 @@ class Wheel {
         Eigen::Vector2d wheel_direction_vec = Eigen::Vector2d(1, 0);
         double wheel_radius = 1;
         hardware_interface::JointHandle wheel_handle;
+        float last_pos = 0;
 };
 
-class WheelSet {
+class Base {
     public:
         void addWheel(const Wheel& wheel) {
             wheels.push_back(wheel);

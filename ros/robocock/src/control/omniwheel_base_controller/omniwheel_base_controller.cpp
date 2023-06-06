@@ -16,7 +16,7 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
         hardware_interface::JointHandle vel_handle_3;
         hardware_interface::JointHandle vel_handle_4;
         realtime_tools::RealtimeBuffer<geometry_msgs::Twist> cmd_vel_buffer_;
-        WheelSet base;
+        Base base;
         ros::Subscriber cmd_vel_sub;
     public:
         OmniwheelBaseController() {
