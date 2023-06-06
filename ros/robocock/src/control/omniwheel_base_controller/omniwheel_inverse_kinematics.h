@@ -83,15 +83,11 @@ class Wheel {
             double pos = wheel_handle.getPosition();
             double delta_pos = pos - last_pos;
             last_pos = pos;
+
             // Calculating wheel update
             State2D wheel_update;
             wheel_update.lin = wheel_direction_vec * delta_pos * wheel_radius * -1.;
-            wheel_update.rot = wheel_update.lin.dot(origin_tangential_vec);
-
-            // Log if not zero
-            if (wheel_update.lin.norm() != 0 || wheel_update.rot != 0) {
-                ROS_INFO_STREAM("Pos:" << pos << " Delta:" << delta_pos);
-            }
+            wheel_update.rot = wheel_update.lin.dot(origin_tangential_vec); // Is this correct?
 
             return wheel_update;
         }
@@ -175,13 +171,9 @@ class Base {
             base_pos.lin.x() += delta_x;
             base_pos.lin.y() += delta_y;
 
-            // Print pos
-            // ROS_INFO_STREAM("Base pos: " << base_pos.lin.x() << ", " << base_pos.lin.y() << ", " << base_pos.rot);
-            // ROS_INFO_STREAM("Delta pos: " << delta_x << ", " << delta_y << ", " << base_vel.rot * period.toSec());
-            // Print base_vel if it's not zero
-            // if (base_vel.lin.x() != 0 || base_vel.lin.y() != 0 || base_vel.rot != 0) {
-            //     ROS_INFO_STREAM("Base vel: " << base_vel.lin.x() << ", " << base_vel.lin.y() << ", " << base_vel.rot);
-            // }
+            // Print base_pos
+            ROS_INFO_STREAM("Base pos: " << base_pos.lin.x() << ", " << base_pos.lin.y() << ", " << base_pos.rot);
+
             updateOdometryMessage(time);
             return odometry;
         }

@@ -16,7 +16,7 @@ int remap_index(int current_index, int offset, int max_index) {
 /**
  * @brief Reads the dt from the pulse time history
  * 
- * @param current_in2,147,483,647dex The newest index in the array
+ * @param current_index The newest index in the array
  * @param offset The offset (reading back in time by n offsets), maximum would be max_index - 1 (since for dt, we need to read the current index and the index before it)
  * @param max_index The maximum index of the array
  * @param pulse_time_history The pulse time history array
@@ -49,7 +49,7 @@ double period_to_rads_per_sec(int period, int ppr, double gear_ratio) {
  * @return double The radians
  */
 double pulses_to_rads(long pulses, int ppr, double gear_ratio) {
-    double revolutions = (double) pulses / ppr / gear_ratio;
+    double revolutions = (double) pulses / ppr * gear_ratio;
     return revolutions * 2 * M_PI;
 }
 
