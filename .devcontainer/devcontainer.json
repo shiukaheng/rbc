@@ -10,6 +10,7 @@
 		"ms-vscode.cpptools",
 		"ms-vscode.cpptools-extension-pack",
 		"ms-iot.vscode-ros",
-		"vsciot-vscode.vscode-arduino"
+		"vsciot-vscode.vscode-arduino",
+		"GitHub.copilot"
 	]
 }
