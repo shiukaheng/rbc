@@ -35,16 +35,16 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
 
             // Configure base
             base.addWheel(
-                Wheel(-0.25, -0.25, 315, 0.06, vel_handle_1)
+                Wheel(-0.1575, -0.1575, 315, 0.05, vel_handle_1)
             );
             base.addWheel(
-                Wheel(-0.25, 0.25, 225, 0.06, vel_handle_2)
+                Wheel(-0.1575, 0.1575, 225, 0.05, vel_handle_2)
             );
             base.addWheel(
-                Wheel(0.25, 0.25, 135, 0.06, vel_handle_3)
+                Wheel(0.1575, 0.1575, 135, 0.05, vel_handle_3)
             );
             base.addWheel(
-                Wheel(0.25, -0.25, 45, 0.06, vel_handle_4)
+                Wheel(0.1575, -0.1575, 45, 0.05, vel_handle_4)
             );
 
             // Subscribe to cmd_vel
