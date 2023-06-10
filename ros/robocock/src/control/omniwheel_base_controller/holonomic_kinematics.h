@@ -157,7 +157,7 @@ const Pose2D updateOdom(const Pose2D& last_pose, const Eigen::Vector3d& v_b, dou
     // new_pose.rot = last_pose.rot + v_b.rot * dt;
     new_pose.rot = last_pose.rot + v_b[0] * dt;
     double delta_x, delta_y;
-    if (v_b[0] == 0) {
+    if (v_b[0] < 1e-6) { // Not numerically stable when v_b[0] is close to zero, so we approximate it to be zero when it is small
         delta_x = v_b[1] * dt;
         delta_y = v_b[2] * dt;
     } else {
