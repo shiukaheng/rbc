@@ -3,12 +3,12 @@
 
 
 /**
+ * NOTES:
+ * 
  * This is a new iteration of chassis kinematics that uses a robotics textbook's method, instead of my own derivation.
  * This was chosen because it is more generalizable, but the original derivation has a good geometric interpretation. However, 
  * since I am sure the current approach is correct, I will use this for now.
-*/
-
-/**
+ * 
  * X is forward, Y is left, Z is up
 */
 
@@ -22,6 +22,9 @@ struct InverseKinematicsResult {
     Eigen::VectorXd residual;
 };
 
+/**
+ * This class aims to purely do the kinematics of the chassis, and not the odometry.
+*/
 class HolonomicKinematics {
     private:
         /**
@@ -119,7 +122,7 @@ class HolonomicKinematics {
         }
         /**
          * @brief Convert a chassis velocity V_b to wheel velocities
-         * 
+         * X is forward, Y is left, Z is up
          * @param v_b Chassis velocity in the chassis frame
          * @return Eigen::VectorXd Wheel velocities
         */
@@ -160,3 +163,36 @@ class HolonomicKinematics {
             return result;
         }
 };
+
+struct Pose2D {
+    Eigen::Vector2d lin;
+    double rot;
+};
+
+struct Twist2D {
+    Eigen::Vector2d lin;
+    double rot;
+};
+
+/**
+ * @brief Update odometry using a q_dot (chassis command), last pose, and time delta
+ * 
+ * @param last_pose Last pose
+ * @param q_dot Chassis command
+ * @param dt Time delta
+*/
+const Pose2D& updateOdom(const Pose2D& last_pose, const Twist2D& q_dot, double dt) {
+    Pose2D new_pose;
+    new_pose.rot = last_pose.rot + q_dot.rot * dt;
+    double delta_x, delta_y;
+    if (q_dot.rot == 0) {
+        delta_x = q_dot.lin.x() * dt;
+        delta_y = q_dot.lin.y() * dt;
+    } else {
+        delta_x = (q_dot.lin.x() * sin(last_pose.rot + q_dot.rot * dt) + q_dot.lin.y() * cos(last_pose.rot + q_dot.rot * dt) - q_dot.lin.x() * sin(last_pose.rot) - q_dot.lin.y() * cos(last_pose.rot)) / q_dot.rot;
+        delta_y = (q_dot.lin.y() * sin(last_pose.rot + q_dot.rot * dt) - q_dot.lin.x() * cos(last_pose.rot + q_dot.rot * dt) - q_dot.lin.y() * sin(last_pose.rot) + q_dot.lin.x() * cos(last_pose.rot)) / q_dot.rot;
+    }
+    new_pose.lin.x() = last_pose.lin.x() + delta_x;
+    new_pose.lin.y() = last_pose.lin.y() + delta_y;
+    return new_pose;
+}

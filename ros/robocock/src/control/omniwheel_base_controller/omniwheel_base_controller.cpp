@@ -7,6 +7,7 @@
 #include "./omniwheel_inverse_kinematics.h"
 #include <tf2_ros/transform_broadcaster.h>
 #include <realtime_tools/realtime_publisher.h>
+#include "./holonomic_kinematics.h"
 
 // TODO: Implement cmd_vel and odometry, but remember to use realtime_tools
 
