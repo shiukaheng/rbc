@@ -70,11 +70,11 @@ class HolonomicKinematics {
 
             // Add row to H0
             // std::cout << "Adding row to H0: " << H0_row << std::endl;
-            // H0.conservativeResize(H0.rows()+1, Eigen::NoChange);
-            // H0.row(H0.rows()-1) = H0_row;
+            H0.conservativeResize(H0.rows()+1, Eigen::NoChange);
+            H0.row(H0.rows()-1) = H0_row;
 
             // Print H0
-            std::cout << "H0: " << std::endl << H0 << std::endl;
+            // std::cout << "H0: " << std::endl << H0 << std::endl;
 
             // Compute pseudo-inverse of H0
             // std::cout << "Computing pseudo-inverse of H0" << std::endl;
