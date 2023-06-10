@@ -41,7 +41,7 @@
     <!-- gazebo specific description -->
     <gazebo reference="chassis">
         <material>Gazebo/White</material>
-    </gazebo>>
+    </gazebo>
 
     <!-- FRONT LEFT WHEEL AKA wheel_1 -->
     <joint name="wheel_1_joint" type="continuous">
