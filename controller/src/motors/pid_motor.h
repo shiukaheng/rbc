@@ -2,7 +2,8 @@
 
 #include <Arduino.h>
 #include "../ardupid/ArduPID.h"
-#include "encoder.h"
+// #include "encoder.h"
+#include "encoder_naive.h"
 #include "raw_motor.h"
 #include "../utils/argtypes.h"
 
@@ -47,7 +48,7 @@ class PIDMotor {
     private:
         // Internal PID variables
         ArduPID _pid_controller;
-        EncoderReader* _encoder;
+        EncoderReaderNaive* _encoder;
         ExpTimeSmoothener* _stall_smoothener;
         bool _stall_prevention_triggered = false;
         // Motor parameters

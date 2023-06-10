@@ -131,7 +131,7 @@ void EncoderReader::update() {
     // ii. Computing the average pulse time duration (same variable will be recycled to save memory, by recursively updating it using weighted average)
     double first_pulse_period = read_dt(index, 0, _ppr, pulse_time_history, pulse_cws);
     double avg_radps = period_to_rads_per_sec(first_pulse_period, _ppr, _gear_ratio);
-    int num_added = 1;
+    // int num_added = 1;
 
     long last_pulse_time = pulse_time_history[index]; // For convenience
 
@@ -186,18 +186,38 @@ void EncoderReader::update() {
     // }
 
     // Period-based speed calculation; only update _radps if the conditions are met
+    double raw_period_avg = 0;
     if (use_period_method) {
         // Serial.println("This is the period method");
         _period_method = true;
+        // Loop through thrice: once to get the average, once to get the standard deviation, third time to get filtered average (without outliers)
         for (int i = 1; i < _ppr-1; i++) { // HACK! : Have not throughouly thought out why its i < PPR-1, but it works for now.
             long pulse_dt = read_dt(index, i, _ppr, pulse_time_history, pulse_cws);
-            // Serial.println(pulse_dt);
-            // Update the average
-            avg_radps = (avg_radps * num_added + period_to_rads_per_sec(pulse_dt, _ppr, _gear_ratio)) / (num_added + 1);
-            num_added++;
+            raw_period_avg += pulse_dt;
         }
+        raw_period_avg /= (_ppr-2);
+        double std = 0;
+        for (int i = 1; i < _ppr-1; i++) {
+            long pulse_dt = read_dt(index, i, _ppr, pulse_time_history, pulse_cws);
+            double x_mu_diff_sq = (pulse_dt - raw_period_avg) * (pulse_dt - raw_period_avg);
+            std += x_mu_diff_sq;
+        }
+        std /= (_ppr-2);
+        std = sqrt(std);
+        // Finally, we re-calculate the average, but this time we filter out outliers with a threshold of 2 standard deviations
+        double period_avg = 0;
+        int num_added = 0;
+        for (int i = 1; i < _ppr-1; i++) {
+            long pulse_dt = read_dt(index, i, _ppr, pulse_time_history, pulse_cws);
+            double x_mu_diff = abs(pulse_dt - raw_period_avg);
+            if (x_mu_diff < 2 * std) {
+                period_avg += pulse_dt;
+                num_added++;
+            }
+        }
+        period_avg /= num_added;
         // Calculate the rad/s
-        _radps = avg_radps;
+        _radps = period_to_rads_per_sec(period_avg, _ppr, _gear_ratio);
     } else {
         // When we switch from period-based method to window-based method, we need to reset the accumulator to clear irrelevant pulses
         // Serial.println("This is the window method");

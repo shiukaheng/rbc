@@ -16,7 +16,7 @@ PIDMotor::PIDMotor(PIDMotorConfig config) {
     _pid_controller.setOutputLimits(-255, 255);
     _pid_controller.begin(&input, &output, &setpoint, config.kp, config.ki, config.kd);
     // Initialize encoder
-    _encoder = new EncoderReader(config.motor_pinout.hall_a_pin, config.motor_pinout.hall_b_pin, config.ppr, config.gear_ratio);
+    _encoder = new EncoderReaderNaive(config.motor_pinout.hall_a_pin, config.motor_pinout.hall_b_pin, config.ppr, config.gear_ratio);
     // Initialize motor
     _motor = new RawMotor(config.motor_pinout.lpwm_pin, config.motor_pinout.rpwm_pin, config.smoothener_window_size);
     // Initialize stall smoothener
@@ -55,7 +55,7 @@ void PIDMotor::update() {
     // Stalling prevention
     // If setpoint is 0, smoothened_rps is below threshold, but PWM is not 0, then reset PID
     double smoothened_rps = _stall_smoothener->update(input);
-    if (setpoint == 0 && smoothened_rps < 0.001 && output != 0 && _stall_prevention_triggered == false) {
+    if (setpoint == 0 && abs(smoothened_rps) < 0.001 && output != 0 && _stall_prevention_triggered == false) {
         _pid_controller.reset();
         _stall_prevention_triggered = true;
     } else {

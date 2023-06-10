@@ -1,8 +1,5 @@
 #include "ArduPID.h"
 
-
-
-
 void ArduPID::begin(double* _input,
 	                double* _output,
 	                double* _setpoint,
@@ -27,10 +24,6 @@ void ArduPID::begin(double* _input,
 	start();
 }
 
-
-
-
-
 void ArduPID::start()
 {
 	if (modeType != ON)
@@ -39,9 +32,6 @@ void ArduPID::start()
 		reset();
 	}
 }
-
-
-
 
 void ArduPID::reset()
 {
@@ -60,50 +50,46 @@ void ArduPID::reset()
 	timer.start();
 }
 
-
-
-
-
 void ArduPID::stop()
 {
 	if (modeType != OFF)
 		modeType = OFF;
 }
 
-
-
-
 void ArduPID::compute()
 {
 	if (timer.fire() && modeType == ON)
 	{
-		kp = pIn;
-		ki = iIn * (timer.timeDiff / 1000.0);
-		kd = dIn / (timer.timeDiff / 1000.0);
+		// Copy to local variables to allow for manipulation
+		kp = pIn; // Proportional factor is used directly
+		ki = iIn * (timer.timeDiff / 1000.0); // Integral factor is normalized by sample time
+		kd = dIn / (timer.timeDiff / 1000.0); // Derivative factor is normalized by sample time
 
-		if (direction == BACKWARD)
+		if (direction == BACKWARD) // Reverse direction of PID controller if specified
 		{
 			kp *= -1;
 			ki *= -1;
 			kd *= -1;
 		}
 
+		// Store previous values
 		lastInput    = curInput;
 		lastSetpoint = curSetpoint;
 		lastError    = curError;
 
+		// Copy in new values
 		curInput    = *input;
 		curSetpoint = *setpoint;
 		curError    = curSetpoint - curInput;
 
-		double dInput = *input - lastInput;
+		double dInput = *input - lastInput; // Derivative on measurement
 
-		if (pOnType == P_ON_E)
+		if (pOnType == P_ON_E) // Proportional on error
 			pOut = kp * curError;
-		else if (pOnType == P_ON_M)
+		else if (pOnType == P_ON_M) // Proportional on measurement - http://brettbeauregard.com/blog/2017/06/introducing-proportional-on-measurement/
 			pOut = -kp * dInput;
 
-		dOut = -kd * dInput; // Derrivative on measurement
+		dOut = -kd * dInput; // Calculate final derivative term
 
 		double iTemp = (iIn == 0.0) ? 0.0 : iOut + (ki * ((curError + lastError) / 2.0)); // Trapezoidal integration
 		iTemp        = constrain(iTemp, windupMin, windupMax);       // Prevent integral windup
@@ -120,9 +106,6 @@ void ArduPID::compute()
 	}
 }
 
-
-
-
 void ArduPID::setOutputLimits(const double& min, const double& max)
 {
 	if (max > min)
@@ -135,9 +118,6 @@ void ArduPID::setOutputLimits(const double& min, const double& max)
 	}
 }
 
-
-
-
 void ArduPID::setWindUpLimits(const double& min, const double& max)
 {
 	if (max > min)
@@ -146,9 +126,6 @@ void ArduPID::setWindUpLimits(const double& min, const double& max)
 		windupMin = min;
 	}
 }
-
-
-
 
 void ArduPID::setDeadBand(const double& min, const double& max)
 {
@@ -159,24 +136,15 @@ void ArduPID::setDeadBand(const double& min, const double& max)
 	}
 }
 
-
-
-
 void ArduPID::setPOn(const pOn& _pOn)
 {
 	pOnType = _pOn;
 }
 
-
-
-
 void ArduPID::setBias(const double& _bias)
 {
 	bias = _bias;
 }
-
-
-
 
 void ArduPID::setCoefficients(const double& _p, const double& _i, const double& _d)
 {
@@ -188,9 +156,6 @@ void ArduPID::setCoefficients(const double& _p, const double& _i, const double& 
 	}
 }
 
-
-
-
 void ArduPID::setDirection(const dir& _direction)
 {
 	direction = _direction;
@@ -198,9 +163,6 @@ void ArduPID::setDirection(const dir& _direction)
 	if (modeType == ON)
 		reset();
 }
-
-
-
 
 void ArduPID::reverse()
 {
@@ -213,48 +175,30 @@ void ArduPID::reverse()
 		reset();
 }
 
-
-
-
 void ArduPID::setSampleTime(const unsigned int& _minSamplePeriodMs)
 {
 	timer.begin(_minSamplePeriodMs);
 }
-
-
-
 
 double ArduPID::B()
 {
 	return bias;
 }
 
-
-
-
 double ArduPID::P()
 {
 	return pOut;
 }
-
-
-
 
 double ArduPID::I()
 {
 	return iOut;
 }
 
-
-
-
 double ArduPID::D()
 {
 	return dOut;
 }
-
-
-
 
 void ArduPID::debug(Stream* stream, const char* controllerName, const byte& mask)
 {
