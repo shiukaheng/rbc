@@ -3,7 +3,7 @@
     <!-- Wheel Control -->
     <node pkg="rosserial_arduino" type="serial_node.py" name="rosserial_node" output="screen">
         <param name="port" value="/dev/ttyACM0" />
-        <param name="baud" value="115200" />
+        <param name="baud" value="57600" />
     </node>
     <!-- Wheel parameter server (Custom node to easily set PID parameters using rosparam, 
     as well as switching on the fly with rostopics) -->

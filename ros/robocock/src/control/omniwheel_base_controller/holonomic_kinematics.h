@@ -18,7 +18,7 @@
  * A struct to store the result of the inverse kinematics and the residual
 */
 struct InverseKinematicsResult {
-    Eigen::Vector3d result;
+    Eigen::Vector3d twist;
     Eigen::VectorXd residual;
 };
 
@@ -69,21 +69,16 @@ class HolonomicKinematics {
             H0_row << 1/radius * extract_driving_comp * rot * lin_vel;
 
             // Add row to H0
+            // std::cout << "Adding row to H0: " << H0_row << std::endl;
             H0.conservativeResize(H0.rows()+1, Eigen::NoChange);
             H0.row(H0.rows()-1) = H0_row;
 
+            // Print H0
+            std::cout << "H0: " << std::endl << H0 << std::endl;
+
             // Compute pseudo-inverse of H0
+            // std::cout << "Computing pseudo-inverse of H0" << std::endl;
             H0_pinv = (H0.transpose() * H0).inverse() * H0.transpose();
-
-            // Update H(phi) by multipling [[1, 0, 0], [0, cos(phi), sin(phi)], [0, -sin(phi), cos(phi)]] to H0
-            Eigen::Matrix<double, 3, 3> Hphi_update;
-            Hphi_update << 1, 0, 0,
-                           0, cos(beta), sin(beta),
-                           0, -sin(beta), cos(beta);
-            Hphi = Hphi_update * H0;       
-
-            // Compute pseudo-inverse of Hphi
-            Hphi_pinv = (Hphi.transpose() * Hphi).inverse() * Hphi.transpose();
         }
         /**
          * @brief Convenience function to add an omniwheel
@@ -110,15 +105,8 @@ class HolonomicKinematics {
         /**
          * @brief Function to assert correctness of the kinematics, throws an error if incorrect
         */
-        void assertCorrectness() {
-            // Calculate rank of H0, if below 3, throw error saying too many degrees of freedom, maybe wheels are collinear, or not enough wheels
-            if (H0.fullPivLu().rank() < 3) {
-                throw std::runtime_error("Too many degrees of freedom, maybe wheels are collinear, or not enough wheels (3 required)");
-            }
-            // If above 3, throw error saying invalid configuration, maybe wheels are not coplanar
-            if (H0.fullPivLu().rank() > 3) {
-                throw std::runtime_error("Invalid wheel configuration");
-            }
+        bool isCorrectConfiguration() {
+            return H0.fullPivLu().rank() >= 3;
         }
         /**
          * @brief Convert a chassis velocity V_b to wheel velocities
@@ -126,17 +114,12 @@ class HolonomicKinematics {
          * @param v_b Chassis velocity in the chassis frame
          * @return Eigen::VectorXd Wheel velocities
         */
-        Eigen::VectorXd chassisV_bToWheelVelocities(const Eigen::Vector3d& v_b) {
+        Eigen::VectorXd forwardVb(const Eigen::Vector3d& v_b) {
+            // Print debug
+            // std::cout << "Calculating forward kinematics: " << std::endl;
+            // std::cout << "V_b: " << v_b << std::endl;
+            // std::cout << "H0: " << H0 << std::endl;
             return H0 * v_b;
-        }
-        /**
-         * @brief Convert a chassis command Q_dot to wheel velocities
-         *
-         * @param q_dot Chassis command in the chassis frame
-         * @return Eigen::VectorXd Wheel velocities
-        */
-        Eigen::VectorXd chassisQ_dotToWheelVelocities(const Eigen::Vector3d& q_dot) {
-            return Hphi * q_dot;
         }
         /**
          * @brief Calculate the least-squares estimate of the chassis velocity V_b from wheel velocities, and residual error vector
@@ -144,22 +127,15 @@ class HolonomicKinematics {
          * @param wheel_velocities Wheel velocities
          * @return InverseKinematicsResult Result of the inverse kinematics
         */
-        InverseKinematicsResult wheelVelocitiesToChassisV_b(const Eigen::VectorXd& wheel_velocities) {
+        InverseKinematicsResult inverseVb(const Eigen::VectorXd& wheel_velocities) {
+            // Print debug
+            // std::cout << "Calculating inverse kinematics: " << std::endl;
+            // std::cout << "Wheel velocities: " << wheel_velocities << std::endl;
+            // std::cout << "H0_pinv: " << H0_pinv << std::endl;
+            // std::cout << "H0: " << H0 << std::endl;
             InverseKinematicsResult result;
-            result.result = H0_pinv * wheel_velocities;
-            result.residual = wheel_velocities - H0 * result.result;
-            return result;
-        }
-        /**
-         * @brief Calculate the least-squares estimate of the chassis command Q_dot from wheel velocities, and residual error vector
-         * 
-         * @param wheel_velocities Wheel velocities
-         * @return InverseKinematicsResult Result of the inverse kinematics
-        */
-        InverseKinematicsResult wheelVelocitiesToChassisQ_dot(const Eigen::VectorXd& wheel_velocities) {
-            InverseKinematicsResult result;
-            result.result = Hphi_pinv * wheel_velocities;
-            result.residual = wheel_velocities - Hphi * result.result;
+            result.twist = H0_pinv * wheel_velocities;
+            result.residual = wheel_velocities - H0 * result.twist;
             return result;
         }
 };
@@ -169,28 +145,24 @@ struct Pose2D {
     double rot;
 };
 
-struct Twist2D {
-    Eigen::Vector2d lin;
-    double rot;
-};
-
 /**
- * @brief Update odometry using a q_dot (chassis command), last pose, and time delta
+ * @brief Update odometry using a v_b (chassis command), last pose, and time delta
  * 
  * @param last_pose Last pose
- * @param q_dot Chassis command
+ * @param v_b Velocity command in the chassis frame
  * @param dt Time delta
 */
-const Pose2D& updateOdom(const Pose2D& last_pose, const Twist2D& q_dot, double dt) {
+const Pose2D updateOdom(const Pose2D& last_pose, const Eigen::Vector3d& v_b, double dt) {
     Pose2D new_pose;
-    new_pose.rot = last_pose.rot + q_dot.rot * dt;
+    // new_pose.rot = last_pose.rot + v_b.rot * dt;
+    new_pose.rot = last_pose.rot + v_b[0] * dt;
     double delta_x, delta_y;
-    if (q_dot.rot == 0) {
-        delta_x = q_dot.lin.x() * dt;
-        delta_y = q_dot.lin.y() * dt;
+    if (v_b[0] == 0) {
+        delta_x = v_b[1] * dt;
+        delta_y = v_b[2] * dt;
     } else {
-        delta_x = (q_dot.lin.x() * sin(last_pose.rot + q_dot.rot * dt) + q_dot.lin.y() * cos(last_pose.rot + q_dot.rot * dt) - q_dot.lin.x() * sin(last_pose.rot) - q_dot.lin.y() * cos(last_pose.rot)) / q_dot.rot;
-        delta_y = (q_dot.lin.y() * sin(last_pose.rot + q_dot.rot * dt) - q_dot.lin.x() * cos(last_pose.rot + q_dot.rot * dt) - q_dot.lin.y() * sin(last_pose.rot) + q_dot.lin.x() * cos(last_pose.rot)) / q_dot.rot;
+        delta_x = (v_b[1] * sin(last_pose.rot + v_b[0] * dt) + v_b[2] * cos(last_pose.rot + v_b[0] * dt) - v_b[1] * sin(last_pose.rot) - v_b[2] * cos(last_pose.rot)) / v_b[0];
+        delta_y = (v_b[2] * sin(last_pose.rot + v_b[0] * dt) - v_b[1] * cos(last_pose.rot + v_b[0] * dt) - v_b[2] * sin(last_pose.rot) + v_b[1] * cos(last_pose.rot)) / v_b[0];
     }
     new_pose.lin.x() = last_pose.lin.x() + delta_x;
     new_pose.lin.y() = last_pose.lin.y() + delta_y;

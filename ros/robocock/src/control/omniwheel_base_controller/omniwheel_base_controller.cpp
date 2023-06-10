@@ -2,11 +2,16 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <pluginlib/class_list_macros.h>
 #include <realtime_tools/realtime_buffer.h>
-#include <geometry_msgs/Twist.h>
-#include <ros/ros.h>
-#include "./omniwheel_inverse_kinematics.h"
-#include <tf2_ros/transform_broadcaster.h>
 #include <realtime_tools/realtime_publisher.h>
+#include <Eigen/Dense>
+#include <hardware_interface/joint_command_interface.h>
+#include <geometry_msgs/Twist.h>
+#include <iostream>
+#include <nav_msgs/Odometry.h>
+#include <ros/ros.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_ros/transform_broadcaster.h>
 #include "./holonomic_kinematics.h"
 
 // TODO: Implement cmd_vel and odometry, but remember to use realtime_tools
@@ -18,10 +23,12 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
         hardware_interface::JointHandle vel_handle_3;
         hardware_interface::JointHandle vel_handle_4;
         realtime_tools::RealtimeBuffer<geometry_msgs::Twist> cmd_vel_buffer_;
-        Base base;
+        HolonomicKinematics base;
         ros::Subscriber cmd_vel_sub;
         realtime_tools::RealtimePublisher<nav_msgs::Odometry> odom_pub;
         tf2_ros::TransformBroadcaster tf_broadcaster;
+        Pose2D pose;
+        double last_wheel_positions[4] = {0., 0., 0., 0.};
     public:
         OmniwheelBaseController() {
             ROS_INFO_STREAM("Constructing OmniwheelBaseController");
@@ -35,18 +42,10 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
             ROS_INFO_STREAM("Got handle for joints");
 
             // Configure base
-            base.addWheel(
-                Wheel(-0.1575, -0.1575, 315, 0.05, vel_handle_1)
-            );
-            base.addWheel(
-                Wheel(-0.1575, 0.1575, 225, 0.05, vel_handle_2)
-            );
-            base.addWheel(
-                Wheel(0.1575, 0.1575, 135, 0.05, vel_handle_3)
-            );
-            base.addWheel(
-                Wheel(0.1575, -0.1575, 45, 0.05, vel_handle_4)
-            );
+            base.addOmniwheel(-0.1575, -0.1575, 315 * M_PI / 180, 0.05);
+            base.addOmniwheel(-0.1575, 0.1575, 225 * M_PI / 180, 0.05);
+            base.addOmniwheel(0.1575, 0.1575, 135 * M_PI / 180, 0.05);
+            base.addOmniwheel(0.1575, -0.1575, 45 * M_PI / 180, 0.05);
 
             // Subscribe to cmd_vel
             cmd_vel_sub = nh.subscribe("/cmd_vel", 1, &OmniwheelBaseController::cmd_vel_callback, this);
@@ -59,16 +58,77 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
         void cmd_vel_callback(const geometry_msgs::Twist& cmd_vel) {
             cmd_vel_buffer_.writeFromNonRT(cmd_vel);
         }
+        // Get wheel velocities using delta wheel positions and delta time
+        Eigen::Vector4d getWheelVelocities(double dt) {
+            // Get wheel positions
+            double wheel_positions[4];
+            wheel_positions[0] = vel_handle_1.getPosition();
+            wheel_positions[1] = vel_handle_2.getPosition();
+            wheel_positions[2] = vel_handle_3.getPosition();
+            wheel_positions[3] = vel_handle_4.getPosition();
+            
+            // Calculate wheel velocities
+            Eigen::Vector4d wheel_velocities;
+            for (int i = 0; i < 4; i++) {
+                wheel_velocities[i] = (wheel_positions[i] - last_wheel_positions[i]) / dt;
+            }
+
+            // Update last wheel positions
+            for (int i = 0; i < 4; i++) {
+                last_wheel_positions[i] = wheel_positions[i];
+            }
+            return wheel_velocities;
+        }
+        void setWheelVelocities(const Eigen::Vector4d& wheel_velocities) {
+            vel_handle_1.setCommand(wheel_velocities[0]);
+            vel_handle_2.setCommand(wheel_velocities[1]);
+            vel_handle_3.setCommand(wheel_velocities[2]);
+            vel_handle_4.setCommand(wheel_velocities[3]);
+        }
         void update(const ros::Time& time, const ros::Duration& period) {
             if (cmd_vel_buffer_.readFromRT()) {
                 // Read cmd_vel
                 geometry_msgs::Twist cmd_vel = *(cmd_vel_buffer_.readFromRT());
-                // Update wheel target velocities and get odometry
-                const nav_msgs::Odometry& odom = base.update(cmd_vel, time, period);
+                // Get wheel velocities
+                double dt = period.toSec();
+                Eigen::Vector4d wheel_velocities = getWheelVelocities(dt);
+                // Calculate inverse kinematics
+                InverseKinematicsResult measured_twist_result = base.inverseVb(wheel_velocities);
+
+                // Calculate forward kinematics
+                Eigen::Vector3d cmd_twist; // [phi, x, y]
+                cmd_twist[0] = cmd_vel.angular.z;
+                cmd_twist[1] = cmd_vel.linear.x;
+                cmd_twist[2] = cmd_vel.linear.y;
+                Eigen::Vector4d wheel_velocities_cmd = base.forwardVb(cmd_twist);
+                setWheelVelocities(wheel_velocities_cmd);
+                // Calculate odometry
+                pose = updateOdom(pose, measured_twist_result.twist, dt);
                 // Publish odometry
                 if (odom_pub.trylock()) {
+                    // Craft odometry message
+                    nav_msgs::Odometry odom;
+                    odom.header.stamp = time;
+                    odom.header.frame_id = "odom";
+                    odom.child_frame_id = "base_link";
+                    odom.pose.pose.position.x = pose.lin[0];
+                    odom.pose.pose.position.y = pose.lin[1];
+                    odom.pose.pose.position.z = 0;
+                    tf2::Quaternion q;
+                    q.setRPY(0, 0, pose.rot);
+                    odom.pose.pose.orientation = tf2::toMsg(q);                    
+                    odom.twist.twist.linear.x = measured_twist_result.twist[1];
+                    odom.twist.twist.linear.y = measured_twist_result.twist[2];
+                    odom.twist.twist.linear.z = 0;
+                    odom.twist.twist.angular.x = 0;
+                    odom.twist.twist.angular.y = 0;
+                    odom.twist.twist.angular.z = measured_twist_result.twist[0];
+                    
+                    // Publish odometry
                     odom_pub.msg_ = odom;
                     odom_pub.unlockAndPublish();
+
+                    // Publish odom tf
                     geometry_msgs::TransformStamped odom_tf;
                     odom_tf.header.stamp = time;
                     odom_tf.header.frame_id = "odom";
@@ -88,7 +148,11 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
         }
         void stopping(const ros::Time& time) {
             ROS_INFO_STREAM("Stopping OmniwheelBaseController");
-            base.breakWheels();
+            // Brake
+            vel_handle_1.setCommand(0);
+            vel_handle_2.setCommand(0);
+            vel_handle_3.setCommand(0);
+            vel_handle_4.setCommand(0);
         }
 };
 

@@ -7,7 +7,7 @@ ROSSerialClient::ROSSerialClient(RBCConfig config) {
     _motor2 = new PIDMotor(config.motor_configs[1]);
     _motor3 = new PIDMotor(config.motor_configs[2]);
     _motor4 = new PIDMotor(config.motor_configs[3]);
-    _nh.getHardware()->setBaud(115200);
+    _nh.getHardware()->setBaud(57600);
     _nh.initNode();
     _nh.advertise(_wheel_states_pub);
     _nh.subscribe(_target_wheel_velocities_sub);

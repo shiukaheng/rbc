@@ -32,7 +32,7 @@ void setup() {
     TCCR4B = TCCR4B & B11111000 | B00000001;   // for PWM frequency of 31372.55 Hz on D6, D7, D8
 
     // Start serial
-    Serial.begin(115200);
+    Serial.begin(57600);
 
     // Initial PID parameters (0,0,0) so that the wheels don't move on startup, instead we wait for the first message
     double kp = 0.0;
