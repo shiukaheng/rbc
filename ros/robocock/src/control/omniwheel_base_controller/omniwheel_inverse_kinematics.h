@@ -8,6 +8,11 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/transform_broadcaster.h>
 
+/**
+ * This is an old formulation of the chassis kinematics that I derived myself.
+ * TODO: Compress the forward kinematics into a single matrix multiplication, then use the inverse of that matrix to get the inverse kinematics.
+*/
+
 const Eigen::Matrix2d jacobian = [](){
     Eigen::Matrix2d jacobian;
     jacobian << 0., 1., -1., 0.;
