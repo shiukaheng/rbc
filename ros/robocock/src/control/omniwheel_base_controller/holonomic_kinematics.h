@@ -1,12 +1,6 @@
 #include <Eigen/Dense>
-#include <hardware_interface/joint_command_interface.h>
-#include <geometry_msgs/Twist.h>
 #include <iostream>
-#include <nav_msgs/Odometry.h>
-#include <ros/ros.h>
-#include <tf2/LinearMath/Quaternion.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-#include <tf2_ros/transform_broadcaster.h>
+
 
 /**
  * This is a new iteration of chassis kinematics that uses a robotics textbook's method, instead of my own derivation.
@@ -14,9 +8,21 @@
  * since I am sure the current approach is correct, I will use this for now.
 */
 
+/**
+ * X is forward, Y is left, Z is up
+*/
+
 // Watch: https://www.youtube.com/watch?v=NcOT9hOsceE
 
-class Chassis {
+/**
+ * A struct to store the result of the inverse kinematics and the residual
+*/
+struct InverseKinematicsResult {
+    Eigen::Vector3d result;
+    Eigen::VectorXd residual;
+};
+
+class HolonomicKinematics {
     private:
         /**
          * @brief The H(0) matrix for the chassis (N rows, 3 columns)
@@ -34,12 +40,17 @@ class Chassis {
          * @brief The pseudo-inverse of H(phi)
         */
         Eigen::Matrix<double, 3, Eigen::Dynamic> Hphi_pinv;
-        /**
-         * @brief Vector of joint handles for the chassis
-        */
-        std::vector<hardware_interface::JointHandle> chassis_handles;
     public:
-        void addWheel(double x, double y, double beta, double gamma, double radius, hardware_interface::JointHandle& handle) {
+        /**
+         * @brief Add a wheel to the chassis
+         * 
+         * @param x X coordinate of wheel in meters, in the chassis frame
+         * @param y Y coordinate of wheel in meters, in the chassis frame
+         * @param beta Angle of wheel in radians, from the unit vector along the x-axis
+         * @param gamma Angle of free-spinning axis from the perpendicular axis to the driving axis, in radians (zero is perpendicular)
+         * @param radius Radius of wheel in meters
+        */
+        void addWheel(double x, double y, double beta, double gamma, double radius) {
             Eigen::Matrix<double, 2, 3> lin_vel;
             lin_vel << -y, 1, 0,
                        x, 0, 1;
@@ -58,9 +69,6 @@ class Chassis {
             H0.conservativeResize(H0.rows()+1, Eigen::NoChange);
             H0.row(H0.rows()-1) = H0_row;
 
-            // Add handle to chassis_handles
-            chassis_handles.push_back(handle);
-
             // Compute pseudo-inverse of H0
             H0_pinv = (H0.transpose() * H0).inverse() * H0.transpose();
 
@@ -74,25 +82,81 @@ class Chassis {
             // Compute pseudo-inverse of Hphi
             Hphi_pinv = (Hphi.transpose() * Hphi).inverse() * Hphi.transpose();
         }
-        void addOmniwheel(double x, double y, double beta, double radius, hardware_interface::JointHandle& handle) {
-            addWheel(x, y, beta, 0, radius, handle);
+        /**
+         * @brief Convenience function to add an omniwheel
+         * 
+         * @param x X coordinate of wheel in meters, in the chassis frame
+         * @param y Y coordinate of wheel in meters, in the chassis frame
+         * @param beta Angle of wheel in radians, from the unit vector along the x-axis
+         * @param radius Radius of wheel in meters
+        */
+        void addOmniwheel(double x, double y, double beta, double radius) {
+            addWheel(x, y, beta, 0, radius);
         }
-        void addMecanum(double x, double y, double beta, double radius, hardware_interface::JointHandle& handle) {
-            addWheel(x, y, beta, M_PI/4, radius, handle);
+        /**
+         * @brief Convenience function to add a mecanum wheel
+         * 
+         * @param x X coordinate of wheel in meters, in the chassis frame
+         * @param y Y coordinate of wheel in meters, in the chassis frame
+         * @param beta Angle of wheel in radians, from the unit vector along the x-axis
+         * @param radius Radius of wheel in meters
+        */
+        void addMecanum(double x, double y, double beta, double radius) {
+            addWheel(x, y, beta, M_PI/4, radius);
         }
-        void setChassisV_b(const Eigen::Vector3d& v_b) {
-            Eigen::VectorXd wheel_velocities = H0 * v_b;
-            for (int i = 0; i < chassis_handles.size(); i++) {
-                chassis_handles[i].setCommand(wheel_velocities(i));
+        /**
+         * @brief Function to assert correctness of the kinematics, throws an error if incorrect
+        */
+        void assertCorrectness() {
+            // Calculate rank of H0, if below 3, throw error saying too many degrees of freedom, maybe wheels are collinear, or not enough wheels
+            if (H0.fullPivLu().rank() < 3) {
+                throw std::runtime_error("Too many degrees of freedom, maybe wheels are collinear, or not enough wheels (3 required)");
             }
-            // Generated rank of H0 is always 3
-        }
-        void setChassisQ_dot(const Eigen::Vector3d& q_dot) {
-            Eigen::VectorXd wheel_velocities = Hphi * q_dot;
-            for (int i = 0; i < chassis_handles.size(); i++) {
-                chassis_handles[i].setCommand(wheel_velocities(i));
+            // If above 3, throw error saying invalid configuration, maybe wheels are not coplanar
+            if (H0.fullPivLu().rank() > 3) {
+                throw std::runtime_error("Invalid wheel configuration");
             }
-            // Generated rank of Hphi is always 3
         }
-
+        /**
+         * @brief Convert a chassis velocity V_b to wheel velocities
+         * 
+         * @param v_b Chassis velocity in the chassis frame
+         * @return Eigen::VectorXd Wheel velocities
+        */
+        Eigen::VectorXd chassisV_bToWheelVelocities(const Eigen::Vector3d& v_b) {
+            return H0 * v_b;
+        }
+        /**
+         * @brief Convert a chassis command Q_dot to wheel velocities
+         *
+         * @param q_dot Chassis command in the chassis frame
+         * @return Eigen::VectorXd Wheel velocities
+        */
+        Eigen::VectorXd chassisQ_dotToWheelVelocities(const Eigen::Vector3d& q_dot) {
+            return Hphi * q_dot;
+        }
+        /**
+         * @brief Calculate the least-squares estimate of the chassis velocity V_b from wheel velocities, and residual error vector
+         * 
+         * @param wheel_velocities Wheel velocities
+         * @return InverseKinematicsResult Result of the inverse kinematics
+        */
+        InverseKinematicsResult wheelVelocitiesToChassisV_b(const Eigen::VectorXd& wheel_velocities) {
+            InverseKinematicsResult result;
+            result.result = H0_pinv * wheel_velocities;
+            result.residual = wheel_velocities - H0 * result.result;
+            return result;
+        }
+        /**
+         * @brief Calculate the least-squares estimate of the chassis command Q_dot from wheel velocities, and residual error vector
+         * 
+         * @param wheel_velocities Wheel velocities
+         * @return InverseKinematicsResult Result of the inverse kinematics
+        */
+        InverseKinematicsResult wheelVelocitiesToChassisQ_dot(const Eigen::VectorXd& wheel_velocities) {
+            InverseKinematicsResult result;
+            result.result = Hphi_pinv * wheel_velocities;
+            result.residual = wheel_velocities - Hphi * result.result;
+            return result;
+        }
 };
