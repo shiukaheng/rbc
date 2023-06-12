@@ -29,23 +29,36 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
         tf2_ros::TransformBroadcaster tf_broadcaster;
         Pose2D pose;
         double last_wheel_positions[4] = {0., 0., 0., 0.};
+        // Placeholders for joint names
+        std::string joint_name_1;
+        std::string joint_name_2;
+        std::string joint_name_3;
+        std::string joint_name_4;
     public:
         OmniwheelBaseController() {
-            ROS_INFO_STREAM("Constructing OmniwheelBaseController");
         }
         bool init(hardware_interface::VelocityJointInterface* hw, ros::NodeHandle& nh) {
+            // Get joint names
+            nh.param<std::string>("joint_name_1", joint_name_1, "wheel_1_joint");
+            nh.param<std::string>("joint_name_2", joint_name_2, "wheel_2_joint");
+            nh.param<std::string>("joint_name_3", joint_name_3, "wheel_3_joint");
+            nh.param<std::string>("joint_name_4", joint_name_4, "wheel_4_joint");
+
+            // Log all joint names
+            ROS_INFO_STREAM("Joint names: " << joint_name_1 << ", " << joint_name_2 << ", " << joint_name_3 << ", " << joint_name_4);
+                       
             ROS_INFO_STREAM("Initializing OmniwheelBaseController");
-            vel_handle_1 = hw->getHandle("joint1");
-            vel_handle_2 = hw->getHandle("joint2");
-            vel_handle_3 = hw->getHandle("joint3");
-            vel_handle_4 = hw->getHandle("joint4");
+            vel_handle_1 = hw->getHandle(joint_name_1);
+            vel_handle_2 = hw->getHandle(joint_name_2);
+            vel_handle_3 = hw->getHandle(joint_name_3);
+            vel_handle_4 = hw->getHandle(joint_name_4);
             ROS_INFO_STREAM("Got handle for joints");
 
             // Configure base
-            base.addOmniwheel(-0.1575, -0.1575, 315 * M_PI / 180, 0.05);
-            base.addOmniwheel(-0.1575, 0.1575, 225 * M_PI / 180, 0.05);
-            base.addOmniwheel(0.1575, 0.1575, 135 * M_PI / 180, 0.05);
-            base.addOmniwheel(0.1575, -0.1575, 45 * M_PI / 180, 0.05);
+            base.addOmniwheel(-0.1575, -0.1575, 135 * M_PI / 180, 0.05);
+            base.addOmniwheel(-0.1575, 0.1575, 45 * M_PI / 180, 0.05);
+            base.addOmniwheel(0.1575, 0.1575, 315 * M_PI / 180, 0.05);
+            base.addOmniwheel(0.1575, -0.1575, 225 * M_PI / 180, 0.05);
 
             // Subscribe to cmd_vel
             cmd_vel_sub = nh.subscribe("/cmd_vel", 1, &OmniwheelBaseController::cmd_vel_callback, this);

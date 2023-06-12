@@ -46,24 +46,24 @@ class RobocockHW : public hardware_interface::RobotHW {
             ROS_INFO("Initializing robocock hardware interface");
             // Register the joints with the state and velocity interfaces
 
-            hardware_interface::JointStateHandle state_handle_1("joint1", &pos[0], &vel[0], &eff[0]);
+            hardware_interface::JointStateHandle state_handle_1("wheel_1_joint", &pos[0], &vel[0], &eff[0]);
             jnt_state_interface.registerHandle(state_handle_1);
-            hardware_interface::JointStateHandle state_handle_2("joint2", &pos[1], &vel[1], &eff[1]);
+            hardware_interface::JointStateHandle state_handle_2("wheel_2_joint", &pos[1], &vel[1], &eff[1]);
             jnt_state_interface.registerHandle(state_handle_2);
-            hardware_interface::JointStateHandle state_handle_3("joint3", &pos[2], &vel[2], &eff[2]);
+            hardware_interface::JointStateHandle state_handle_3("wheel_3_joint", &pos[2], &vel[2], &eff[2]);
             jnt_state_interface.registerHandle(state_handle_3);
-            hardware_interface::JointStateHandle state_handle_4("joint4", &pos[3], &vel[3], &eff[3]);
+            hardware_interface::JointStateHandle state_handle_4("wheel_4_joint", &pos[3], &vel[3], &eff[3]);
             jnt_state_interface.registerHandle(state_handle_4);
 
             registerInterface(&jnt_state_interface);
 
-            hardware_interface::JointHandle vel_handle_1(jnt_state_interface.getHandle("joint1"), &cmd[0]);
+            hardware_interface::JointHandle vel_handle_1(jnt_state_interface.getHandle("wheel_1_joint"), &cmd[0]);
             jnt_vel_interface.registerHandle(vel_handle_1);
-            hardware_interface::JointHandle vel_handle_2(jnt_state_interface.getHandle("joint2"), &cmd[1]);
+            hardware_interface::JointHandle vel_handle_2(jnt_state_interface.getHandle("wheel_2_joint"), &cmd[1]);
             jnt_vel_interface.registerHandle(vel_handle_2);
-            hardware_interface::JointHandle vel_handle_3(jnt_state_interface.getHandle("joint3"), &cmd[2]);
+            hardware_interface::JointHandle vel_handle_3(jnt_state_interface.getHandle("wheel_3_joint"), &cmd[2]);
             jnt_vel_interface.registerHandle(vel_handle_3);
-            hardware_interface::JointHandle vel_handle_4(jnt_state_interface.getHandle("joint4"), &cmd[3]);
+            hardware_interface::JointHandle vel_handle_4(jnt_state_interface.getHandle("wheel_4_joint"), &cmd[3]);
             jnt_vel_interface.registerHandle(vel_handle_4);
 
             registerInterface(&jnt_vel_interface);
