@@ -3,10 +3,7 @@
     <param name="robot_description" command="$(find xacro)/xacro --inorder $(find robocock)/description/robot.urdf.xacro" />
 
     <rosparam file="$(find robocock)/config/controller.yaml" command="load"/>
-
-    <!-- Load the controller -->
-    <node pkg="controller_manager" type="spawner" name="controller_spawner" output="screen"
-        args="robocock/OmniwheelBaseController"/>
+    <rosparam file="$(find robocock)/config/gazebo_wheel_pid.yaml" command="load"/>
 
     <!-- Debug GUI -->
     <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/model.perspective" launch-prefix="bash -c 'sleep 5; $0 $@'"/>
@@ -22,6 +19,10 @@
     <!-- Spawn robot in gazebo -->
     <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
         args="-urdf -param robot_description -model robocock"/>
+
+    <!-- Load the controller -->
+    <node pkg="controller_manager" type="spawner" name="controller_spawner" output="screen"
+        args="robocock/OmniwheelBaseController joint_state_controller/JointStateController"/>
 
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 
