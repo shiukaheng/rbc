@@ -144,7 +144,7 @@ run_in_directory() {
 export PATH=$PATH:/root/bin
 
 # Aliases
-alias refreshenv='source ~/.bashrc' # Refresh environment
+alias refreshenv='source ~/.bashrc & refreshenv' # Refresh environment
 alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "/root/robocock/controller"' # Arduino Compile
 alias au='run_in_directory "arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega" "/root/robocock/controller"' # Arduino Upload
 alias acu='ac && au' # Arduino Compile and Upload
@@ -157,6 +157,7 @@ alias acm='cb && abl && ac' # Arduino Compile Macro (Compiles all dependencies, 
 alias mt='roslaunch robocock motor_tune.launch' # Motor Tune
 alias mvel='roslaunch robocock motor_vel.launch' # Motor Velocity
 alias mrc='roslaunch robocock motor_ros_control.launch' # Motor ros_control
+alias mm='roslaunch robocock model.launch' # Model launch
 # Check if /root/.dev has init.lock file. If it doesnt, initialize and create the file, otherwise do nothing
 if [ ! -f /root/.dev/init.lock ]; then
   # Echo in cyan initializing dev environment

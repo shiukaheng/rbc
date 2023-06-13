@@ -1,3 +1,7 @@
 robocock:
   OmniwheelBaseController:
     type: "robocock/OmniwheelBaseController"
+    joint_name_1: "wheel_1_joint"
+    joint_name_2: "wheel_2_joint"
+    joint_name_3: "wheel_3_joint"
+    joint_name_4: "wheel_4_joint"

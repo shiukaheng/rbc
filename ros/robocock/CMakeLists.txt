@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(robocock)
 
 ## Find catkin and any catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg message_generation controller_manager hardware_interface controller_interface geometry_msgs pluginlib tf2_ros tf2_geometry_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg message_generation controller_manager hardware_interface controller_interface geometry_msgs pluginlib tf2_ros tf2_geometry_msgs sensor_msgs)
 find_package(Eigen3 REQUIRED)
 
 add_message_files(
@@ -41,6 +41,14 @@ add_dependencies(omniwheel_base_controller ${${PROJECT_NAME}_EXPORTED_TARGETS} $
 install(DIRECTORY config/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
   FILES_MATCHING PATTERN "*.perspective"
+)
+
+install (DIRECTORY meshes/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/meshes
+)
+
+install (DIRECTORY description/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/description
 )
 
 install(FILES src/control/omniwheel_base_controller/omniwheel_base_controller_plugins.xml
