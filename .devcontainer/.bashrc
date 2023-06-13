@@ -158,6 +158,7 @@ alias mt='roslaunch robocock motor_tune.launch' # Motor Tune
 alias mvel='roslaunch robocock motor_vel.launch' # Motor Velocity
 alias mrc='roslaunch robocock motor_ros_control.launch' # Motor ros_control
 alias m='roslaunch robocock model.launch' # Model launch
+alias g='roslaunch robocock gazebo.launch'
 # Check if /root/.dev has init.lock file. If it doesnt, initialize and create the file, otherwise do nothing
 if [ ! -f /root/.dev/init.lock ]; then
   # Echo in cyan initializing dev environment

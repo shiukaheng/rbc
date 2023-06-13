@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find robocock)/description/robot.urdf.xacro" />
+
+    <rosparam file="$(find robocock)/config/controller.yaml" command="load"/>
+
+    <!-- Load the controller -->
+    <node pkg="controller_manager" type="spawner" name="controller_spawner" output="screen"
+        args="robocock/OmniwheelBaseController"/>
+
+    <!-- Debug GUI -->
+    <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/model.perspective" launch-prefix="bash -c 'sleep 5; $0 $@'"/>
+    
+    <!-- Rviz with robocock/config/motor_ros_control.rviz -->
+    <node pkg="rviz" type="rviz" name="rviz" output="screen" respawn="false" args="-d $(find robocock)/config/motor_ros_control.rviz"/>
+
+    <!-- Empty world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find robocock)/worlds/robocock.world"/>
+    </include>
+
+    <!-- Spawn robot in gazebo -->
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -param robot_description -model robocock"/>
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+</launch>

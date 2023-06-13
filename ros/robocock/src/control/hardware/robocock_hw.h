@@ -21,7 +21,7 @@ class RobocockHW : public hardware_interface::RobotHW {
         // ROS node
         ros::Publisher wheel_vel_pub;
         ros::Subscriber wheel_state_sub;
-        ros::Publisher joint_state_pub;
+        // ros::Publisher joint_state_pub;
 
         void wheelStateCallback(const robocock::WheelStates& msg) {
             vel[0] = msg.wheel1_velocity;
@@ -39,13 +39,13 @@ class RobocockHW : public hardware_interface::RobotHW {
             eff[3] = msg.wheel4_output;
 
             // Now, we publish the joint states
-            sensor_msgs::JointState joint_state_msg;
-            joint_state_msg.header.stamp = ros::Time::now();
-            joint_state_msg.name = {"wheel_1_joint", "wheel_2_joint", "wheel_3_joint", "wheel_4_joint"};
-            joint_state_msg.position = {pos[0], pos[1], pos[2], pos[3]};
-            joint_state_msg.velocity = {vel[0], vel[1], vel[2], vel[3]};
-            joint_state_msg.effort = {eff[0], eff[1], eff[2], eff[3]};
-            joint_state_pub.publish(joint_state_msg);
+            // sensor_msgs::JointState joint_state_msg;
+            // joint_state_msg.header.stamp = ros::Time::now();
+            // joint_state_msg.name = {"wheel_1_joint", "wheel_2_joint", "wheel_3_joint", "wheel_4_joint"};
+            // joint_state_msg.position = {pos[0], pos[1], pos[2], pos[3]};
+            // joint_state_msg.velocity = {vel[0], vel[1], vel[2], vel[3]};
+            // joint_state_msg.effort = {eff[0], eff[1], eff[2], eff[3]};
+            // joint_state_pub.publish(joint_state_msg);
         }
 
         float control_frequency;
@@ -81,7 +81,7 @@ class RobocockHW : public hardware_interface::RobotHW {
 
             // Initialize the publisher and subscriber
             wheel_vel_pub = nh.advertise<robocock::TargetWheelVelocities>("target_wheel_velocities", 1000);
-            joint_state_pub = nh.advertise<sensor_msgs::JointState>("joint_states", 1000);
+            // joint_state_pub = nh.advertise<sensor_msgs::JointState>("joint_states", 1000);
             wheel_state_sub = nh.subscribe("wheel_states", 1000, &RobocockHW::wheelStateCallback, this);
 
             // Get the controller frequency
