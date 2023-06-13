@@ -2,11 +2,13 @@
 <launch>
     <param name="robot_description" command="$(find xacro)/xacro --inorder $(find robocock)/description/robot.urdf.xacro" />
 
-    <!-- We don't actually need joint_state_publisher as it is only meant to be used for mockup robots -->
+    <!-- We don't actually need joint_state_publisher as it is only meant to be used for mockup robots, the RobotHW also publishes the sensor data -->
 
     <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
         <param name="use_gui" value="False"/>
     </node> -->
+
+    <!-- Robot state publisher on the other hand takes in the joint data to compute the TFs -->
 
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 
@@ -58,7 +60,7 @@
     <node pkg="controller_manager" type="spawner" name="controller_spawner" output="screen"
         args="robocock/OmniwheelBaseController"/>
     <!-- Debug GUI -->
-    <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/motor_ros_control.perspective" launch-prefix="bash -c 'sleep 5; $0 $@'"/>
+    <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/model.perspective" launch-prefix="bash -c 'sleep 5; $0 $@'"/>
     <!-- Rviz with robocock/config/motor_ros_control.rviz -->
     <node pkg="rviz" type="rviz" name="rviz" output="screen" respawn="false" args="-d $(find robocock)/config/motor_ros_control.rviz"/>
 
