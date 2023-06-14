@@ -15,7 +15,10 @@ RUN apt-get update && sudo apt-get install -y \
     x11-apps\
     libeigen3-dev
 
-RUN mkdir -p /root/catkin_ws/src
+# Astra Camera
+RUN apt-get install -y ros-noetic-rgbd-launch ros-noetic-libuvc-camera ros-noetic-libuvc-ros libuvc-dev
+RUN apt-get install -y libgoogle-glog-dev
+
 
 WORKDIR /root
 RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
@@ -29,4 +32,5 @@ RUN /root/bin/arduino-cli lib install "ArduPID"
 COPY .. /root/robocock
 COPY ./.bashrc /root/.bashrc
 RUN mkdir -p /root/catkin_ws
-RUN ln -s /root/robocock/ros /root/catkin_ws/src
+WORKDIR /root/catkin_ws
+RUN ln -s /root/robocock/ros src
