@@ -19,7 +19,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "rbc"
+      (project "rbc_circuits"
         (path "/1df96114-eb1a-4ddf-9ea3-acd2b4d12bf3" (page "3"))
       )
     )
@@ -36,7 +36,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "rbc"
+      (project "rbc_circuits"
         (path "/1df96114-eb1a-4ddf-9ea3-acd2b4d12bf3" (page "4"))
       )
     )
@@ -53,7 +53,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "rbc"
+      (project "rbc_circuits"
         (path "/1df96114-eb1a-4ddf-9ea3-acd2b4d12bf3" (page "2"))
       )
     )
@@ -70,7 +70,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "rbc"
+      (project "rbc_circuits"
         (path "/1df96114-eb1a-4ddf-9ea3-acd2b4d12bf3" (page "5"))
       )
     )
