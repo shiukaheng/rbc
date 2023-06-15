@@ -19,7 +19,6 @@ RUN /root/bin/arduino-cli core update-index
 RUN /root/bin/arduino-cli core install arduino:avr
 RUN /root/bin/arduino-cli board install arduino:avr:mega
 RUN /root/bin/arduino-cli lib install "FireTimer"
-RUN /root/bin/arduino-cli lib install "ArduPID"
 
 # Copying source code over
 COPY .. /root/rbc

@@ -9,6 +9,7 @@ services:
     volumes:
       - ..:/root/rbc
       - ./.bashrc:/root/.bashrc
+      - ./convenience.sh:/root/convenience.sh
       - /root/catkin_ws/.catkin_tools
       - /root/catkin_ws/build
       - /root/catkin_ws/devel
