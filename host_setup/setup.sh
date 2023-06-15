@@ -1,1 +1,1 @@
-./astra/astra_setup.sh
+./orbbec/orbbec_setup.sh
