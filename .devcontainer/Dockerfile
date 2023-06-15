@@ -22,11 +22,11 @@ RUN /root/bin/arduino-cli lib install "FireTimer"
 RUN /root/bin/arduino-cli lib install "ArduPID"
 
 # Copying source code over
-COPY .. /root/robocock
+COPY .. /root/rbc
 COPY ./.bashrc /root/.bashrc
 RUN mkdir -p /root/catkin_ws
 WORKDIR /root/catkin_ws
-RUN ln -s /root/robocock/ros src
+RUN ln -s /root/rbc/ros src
 
 # Install OpenSSH for remote development
 RUN apt-get install -y openssh-server

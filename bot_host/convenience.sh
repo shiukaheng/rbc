@@ -8,7 +8,7 @@ rbc-update() {
     # Pull latest changes
     git pull
     # Pull latest docker images
-    docker pull --platform linux/arm64 shiukaheng/rbc:latest
+    docker pull --platform shiukaheng/rbc:latest
     # Build docker images
     cd ~/rbc/.devcontainer
     docker-compose -f docker-compose.rpi.yml build

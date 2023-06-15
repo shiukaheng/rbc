@@ -7,7 +7,7 @@ services:
     network_mode: host
     privileged: true
     volumes:
-      - ..:/root/robocock
+      - ..:/root/rbc
       - ./.bashrc:/root/.bashrc
       - /root/catkin_ws/.catkin_tools
       - /root/catkin_ws/build
