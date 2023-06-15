@@ -14,7 +14,7 @@
         <parent link="base_link"/>
         <child link="chassis"/>
         <origin xyz="0 0 0"/>
-    </joint>
+    </joint> launch-prefix="bash -c 'sleep 5; $0 $@'"
     <!-- chassis description goes here. It describes the chassis of robocock which is a 54cm x 54cm x 150cm box -->
     <link name="chassis">
         <visual>
@@ -37,6 +37,20 @@
         <xacro:inertial_box mass="10" x="0.54" y="0.54" z="1.5">
             <origin xyz="0 0 0.75" rpy="0 0 0"/>
         </xacro:inertial_box>
+    </link>
+    <joint name="laser_joint" type="fixed">
+        <parent link="chassis"/>
+        <child link="laser"/>
+        <origin xyz="0.25 0 0.5" rpy="0 0 0"/>
+    </joint>
+    <link name="laser">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder length="0.05" radius="0.05"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
     </link>
     <!-- gazebo specific description -->
     <gazebo reference="chassis">

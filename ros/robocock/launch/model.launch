@@ -6,7 +6,8 @@
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 
     <!-- Debug GUI -->
-    <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/model.perspective" launch-prefix="bash -c 'sleep 5; $0 $@'"/>
+    <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/model.perspective"/>
+    <!--  launch-prefix="bash -c 'sleep 5; $0 $@'" -->
     
     <!-- Rviz with robocock/config/motor_ros_control.rviz -->
     <node pkg="rviz" type="rviz" name="rviz" output="screen" respawn="false" args="-d $(find robocock)/config/motor_ros_control.rviz"/>
