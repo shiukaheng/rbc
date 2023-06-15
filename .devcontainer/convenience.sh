@@ -60,6 +60,6 @@ export DEV_MASTER_URI="http://localhost:11311"
 export DEV_BOT_HOSTNAME="rbc.local"
 export DEV_BOT_MASTER_URI="http://$DEV_BOT_HOSTNAME:11311"
 
-alias setdevmaster='export ROS_MASTER_URI=$DEV_MASTER_URI && export ROS_HOSTNAME=localhost'
-alias setbotmaster='export ROS_MASTER_URI=$DEV_BOT_MASTER_URI && export ROS_HOSTNAME=$DEV_BOT_HOSTNAME'
+alias setdevmaster='export ROS_MASTER_URI=$DEV_MASTER_URI && export ROS_HOSTNAME=0.0.0.0'
+alias setbotmaster='export ROS_MASTER_URI=$DEV_BOT_MASTER_URI && export ROS_HOSTNAME=0.0.0.0'
 alias checkmaster='echo Hostname: $ROS_HOSTNAME, Master URI: $ROS_MASTER_URI'

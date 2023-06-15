@@ -31,5 +31,6 @@
     <rosparam file="$(find robocock)/config/controller.yaml" command="load"/>
     <!-- Load the controller -->
     <node pkg="controller_manager" type="spawner" name="controller_spawner" output="screen"
-        args="robocock/OmniwheelBaseController"/>
+        args="robocock/OmniwheelBaseController joint_state_controller/JointStateController"/>
+    <!--  -->
 </launch>
