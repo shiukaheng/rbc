@@ -38,7 +38,7 @@ alias mvel='roslaunch robocock motor_vel.launch' # Motor Velocity
 alias mrc='roslaunch robocock motor_ros_control.launch' # Motor ros_control
 alias m='roslaunch robocock model.launch' # Model launch
 alias g='roslaunch robocock gazebo.launch'
-alias br='roslaunch robocock bot_remote.launch' # Bot remote
+alias hw='roslaunch robocock hardware.launch' # Bot remote
 alias update='run_in_directory "git pull && refreshenv" "$RBC_REPO"' # Update repo
 alias discard_changes='run_in_directory "git reset --hard HEAD" "$RBC_REPO"' # Discard changes
 alias commit='run_in_directory "git add . && git commit -m" "$RBC_REPO"' # Commit changes
@@ -57,8 +57,9 @@ fi
 # Convenience alias for setting remote or local ROS_MASTER_URI
 
 export DEV_MASTER_URI="http://localhost:11311"
-export DEV_BOT_MASTER_URI="http://rbc.local:11311"
+export DEV_BOT_HOSTNAME="rbc.local"
+export DEV_BOT_MASTER_URI="http://$DEV_BOT_HOSTNAME:11311"
 
-alias setdevmaster='export ROS_MASTER_URI=$DEV_MASTER_URI'
-alias setbotmaster='export ROS_MASTER_URI=$DEV_BOT_MASTER_URI'
-alias checkmaster='echo $ROS_MASTER_URI'
+alias setdevmaster='export ROS_MASTER_URI=$DEV_MASTER_URI && export ROS_HOSTNAME=localhost'
+alias setbotmaster='export ROS_MASTER_URI=$DEV_BOT_MASTER_URI && export ROS_HOSTNAME=$DEV_BOT_HOSTNAME'
+alias checkmaster='echo Hostname: $ROS_HOSTNAME, Master URI: $ROS_MASTER_URI'

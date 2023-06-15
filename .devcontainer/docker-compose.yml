@@ -20,6 +20,8 @@ services:
       - /root/.dev
       - /root/.bash_history
       - ./sshd_config:/etc/ssh/sshd_config
+      - /var/run/dbus:/var/run/dbus
+      - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
     devices:
       - /dev/ttyACM0:/dev/ttyACM0 # Arduino motor controller
       - /dev/astra_s:/dev/astra_s # Orbbec Astra S

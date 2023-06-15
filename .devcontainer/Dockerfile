@@ -34,11 +34,7 @@ RUN service ssh start
 # Copy in sshd_config file
 COPY ./sshd_config /etc/ssh/sshd_config
 
-# # CD to catkin_ws
-# WORKDIR /root/catkin_ws
-
-# # Build catkin_ws
-# RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && catkin build"
-
+# Install avahi-daemon for mDNS
+RUN apt-get install -y avahi-daemon iputils-ping
 # Set password for root to be roboc0ck
 RUN echo 'root:roboc0ck' | chpasswd
