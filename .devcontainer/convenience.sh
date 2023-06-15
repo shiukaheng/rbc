@@ -52,3 +52,12 @@ if [ ! -f ~/.dev/init.lock ]; then
   touch ~/.dev/init.lock
   echo -e "\e[36mDev environment initialized, compiled catkin_ws, arduino rosserial libraries, and arduino sketch.\e[0m"
 fi
+
+# Convenience alias for setting remote or local ROS_MASTER_URI
+
+export DEV_MASTER_URI="http://localhost:11311"
+export DEV_BOT_MASTER_URI="http://rbc.local:11311"
+
+alias setdevmaster='export ROS_MASTER_URI=$DEV_MASTER_URI'
+alias setbotmaster='export ROS_MASTER_URI=$DEV_BOT_MASTER_URI'
+alias checkmaster='echo $ROS_MASTER_URI'
