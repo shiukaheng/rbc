@@ -63,10 +63,10 @@
     (stroke (width 0.1524) (type solid))
     (fill (color 0 0 0 0.0000))
     (uuid 8a955068-bee1-41d8-bd91-93323aaa04a0)
-    (property "Sheetname" "Central Processing" (at 191.77 86.9184 0)
+    (property "Sheetname" "Motor Shields" (at 191.77 86.9184 0)
       (effects (font (size 1.27 1.27)) (justify left bottom))
     )
-    (property "Sheetfile" "brain.kicad_sch" (at 191.77 113.6146 0)
+    (property "Sheetfile" "motor_shields.kicad_sch" (at 191.77 113.6146 0)
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
