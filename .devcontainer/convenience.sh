@@ -38,6 +38,7 @@ alias mvel='roslaunch robocock motor_vel.launch' # Motor Velocity
 alias mrc='roslaunch robocock motor_ros_control.launch' # Motor ros_control
 alias m='roslaunch robocock model.launch' # Model launch
 alias g='roslaunch robocock gazebo.launch'
+alias update='run_in_directory "git pull" "$RBC_REPO"' # Update repo
 # Check if ~/.dev has init.lock file. If it doesnt, initialize and create the file, otherwise do nothing
 if [ ! -f ~/.dev/init.lock ]; then
   # Echo in cyan initializing dev environment
