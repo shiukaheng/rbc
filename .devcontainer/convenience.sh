@@ -38,7 +38,7 @@ alias mvel='roslaunch robocock motor_vel.launch' # Motor Velocity
 alias mrc='roslaunch robocock motor_ros_control.launch' # Motor ros_control
 alias m='roslaunch robocock model.launch' # Model launch
 alias g='roslaunch robocock gazebo.launch'
-alias update='run_in_directory "git pull" "$RBC_REPO"' # Update repo
+alias update='run_in_directory "git pull && refreshenv" "$RBC_REPO"' # Update repo
 alias discard_changes='run_in_directory "git reset --hard HEAD" "$RBC_REPO"' # Discard changes
 alias commit='run_in_directory "git add . && git commit -m" "$RBC_REPO"' # Commit changes
 # Check if ~/.dev has init.lock file. If it doesnt, initialize and create the file, otherwise do nothing
