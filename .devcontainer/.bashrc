@@ -123,4 +123,4 @@ export PATH=$PATH:~/bin
 export CATKIN_WS_PATH=~/catkin_ws
 export RBC_REPO=~/rbc
 
-source convenience.sh
+source ~/convenience.sh
