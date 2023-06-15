@@ -2,18 +2,9 @@ FROM shiukaheng/ros-base:latest
 
 ENTRYPOINT [ "/usr/bin/env" ]
 
-RUN apt-get update && sudo apt-get install -y \
-    python3-catkin-tools\
-    nano\
-    curl\
-    git\
-    ros-noetic-rosserial\
-    ros-noetic-rosserial-arduino\
-    ros-noetic-rqt-ez-publisher\
-    ros-noetic-ros-control\
-    ros-noetic-ros-controllers\
-    x11-apps\
-    libeigen3-dev
+RUN apt-get update
+RUN apt-get install -y python3-catkin-tools nano curl git x11-apps
+RUN apt-get install -y ros-noetic-rosserial ros-noetic-rosserial-arduino ros-noetic-rqt-ez-publisher ros-noetic-ros-control ros-noetic-ros-controllers libeigen3-dev
 
 # Astra Camera
 RUN apt-get install -y ros-noetic-rgbd-launch ros-noetic-libuvc-camera ros-noetic-libuvc-ros libuvc-dev
