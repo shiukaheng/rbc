@@ -10,6 +10,8 @@ RUN apt-get install -y ros-noetic-rosserial ros-noetic-rosserial-arduino ros-noe
 RUN apt-get install -y ros-noetic-rgbd-launch ros-noetic-libuvc-camera ros-noetic-libuvc-ros libuvc-dev
 RUN apt-get install -y libgoogle-glog-dev
 
+# LDS-01
+RUN apt-get install -y ros-noetic-hls-lfcd-lds-driver
 
 WORKDIR /root
 RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
@@ -25,3 +27,19 @@ COPY ./.bashrc /root/.bashrc
 RUN mkdir -p /root/catkin_ws
 WORKDIR /root/catkin_ws
 RUN ln -s /root/robocock/ros src
+
+# Install OpenSSH for remote development
+RUN apt-get install -y openssh-server
+RUN service ssh start
+
+# Copy in sshd_config file
+COPY ./sshd_config /etc/ssh/sshd_config
+
+# # CD to catkin_ws
+# WORKDIR /root/catkin_ws
+
+# # Build catkin_ws
+# RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && catkin build"
+
+# Set password for root to be roboc0ck
+RUN echo 'root:roboc0ck' | chpasswd

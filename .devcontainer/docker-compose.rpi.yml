@@ -21,11 +21,12 @@ services:
       - ./sshd_config:/etc/ssh/sshd_config
     devices:
       - /dev/ttyACM0:/dev/ttyACM0 # Arduino motor controller
-      - /dev/astra_s:/dev/astra_s # Orbbec Astra S
+      - /dev/ttyUSB0:/dev/ttyUSB0 # LDS-01
+      # - /dev/astra_s:/dev/astra_s # Orbbec Astra S
       - /dev/dri
     environment:
       - DISPLAY
       - QT_X11_NO_MITSHM=1
       - HOST_OS=linux
-    # Keep alive entrypoint
-    entrypoint: tail -f /dev/null
+    # Run sshd as entrypoint
+    entrypoint: /usr/sbin/sshd -D
