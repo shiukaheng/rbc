@@ -38,3 +38,6 @@ COPY ./sshd_config /etc/ssh/sshd_config
 RUN apt-get install -y avahi-daemon iputils-ping
 # Set password for root to be roboc0ck
 RUN echo 'root:roboc0ck' | chpasswd
+
+# Install slam_toolbox
+RUN apt-get install -y ros-noetic-slam-toolbox
