@@ -20,12 +20,13 @@ RUN /root/bin/arduino-cli core install arduino:avr
 RUN /root/bin/arduino-cli board install arduino:avr:mega
 RUN /root/bin/arduino-cli lib install "FireTimer"
 
-# Copying source code over
-COPY .. /root/rbc
-COPY ./.bashrc /root/.bashrc
-RUN mkdir -p /root/catkin_ws
-WORKDIR /root/catkin_ws
-RUN ln -s /root/rbc/ros src
+# Install slam_toolbox
+RUN apt-get install -y ros-noetic-slam-toolbox
+
+# Install move_base_flex
+RUN apt-get install -y ros-noetic-move-base
+
+# End of ROS dependencies
 
 # Install OpenSSH for remote development
 RUN apt-get install -y openssh-server
@@ -36,8 +37,16 @@ COPY ./sshd_config /etc/ssh/sshd_config
 
 # Install avahi-daemon for mDNS
 RUN apt-get install -y avahi-daemon iputils-ping
+
+# Copying source code over
+COPY .. /root/rbc
+COPY ./.bashrc /root/.bashrc
+RUN mkdir -p /root/catkin_ws
+WORKDIR /root/catkin_ws
+RUN ln -s /root/rbc/ros src
+
 # Set password for root to be roboc0ck
 RUN echo 'root:roboc0ck' | chpasswd
 
-# Install slam_toolbox
-RUN apt-get install -y ros-noetic-slam-toolbox
+# Remove ~/.dev
+RUN rm -rf ~/.dev
