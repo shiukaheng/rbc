@@ -116,57 +116,11 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Source ROS
-source /opt/ros/noetic/setup.bash
-# Source overlay IF it exists
-if [ -f ~/catkin_ws/devel/setup.bash ]; then
-  source ~/catkin_ws/devel/setup.bash
-fi
+# Add ~/bin to PATH
+export PATH=$PATH:~/bin
 
-run_in_directory() {
-  local command="$1"
-  local directory="$2"
+# Folder paths
+export CATKIN_WS_PATH=~/catkin_ws
+export RBC_REPO=~/rbc
 
-  # Store the current working directory
-  local current_dir="$(pwd)"
-
-  # Change to the specified directory
-  cd "$directory" || return
-
-  # Run the command
-  eval "$command"
-
-  # Return to the original working directory
-  cd "$current_dir" || return
-}
-
-# Add /root/bin to PATH
-export PATH=$PATH:/root/bin
-
-# Aliases
-alias refreshenv='source ~/.bashrc' # Refresh environment
-alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "/root/robocock/controller"' # Arduino Compile
-alias au='run_in_directory "arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega" "/root/robocock/controller"' # Arduino Upload
-alias acu='ac && au' # Arduino Compile and Upload
-alias cb='run_in_directory "catkin build" "/root/catkin_ws" && refreshenv' # Catkin Build and refresh environment
-alias editbashrc='nano ~/.bashrc && refreshenv' # Edit bashrc
-alias cdrepo='cd /root/robocock' # CD to repo
-alias cdws='cd /root/catkin_ws' # CD to workspace
-alias abl='rosrun rosserial_arduino make_libraries.py /root/Arduino/libraries' # Arduino Build Libraries
-alias acm='cb && abl && ac' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
-alias mt='roslaunch robocock motor_tune.launch' # Motor Tune
-alias mvel='roslaunch robocock motor_vel.launch' # Motor Velocity
-alias mrc='roslaunch robocock motor_ros_control.launch' # Motor ros_control
-alias m='roslaunch robocock model.launch' # Model launch
-alias g='roslaunch robocock gazebo.launch'
-# Check if /root/.dev has init.lock file. If it doesnt, initialize and create the file, otherwise do nothing
-if [ ! -f /root/.dev/init.lock ]; then
-  # Echo in cyan initializing dev environment
-  echo -e "\e[36mInitializing dev environment...\e[0m"   
-  run_in_directory "catkin build" "/root/catkin_ws" # Build catkin workspace
-  source /root/catkin_ws/devel/setup.bash # Source catkin workspace
-  abl # Build Arduino libraries
-  ac # Compile Arduino sketch
-  touch /root/.dev/init.lock
-  echo -e "\e[36mDev environment initialized, compiled catkin_ws, arduino rosserial libraries, and arduino sketch.\e[0m"
-fi
+source ~/convenience.sh
