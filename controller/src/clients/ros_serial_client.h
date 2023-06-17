@@ -10,6 +10,9 @@
 #include <robocock/WheelStates.h>
 #include <robocock/TargetWheelVelocities.h>
 #include <robocock/WheelPIDParameters.h>
+#include <robocock/EmergencyStop.h>
+#include <robocock/Resume.h>
+#include <robocock/ResetPID.h>
 
 /**
  * @brief A client that listens for PID RPS targets, and uses closed loop control to achieve them
@@ -31,6 +34,9 @@ class ROSSerialClient {
         ros::Subscriber<robocock::WheelPIDParameters, ROSSerialClient> _wheel_pid_parameters_sub = ros::Subscriber<robocock::WheelPIDParameters, ROSSerialClient>("wheel_pid_parameters", &ROSSerialClient::_wheelPIDParametersCallback, this);
         bool disable_motors_flag;
         float _setpoints[4] = {0,0,0,0};
+        bool emergencyStopService(robocock::EmergencyStop::Request &req, robocock::EmergencyStop::Response &res);
+        bool resumeService(robocock::Resume::Request &req, robocock::Resume::Response &res);
+        bool resetPIDService(robocock::ResetPID::Request &req, robocock::ResetPID::Response &res);
     public:
         ROSSerialClient(RBCConfig config);
         ~ROSSerialClient();
@@ -41,4 +47,5 @@ class ROSSerialClient {
         void isr4();
         void emergencyStop();
         void resume();
+        void resetPID();
 };
