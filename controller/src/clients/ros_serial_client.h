@@ -29,6 +29,8 @@ class ROSSerialClient {
         ros::Subscriber<robocock::TargetWheelVelocities, ROSSerialClient> _target_wheel_velocities_sub = ros::Subscriber<robocock::TargetWheelVelocities, ROSSerialClient>("target_wheel_velocities", &ROSSerialClient::_targetWheelVelocitiesCallback, this);
         void _wheelPIDParametersCallback(const robocock::WheelPIDParameters& msg);
         ros::Subscriber<robocock::WheelPIDParameters, ROSSerialClient> _wheel_pid_parameters_sub = ros::Subscriber<robocock::WheelPIDParameters, ROSSerialClient>("wheel_pid_parameters", &ROSSerialClient::_wheelPIDParametersCallback, this);
+        bool disable_motors_flag;
+        float _setpoints[4] = {0,0,0,0};
     public:
         ROSSerialClient(RBCConfig config);
         ~ROSSerialClient();
@@ -37,4 +39,6 @@ class ROSSerialClient {
         void isr2();
         void isr3();
         void isr4();
+        void emergencyStop();
+        void resume();
 };

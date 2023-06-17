@@ -16,6 +16,7 @@ ROSSerialClient::ROSSerialClient(RBCConfig config) {
     _motor2->getPID().setOutputLimits(0,0);
     _motor3->getPID().setOutputLimits(0,0);
     _motor4->getPID().setOutputLimits(0,0);
+    disable_motors_flag = false;
 }
 
 ROSSerialClient::~ROSSerialClient() {
@@ -42,10 +43,10 @@ void ROSSerialClient::isr4() {
 }
 
 void ROSSerialClient::_targetWheelVelocitiesCallback(const robocock::TargetWheelVelocities& msg) {
-    _motor1->setRPS(msg.wheel1);
-    _motor2->setRPS(msg.wheel2);
-    _motor3->setRPS(msg.wheel3);
-    _motor4->setRPS(msg.wheel4);
+    _setpoints[0] = msg.wheel1;
+    _setpoints[1] = msg.wheel2;
+    _setpoints[2] = msg.wheel3;
+    _setpoints[3] = msg.wheel4;
 }
 
 void ROSSerialClient::_wheelPIDParametersCallback(const robocock::WheelPIDParameters& msg) {
@@ -56,6 +57,20 @@ void ROSSerialClient::_wheelPIDParametersCallback(const robocock::WheelPIDParame
 }
 
 void ROSSerialClient::update() {
+
+    // Set motor setpoints
+    if (disable_motors_flag) {
+        _motor1->setRPS(0);
+        _motor2->setRPS(0);
+        _motor3->setRPS(0);
+        _motor4->setRPS(0);
+    } else {
+        _motor1->setRPS(_setpoints[0]);
+        _motor2->setRPS(_setpoints[1]);
+        _motor3->setRPS(_setpoints[2]);
+        _motor4->setRPS(_setpoints[3]);
+    }
+
     _motor1->update();
     _motor2->update();
     _motor3->update();
@@ -84,4 +99,20 @@ void ROSSerialClient::update() {
     _wheel_states_pub.publish(&_wheel_states_msg);
 
     _nh.spinOnce();
+}
+
+void ROSSerialClient::emergencyStop() {
+    disable_motors_flag = true;
+    _motor1->getPID().reset();
+    _motor2->getPID().reset();
+    _motor3->getPID().reset();
+    _motor4->getPID().reset();
+    _motor1->setRPS(0);
+    _motor2->setRPS(0);
+    _motor3->setRPS(0);
+    _motor4->setRPS(0);
+}
+
+void ROSSerialClient::resume() {
+    disable_motors_flag = false;
 }
