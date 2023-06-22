@@ -88,7 +88,7 @@ class EncoderReaderNaive{
          * @return double The quantization error of measurement
         */
         double getQuantizationError() {
-            return (double) _ppr * (double) _gear_ratio / (double) _last_dt * 1e6 * 2. * M_PI;
+            return 1. / (double) _ppr * (double) _gear_ratio / (double) _last_dt * 1e6 * 2. * M_PI;
         }
     private:
         long _last_update_time = 0;

@@ -59,6 +59,7 @@ class PIDMotor {
         int _hall_a_pin; // Meant to be attached to interrupt
         int _hall_b_pin; // Read in update function
         double _gear_ratio;
+        double _quantization_error;
         // Motor
         RawMotor* _motor;
         // Derivative constrainer
