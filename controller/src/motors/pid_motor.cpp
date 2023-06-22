@@ -61,6 +61,8 @@ void PIDMotor::update() {
     }
     // Update PID
     input = _encoder->getRPS();
+    double quantization_error = _encoder->getQuantizationError();
+    _pid_controller.setDeadBand(-quantization_error, quantization_error);
     // input = _derivative_constrainer->update(_encoder->getRPS(), encoder_updated / 1000000.); // Constraint acceleration to 10 rad/s^2 as what is physically possible (trying to eliminate misreadings)
     _pid_controller.compute();
     // Stalling prevention

@@ -82,6 +82,11 @@ void ArduPID::compute()
 		curSetpoint = *setpoint;
 		curError    = curSetpoint - curInput;
 
+		// Check if error is within tolerance
+		if (curError >= deadBandMin && curError <= deadBandMax) {
+			return;
+		}
+
 		double dInput = *input - lastInput; // Derivative on measurement
 
 		if (pOnType == P_ON_E) // Proportional on error

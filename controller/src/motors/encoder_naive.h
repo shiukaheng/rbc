@@ -63,6 +63,7 @@ class EncoderReaderNaive{
             // Update the cumulative rad using total_count
             _cumulative_rad = (double) total_pulses / (double) _ppr * (double) _gear_ratio * 2. * M_PI;
             // _cumulative_rad = dt;
+            _last_dt = dt;
             return dt;
         }
         /**
@@ -81,10 +82,19 @@ class EncoderReaderNaive{
         double getCumulativeRad() {
             return _cumulative_rad;
         }
+        /**
+         * @brief Get quantization error of measurement
+         * 
+         * @return double The quantization error of measurement
+        */
+        double getQuantizationError() {
+            return (double) _ppr * (double) _gear_ratio / (double) _last_dt * 1e6 * 2. * M_PI;
+        }
     private:
         long _last_update_time = 0;
         double _radps = 0;
         double _cumulative_rad = 0;
+        double _last_dt = 0;
         // Params
         int _hall_a_pin;
         int _hall_b_pin;
