@@ -287,11 +287,11 @@
                   "type": "repr"
                 },
                 "x_limits": {
-                  "repr": "[210.07210971651799, 298.52188420295715]",
+                  "repr": "[66.01498854581028, 105.35240173339844]",
                   "type": "repr"
                 },
                 "y_limits": {
-                  "repr": "[-5.217926979064941, 5.237901210784912]",
+                  "repr": "[-8.477283477783203, 7.173086166381836]",
                   "type": "repr"
                 }
               },
@@ -322,7 +322,7 @@
             "plugin": {
               "keys": {
                 "publishers": {
-                  "repr": "\"[{'topic_name': '/wheel_pid_parameters', 'type_name': 'robocock/WheelPIDParameters', 'rate': 1.0, 'enabled': False, 'publisher_id': 0, 'counter': 296, 'expressions': {'/wheel_pid_parameters/wheel1_p': '40', '/wheel_pid_parameters/wheel1_i': '0.025', '/wheel_pid_parameters/wheel1_d': '0.025'}}]\"",
+                  "repr": "\"[{'topic_name': '/wheel_pid_parameters', 'type_name': 'robocock/WheelPIDParameters', 'rate': 1.0, 'enabled': False, 'publisher_id': 0, 'counter': 94, 'expressions': {'/wheel_pid_parameters/wheel1_p': '40', '/wheel_pid_parameters/wheel1_i': '0.025', '/wheel_pid_parameters/wheel1_d': '0.025'}}]\"",
                   "type": "repr"
                 }
               },

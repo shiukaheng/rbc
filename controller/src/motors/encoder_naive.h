@@ -25,6 +25,7 @@ class EncoderReaderNaive{
             // See if hall_b_pin is high or low
             bool cw = digitalRead(_hall_b_pin);
             // Increment or decrement the total count
+            dirty = true;
             if (cw) {
                 total_count++;
                 delta_count++;
@@ -37,17 +38,22 @@ class EncoderReaderNaive{
          * @brief Updates the monitor
          * 
          */
-        bool update() {
+        long update() {
             // Get the time
             long now = micros();
             // Get the delta time
             long dt = now - _last_update_time;
             // If the delta time is less than the target dt, return
             if (dt < _target_dt) {
-                return false;
+                return -1;
             }
+            dirty = false;
             // Get the delta pulses
             long delta_pulses = delta_count;
+            long total_pulses = total_count;
+            if (dirty) {
+                return -1;
+            }
             // Reset the delta count
             delta_count = 0;
             // Calculate the rad/s
@@ -55,9 +61,9 @@ class EncoderReaderNaive{
             // Update the last update time
             _last_update_time = now;
             // Update the cumulative rad using total_count
-            _cumulative_rad = (double) total_count / (double) _ppr * (double) _gear_ratio * 2. * M_PI;
+            _cumulative_rad = (double) total_pulses / (double) _ppr * (double) _gear_ratio * 2. * M_PI;
             // _cumulative_rad = dt;
-            return true;
+            return dt;
         }
         /**
          * @brief Gets the rad/s
@@ -88,4 +94,5 @@ class EncoderReaderNaive{
         // ISR vars
         volatile long total_count = 0;
         volatile long delta_count = 0;
+        volatile bool dirty = false;
 };

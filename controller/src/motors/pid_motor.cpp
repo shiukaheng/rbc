@@ -1,5 +1,7 @@
 #include "pid_motor.h"
 
+// TODO: Integrate gear ratio as parameter to encoder class
+
 PIDMotor::PIDMotor(PIDMotorConfig config) {
     motor_config = config;
     // Set parameter variables
@@ -22,11 +24,15 @@ PIDMotor::PIDMotor(PIDMotorConfig config) {
     _motor = new RawMotor(config.motor_pinout.lpwm_pin, config.motor_pinout.rpwm_pin, config.smoothener_window_size);
     // Initialize stall smoothener
     _stall_smoothener = new ExpTimeSmoothener(0.01);
+    // Initialize derivative constrainer for velocity constraint
+    _derivative_constrainer = new DerivativeConstrainer(20.);
 }
 
 PIDMotor::~PIDMotor() {
     delete _encoder;
     delete _motor;
+    delete _stall_smoothener;
+    delete _derivative_constrainer;
 }
 
 void PIDMotor::setPWMRaw(int pwm_value) {
@@ -49,12 +55,13 @@ void PIDMotor::setRPS(float rps) {
 
 void PIDMotor::update() {
     // Update encoder
-    bool encoder_updated = _encoder->update();
-    if (!encoder_updated) {
+    long encoder_updated = _encoder->update(); // This is a terrible way to manage dt. It should be centrally managed in one big loop, with one dt. But for now, this will do.
+    if (encoder_updated == -1) {
         return;
     }
     // Update PID
-    input = _encoder->getRPS(); // TODO: Integrate gear ratio as parameter to encoder class
+    input = _encoder->getRPS();
+    // input = _derivative_constrainer->update(_encoder->getRPS(), encoder_updated / 1000000.); // Constraint acceleration to 10 rad/s^2 as what is physically possible (trying to eliminate misreadings)
     _pid_controller.compute();
     // Stalling prevention
     // If setpoint is 0, smoothened_rps is below threshold, but PWM is not 0, then force PWM to 0

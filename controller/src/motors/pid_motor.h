@@ -2,10 +2,10 @@
 
 #include <Arduino.h>
 #include "../ardupid/ArduPID.h"
-// #include "encoder.h"
 #include "encoder_naive.h"
 #include "raw_motor.h"
 #include "../utils/argtypes.h"
+#include "../utils/derivative_constrainer.h"
 
 // Minimum PWM to move the motor: 50
 
@@ -15,7 +15,7 @@ class PIDMotor {
     public:
         PIDMotor(PIDMotorConfig config);
         ~PIDMotor();
-        /**
+        /**Encoder
          * @brief Directly set the PWM value of the motor
          * 
          * @param pwm_value the pwm_value to set the motor to [-255, 255]
@@ -61,4 +61,6 @@ class PIDMotor {
         double _gear_ratio;
         // Motor
         RawMotor* _motor;
+        // Derivative constrainer
+        DerivativeConstrainer* _derivative_constrainer;
 };
