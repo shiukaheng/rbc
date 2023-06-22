@@ -48,7 +48,10 @@ void PIDMotor::setRPS(float rps) {
 
 void PIDMotor::update() {
     // Update encoder
-    _encoder->update();
+    bool encoder_updated = _encoder->update();
+    if (!encoder_updated) {
+        return;
+    }
     // Update PID
     input = _encoder->getRPS(); // TODO: Integrate gear ratio as parameter to encoder class
     _pid_controller.compute();

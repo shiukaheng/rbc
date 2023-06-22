@@ -7,13 +7,12 @@
 
 class EncoderReaderNaive{
     public:
-        EncoderReaderNaive(int hall_a_pin, int hall_b_bin, int ppr = PPR, double gear_ratio = GEAR_RATIO, long min_dt = 10000, long max_dt = 50000) {
+        EncoderReaderNaive(int hall_a_pin, int hall_b_bin, int ppr = PPR, double gear_ratio = GEAR_RATIO, int target_dt = 50000) {
             _hall_a_pin = hall_a_pin;
             _hall_b_pin = hall_b_bin;
             _ppr = ppr;
             _gear_ratio = gear_ratio;
-            _min_dt = min_dt;
-            _max_dt = max_dt;
+            _target_dt = target_dt;
             pinMode(_hall_a_pin, INPUT);
             pinMode(_hall_b_pin, INPUT);
         }
@@ -38,19 +37,14 @@ class EncoderReaderNaive{
          * @brief Updates the monitor
          * 
          */
-        void update() {
+        bool update() {
             // Get the time
             long now = micros();
             // Get the delta time
             long dt = now - _last_update_time;
-            // If the delta time is too small, return
-            // Slow speed: higher _min_dt is better, Higher speed: lower _min_dt is better. Me bound this to max_dt, min_dt to guarantee 
-            // Target: PPR amount of pulses per second
-            // Expected window time to capture PPR amount (1 cycle) of pulses at wheel rot vel w: gear ratio / w
-            double expected_dt = constrain(_radps == 0 ? _max_dt : _gear_ratio / _radps * 1e6, _min_dt, _max_dt);
-            // double expected_dt = _max_dt;
-            if (dt < expected_dt) {
-                return;
+            // If the delta time is less than the target dt, return
+            if (dt < _target_dt) {
+                return false;
             }
             // Get the delta pulses
             long delta_pulses = delta_count;
@@ -62,6 +56,7 @@ class EncoderReaderNaive{
             _last_update_time = now;
             // Update the cumulative rad using total_count
             _cumulative_rad = (double) total_count / _ppr * _gear_ratio * 2 * M_PI;
+            return true;
         }
         /**
          * @brief Gets the rad/s
@@ -88,8 +83,7 @@ class EncoderReaderNaive{
         int _hall_b_pin;
         int _ppr;
         double _gear_ratio;
-        long _min_dt;
-        long _max_dt;
+        long _target_dt;
         // ISR vars
         volatile long total_count = 0;
         volatile long delta_count = 0;
