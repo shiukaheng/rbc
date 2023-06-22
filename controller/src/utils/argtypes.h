@@ -12,6 +12,7 @@ struct MotorConfig {
     double gear_ratio;
     int ppr;
     int smoothener_window_size;
+    int min_startup_pwm;
 };
 
 struct PIDMotorConfig : MotorConfig {

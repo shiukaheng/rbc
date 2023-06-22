@@ -7,6 +7,8 @@
 #include "raw_motor.h"
 #include "../utils/argtypes.h"
 
+// Minimum PWM to move the motor: 50
+
 // #define MIN_MOVING_PWM 11 // Assumes symmetric PWMs
 
 class PIDMotor {

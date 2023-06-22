@@ -7,7 +7,7 @@
 
 class EncoderReaderNaive{
     public:
-        EncoderReaderNaive(int hall_a_pin, int hall_b_bin, int ppr = PPR, double gear_ratio = GEAR_RATIO, int target_dt = 50000) {
+        EncoderReaderNaive(int hall_a_pin, int hall_b_bin, int ppr = PPR, double gear_ratio = GEAR_RATIO, long target_dt = 30000) {
             _hall_a_pin = hall_a_pin;
             _hall_b_pin = hall_b_bin;
             _ppr = ppr;
@@ -51,11 +51,12 @@ class EncoderReaderNaive{
             // Reset the delta count
             delta_count = 0;
             // Calculate the rad/s
-            _radps = (double) delta_pulses / _ppr * _gear_ratio / dt * 1e6 * 2 * M_PI;
+            _radps = (double) delta_pulses / (double) _ppr * (double) _gear_ratio / (double) dt * 1e6 * 2. * M_PI;
             // Update the last update time
             _last_update_time = now;
             // Update the cumulative rad using total_count
-            _cumulative_rad = (double) total_count / _ppr * _gear_ratio * 2 * M_PI;
+            _cumulative_rad = (double) total_count / (double) _ppr * (double) _gear_ratio * 2. * M_PI;
+            // _cumulative_rad = dt;
             return true;
         }
         /**

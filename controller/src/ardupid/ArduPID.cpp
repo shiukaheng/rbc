@@ -91,15 +91,21 @@ void ArduPID::compute()
 
 		dOut = -kd * dInput; // Calculate final derivative term
 
-		double iTemp = (iIn == 0.0) ? 0.0 : iOut + (ki * ((curError + lastError) / 2.0)); // Trapezoidal integration
+		// Get setpoint polarity multiplier
+		double polarity = (curSetpoint >= 0) ? 1 : -1;
+		double zero = (curSetpoint == 0) ? 1 : 0;
+
+		double iTemp = (iIn == 0.0) ? 0.0 : abs(iOut + (ki * ((curError + lastError) / 2.0))) * polarity; // Calculate integral term
 		iTemp        = constrain(iTemp, windupMin, windupMax);       // Prevent integral windup
 
-		double outTemp = bias + pOut + dOut;                           // Output without integral
+		// Calculate bias component from setpoint polarity, or 0 if setpoint is 0
+		double biasTemp = (curSetpoint > 0) ? bias : (curSetpoint < 0) ? -bias : 0;
+		double outTemp = biasTemp + pOut + dOut;                           // Output without integral
 		double iMax = constrain(outputMax - outTemp, 0, outputMax); // Maximum allowed integral term before saturating output
         double iMin = constrain(outputMin + outTemp, outputMin, 0); // Minimum allowed integral term before saturating output
 
 		iOut = constrain(iTemp, iMin, iMax);
-		double newOutput = bias + pOut + iOut + dOut;
+		double newOutput = biasTemp * zero + pOut + iOut + dOut;
 
 		newOutput = constrain(newOutput, outputMin, outputMax);
 		*output   = newOutput;

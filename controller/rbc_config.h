@@ -2,7 +2,7 @@
 #include "rbc.h"
 
 // Function to create the RBCConfig
-RBCConfig createConfig(int motor_pinouts[4][4], int ppr, double gear_ratio, int smoothener_window_size, double kp, double ki, double kd) {
+RBCConfig createConfig(int motor_pinouts[4][4], int ppr, double gear_ratio, int smoothener_window_size, double kp, double ki, double kd, int min_startup_pwm) {
     // Concatenate the motor pinouts and pid into PIDMotorConfigs
     RBCConfig config;
     for (int i = 0; i < 4; i++) {
@@ -18,6 +18,7 @@ RBCConfig createConfig(int motor_pinouts[4][4], int ppr, double gear_ratio, int 
         config.motor_configs[i].kp = kp;
         config.motor_configs[i].ki = ki;
         config.motor_configs[i].kd = kd;
+        config.motor_configs[i].min_startup_pwm = min_startup_pwm;
     }
     return config;
 }

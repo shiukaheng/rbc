@@ -42,7 +42,7 @@ void setup() {
     // Motor configurations
     double gear_ratio = 1./82.;
     int ppr = 16;
-    int smoothener_window_size = 4;
+    int smoothener_window_size = 1;
 
     // Pinouts: { lpwm_pin, rpwm_pin, hall_a_pin, hall_b_pin }
     int motor_pinouts[4][4] = {
@@ -53,7 +53,21 @@ void setup() {
     };
 
     // Create config
-    RBCConfig config = createConfig(motor_pinouts, ppr, gear_ratio, smoothener_window_size, kp, ki, kd);
+    RBCConfig config = createConfig(
+        // Pinouts
+        motor_pinouts,
+        // Wheel parameters 
+        ppr, 
+        gear_ratio, 
+        // Smoothener parameters
+        smoothener_window_size,
+        // PID parameters
+        kp, 
+        ki, 
+        kd,
+        // Minimum startup PWM  
+        50
+    );
 
     // Create client
     client = new ROSSerialClient(config);
