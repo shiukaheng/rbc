@@ -57,16 +57,19 @@ void PIDMotor::update() {
     input = _encoder->getRPS(); // TODO: Integrate gear ratio as parameter to encoder class
     _pid_controller.compute();
     // Stalling prevention
-    // If setpoint is 0, smoothened_rps is below threshold, but PWM is not 0, then reset PID
-    // double smoothened_rps = _stall_smoothener->update(input);
-    // if (setpoint == 0 && abs(smoothened_rps) < 0.001 && output != 0 && _stall_prevention_triggered == false) {
-    //     _pid_controller.reset();
-    //     _stall_prevention_triggered = true;
-    // } else {
-    //     _stall_prevention_triggered = false;
-    // }
+    // If setpoint is 0, smoothened_rps is below threshold, but PWM is not 0, then force PWM to 0
+    double smoothened_rps = _stall_smoothener->update(input);
+    if (setpoint == 0 && abs(smoothened_rps) < 0.001 && output != 0) {
+        if (_stall_prevention_triggered == false) {
+            // _pid_controller.reset();
+            _stall_prevention_triggered = true;
+        }
+        _motor->setPWM(0);
+    } else {
+        _stall_prevention_triggered = false;
+        _motor->setPWM(output);
+    }
     // Update motor
-    _motor->setPWM(output);
     _motor->update();
 }
 
