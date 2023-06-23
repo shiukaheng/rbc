@@ -134,8 +134,8 @@ def main():
     ramp = create_ramp(
         pub,
         max_vel=10,
-        duration=15,
-        n=1,
+        duration=40,
+        n=4,
         transfer_function=lambda x: x,
         rate=rate
     )
