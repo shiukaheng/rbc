@@ -12,12 +12,12 @@ add_message_files(
     WheelPIDParameters.msg
 )
 
-add_service_files(
-    FILES
-    EmergencyStop.srv
-    Resume.srv
-    ResetPID.srv
-)
+# add_service_files(
+#     FILES
+#     EmergencyStop.srv
+#     Resume.srv
+#     ResetPID.srv
+# )
 
 generate_messages(
     DEPENDENCIES
