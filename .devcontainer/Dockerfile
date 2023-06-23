@@ -26,6 +26,9 @@ RUN apt-get install -y ros-noetic-slam-toolbox
 # Install move_base_flex
 RUN apt-get install -y ros-noetic-move-base
 
+# Install tkinter for python3
+RUN apt-get install -y python3-tk
+
 # End of ROS dependencies
 
 # Install OpenSSH for remote development

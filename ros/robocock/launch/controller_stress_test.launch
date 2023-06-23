@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Wheel Control -->
+    <node pkg="rosserial_arduino" type="serial_node.py" name="rosserial_node" output="screen">
+        <param name="port" value="/dev/ttyACM0" />
+        <param name="baud" value="57600" />
+    </node>
+    <!-- Wheel parameter server (Custom node to easily set PID parameters using rosparam, 
+    as well as switching on the fly with rostopics) -->
+    <node pkg="robocock" type="control_parameter_server" name="control_parameter_server" output="screen">
+        <rosparam>
+            wheel1_p: 40
+            wheel1_i: 0.025
+            wheel1_d: 0.025
+            wheel2_p: 40
+            wheel2_i: 0.025
+            wheel2_d: 0.025
+            wheel3_p: 40
+            wheel3_i: 0.025
+            wheel3_d: 0.025
+            wheel4_p: 40
+            wheel4_i: 0.025
+            wheel4_d: 0.025
+            regular_update_rate: 5
+        </rosparam>
+    </node>
+    <!-- controller_stress_test.py, don't restart if stopped -->
+    <node pkg="robocock" type="controller_stress_test.py" name="controller_stress_test" output="screen" respawn="false"/>
+</launch>

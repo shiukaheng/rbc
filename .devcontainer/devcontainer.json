@@ -11,6 +11,7 @@
 		"ms-vscode.cpptools-extension-pack",
 		"ms-iot.vscode-ros",
 		"vsciot-vscode.vscode-arduino",
-		"GitHub.copilot"
+		"GitHub.copilot",
+		"hediet.vscode-drawio"
 	]
 }
