@@ -9,17 +9,17 @@
     as well as switching on the fly with rostopics) -->
     <node pkg="robocock" type="control_parameter_server" name="control_parameter_server" output="screen">
         <rosparam>
-            wheel1_p: 40
-            wheel1_i: 0.02
+            wheel1_p: 35
+            wheel1_i: 0.002
             wheel1_d: 0
             wheel2_p: 0
             wheel2_i: 0
             wheel2_d: 0
-            wheel3_p: 40
-            wheel3_i: 0.02
+            wheel3_p: 35
+            wheel3_i: 0.002
             wheel3_d: 0
-            wheel4_p: 40
-            wheel4_i: 0.02
+            wheel4_p: 35
+            wheel4_i: 0.002
             wheel4_d: 0
             regular_update_rate: 5
         </rosparam>
