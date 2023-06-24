@@ -12,16 +12,26 @@
             wheel1_p: 35
             wheel1_i: 0.002
             wheel1_d: 0
+            wheel1_encoder_acceleration_threshold: 200
+            wheel1_i_initial: 0
+
             wheel2_p: 35
             wheel2_i: 0.002
             wheel2_d: 0
+            wheel2_encoder_acceleration_threshold: 200
+            wheel2_i_initial: 0
+
             wheel3_p: 35
             wheel3_i: 0.002
             wheel3_d: 0
+            wheel3_encoder_acceleration_threshold: 200
+            wheel3_i_initial: 0
+
             wheel4_p: 35
             wheel4_i: 0.002
             wheel4_d: 0
-            regular_update_rate: 5
+            wheel4_encoder_acceleration_threshold: 200
+            wheel4_i_initial: 0
         </rosparam>
     </node>
     <!-- controller_stress_test.py, don't restart if stopped -->

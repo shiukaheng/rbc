@@ -27,8 +27,7 @@ public:
 	double* input;
 	double* output;
 	double* setpoint;
-
-
+	double iOut;
 
 
 	virtual void begin(double* _input,
@@ -96,7 +95,6 @@ protected:
 	double kd;
 
 	double pOut;
-	double iOut;
 	double dOut;
 
 	pOn pOnType;

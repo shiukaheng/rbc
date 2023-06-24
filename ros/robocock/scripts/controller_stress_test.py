@@ -84,10 +84,10 @@ def plot_response(data):
     wheel3_velocities = [state["wheel3"][0] for state in wheel_states]
     wheel4_velocities = [state["wheel4"][0] for state in wheel_states]
 
-    wheel1_outputs = [state["wheel1"][2] for state in wheel_states]
-    wheel2_outputs = [state["wheel2"][2] for state in wheel_states]
-    wheel3_outputs = [state["wheel3"][2] for state in wheel_states]
-    wheel4_outputs = [state["wheel4"][2] for state in wheel_states]
+    # wheel1_outputs = [state["wheel1"][2] for state in wheel_states]
+    # wheel2_outputs = [state["wheel2"][2] for state in wheel_states]
+    # wheel3_outputs = [state["wheel3"][2] for state in wheel_states]
+    # wheel4_outputs = [state["wheel4"][2] for state in wheel_states]
 
     # Plot commanded velocities
     ax.plot(command_times, command_velocities, label='Commanded velocities', linestyle='--', color='k')  # made dashed line for visibility
@@ -98,16 +98,16 @@ def plot_response(data):
     ax.plot(state_times, wheel3_velocities, label='Wheel 3 velocities')
     ax.plot(state_times, wheel4_velocities, label='Wheel 4 velocities')
 
-    # Plot wheel outputs (normalized to velocity bounds)
-    wheel_1_output_multiplier = max(command_velocities) / max(wheel1_outputs)
-    wheel_2_output_multiplier = max(command_velocities) / max(wheel2_outputs)
-    wheel_3_output_multiplier = max(command_velocities) / max(wheel3_outputs)
-    wheel_4_output_multiplier = max(command_velocities) / max(wheel4_outputs)
+    # # Plot wheel outputs (normalized to velocity bounds)
+    # wheel_1_output_multiplier = max(command_velocities) / max(wheel1_outputs)
+    # wheel_2_output_multiplier = max(command_velocities) / max(wheel2_outputs)
+    # wheel_3_output_multiplier = max(command_velocities) / max(wheel3_outputs)
+    # wheel_4_output_multiplier = max(command_velocities) / max(wheel4_outputs)
 
-    ax.plot(state_times, [wheel_1_output_multiplier * output for output in wheel1_outputs], label='Wheel 1 outputs')
-    ax.plot(state_times, [wheel_2_output_multiplier * output for output in wheel2_outputs], label='Wheel 2 outputs')
-    ax.plot(state_times, [wheel_3_output_multiplier * output for output in wheel3_outputs], label='Wheel 3 outputs')
-    ax.plot(state_times, [wheel_4_output_multiplier * output for output in wheel4_outputs], label='Wheel 4 outputs')
+    # ax.plot(state_times, [wheel_1_output_multiplier * output for output in wheel1_outputs], label='Wheel 1 outputs')
+    # ax.plot(state_times, [wheel_2_output_multiplier * output for output in wheel2_outputs], label='Wheel 2 outputs')
+    # ax.plot(state_times, [wheel_3_output_multiplier * output for output in wheel3_outputs], label='Wheel 3 outputs')
+    # ax.plot(state_times, [wheel_4_output_multiplier * output for output in wheel4_outputs], label='Wheel 4 outputs')
 
     # Set the y-axis limit to be between the min and max of the commanded velocities
     ax.set_ylim([min(command_velocities), max(command_velocities)])

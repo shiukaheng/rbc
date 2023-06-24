@@ -1,0 +1,4 @@
+float32 wheel1_i_accum
+float32 wheel2_i_accum
+float32 wheel3_i_accum
+float32 wheel4_i_accum
