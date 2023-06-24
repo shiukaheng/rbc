@@ -7,7 +7,7 @@ struct MotorPinout {
     int hall_b_pin;
 };
 
-struct MotorConfig {
+struct MotorState {
     MotorPinout motor_pinout;
     double gear_ratio;
     int ppr;
@@ -15,12 +15,12 @@ struct MotorConfig {
     int min_startup_pwm;
 };
 
-struct PIDMotorConfig : MotorConfig {
+struct MotorState : MotorState {
     double kp;
     double ki;
     double kd;
 };
 
 struct RBCConfig {
-    PIDMotorConfig motor_configs[4];
+    MotorState motor_configs[4];
 };

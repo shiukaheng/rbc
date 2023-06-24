@@ -16,27 +16,27 @@
  * @brief A client that listens for PID RPS targets, and uses closed loop control to achieve them
  *
  */
-class ROSSerialClient {
+class RobotCore {
     private:
-        PIDMotor* _motor1;
-        PIDMotor* _motor2;
-        PIDMotor* _motor3;
-        PIDMotor* _motor4;
+        Motor* _motor1;
+        Motor* _motor2;
+        Motor* _motor3;
+        Motor* _motor4;
         ros::NodeHandle _nh;
         robocock::WheelStates _wheel_states_msg;
         robocock::TargetWheelVelocities _target_wheel_states_msg;
         ros::Publisher _wheel_states_pub = ros::Publisher("wheel_states", &_wheel_states_msg);
         void _targetWheelVelocitiesCallback(const robocock::TargetWheelVelocities& msg);
-        ros::Subscriber<robocock::TargetWheelVelocities, ROSSerialClient> _target_wheel_velocities_sub = ros::Subscriber<robocock::TargetWheelVelocities, ROSSerialClient>("target_wheel_velocities", &ROSSerialClient::_targetWheelVelocitiesCallback, this);
+        ros::Subscriber<robocock::TargetWheelVelocities, RobotCore> _target_wheel_velocities_sub = ros::Subscriber<robocock::TargetWheelVelocities, RobotCore>("target_wheel_velocities", &RobotCore::_targetWheelVelocitiesCallback, this);
         void _wheelPIDParametersCallback(const robocock::WheelPIDParameters& msg);
-        ros::Subscriber<robocock::WheelPIDParameters, ROSSerialClient> _wheel_pid_parameters_sub = ros::Subscriber<robocock::WheelPIDParameters, ROSSerialClient>("wheel_pid_parameters", &ROSSerialClient::_wheelPIDParametersCallback, this);
+        ros::Subscriber<robocock::WheelPIDParameters, RobotCore> _wheel_pid_parameters_sub = ros::Subscriber<robocock::WheelPIDParameters, RobotCore>("wheel_pid_parameters", &RobotCore::_wheelPIDParametersCallback, this);
         void _wheelAccumulatedICallback(const robocock::WheelAccumulatedI& msg);
-        ros::Subscriber<robocock::WheelAccumulatedI, ROSSerialClient> _wheel_accumulated_i_sub = ros::Subscriber<robocock::WheelAccumulatedI, ROSSerialClient>("wheel_i_accum", &ROSSerialClient::_wheelAccumulatedICallback, this);
+        ros::Subscriber<robocock::WheelAccumulatedI, RobotCore> _wheel_accumulated_i_sub = ros::Subscriber<robocock::WheelAccumulatedI, RobotCore>("wheel_i_accum", &RobotCore::_wheelAccumulatedICallback, this);
         bool disable_motors_flag;
         float _setpoints[4] = {0,0,0,0};
     public:
-        ROSSerialClient(RBCConfig config);
-        ~ROSSerialClient();
+        RobotCore(RBCConfig config);
+        ~RobotCore();
         void update();
         void isr1();
         void isr2();

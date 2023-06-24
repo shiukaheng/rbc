@@ -11,10 +11,10 @@
 
 // #define MIN_MOVING_PWM 11 // Assumes symmetric PWMs
 
-class PIDMotor {
+class Motor {
     public:
-        PIDMotor(PIDMotorConfig config);
-        ~PIDMotor();
+        Motor(MotorState config);
+        ~Motor();
         /**Encoder
          * @brief Directly set the PWM value of the motor
          * 
@@ -41,7 +41,7 @@ class PIDMotor {
         void isr();
         double getRPS();
         double getCumulativeRad();
-        PIDMotorConfig motor_config;
+        MotorState motor_config;
         // PID functions and variables
         ArduPID& getPID();
         EncoderReaderNaive& getEncoder();

@@ -2,7 +2,7 @@
 
 // TODO: Integrate gear ratio as parameter to encoder class
 
-PIDMotor::PIDMotor(PIDMotorConfig config) {
+Motor::Motor(MotorState config) {
     motor_config = config;
     // Set parameter variables
     _lpwm_pin = config.motor_pinout.lpwm_pin;
@@ -28,32 +28,32 @@ PIDMotor::PIDMotor(PIDMotorConfig config) {
     _derivative_constrainer = new DerivativeConstrainer(20.);
 }
 
-PIDMotor::~PIDMotor() {
+Motor::~Motor() {
     delete _encoder;
     delete _motor;
     delete _stall_smoothener;
     delete _derivative_constrainer;
 }
 
-void PIDMotor::setPWMRaw(int pwm_value) {
+void Motor::setPWMRaw(int pwm_value) {
     // Disable PID
     _pid_controller.stop();
     _pid_controller.reset(); // TODO: Optimize so it only gets called on change
     _motor->setPWMRaw(pwm_value);
 }
 
-void PIDMotor::setPWM(int pwm_value) {
+void Motor::setPWM(int pwm_value) {
     _pid_controller.stop();
     _pid_controller.reset();
     _motor->setPWM(pwm_value);
 }
 
-void PIDMotor::setRPS(float rps) {
+void Motor::setRPS(float rps) {
     _pid_controller.start();
     setpoint = rps;
 }
 
-void PIDMotor::update() {
+void Motor::update() {
     // Update encoder
     long encoder_updated = _encoder->update(); // This is a terrible way to manage dt. It should be centrally managed in one big loop, with one dt. But for now, this will do.
     if (encoder_updated == -1) {
@@ -82,22 +82,22 @@ void PIDMotor::update() {
     _motor->update();
 }
 
-void PIDMotor::isr() {
+void Motor::isr() {
     _encoder->isr();
 }
 
-double PIDMotor::getRPS() {
+double Motor::getRPS() {
     return _encoder->getRPS();
 }
 
-double PIDMotor::getCumulativeRad() {
+double Motor::getCumulativeRad() {
     return _encoder->getCumulativeRad();
 }
 
-ArduPID& PIDMotor::getPID() {
+ArduPID& Motor::getPID() {
     return _pid_controller;
 }
 
-EncoderReaderNaive& PIDMotor::getEncoder() {
+EncoderReaderNaive& Motor::getEncoder() {
     return *_encoder;
 }

@@ -2,11 +2,11 @@
 
 // PID client for robocock wheels
 
-ROSSerialClient::ROSSerialClient(RBCConfig config) {
-    _motor1 = new PIDMotor(config.motor_configs[0]);
-    _motor2 = new PIDMotor(config.motor_configs[1]);
-    _motor3 = new PIDMotor(config.motor_configs[2]);
-    _motor4 = new PIDMotor(config.motor_configs[3]);
+RobotCore::RobotCore(RBCConfig config) {
+    _motor1 = new Motor(config.motor_configs[0]);
+    _motor2 = new Motor(config.motor_configs[1]);
+    _motor3 = new Motor(config.motor_configs[2]);
+    _motor4 = new Motor(config.motor_configs[3]);
     _nh.getHardware()->setBaud(57600);
     _nh.initNode();
     _nh.advertise(_wheel_states_pub);
@@ -20,37 +20,37 @@ ROSSerialClient::ROSSerialClient(RBCConfig config) {
     disable_motors_flag = false;
 }
 
-ROSSerialClient::~ROSSerialClient() {
+RobotCore::~RobotCore() {
     delete _motor1;
     delete _motor2;
     delete _motor3;
     delete _motor4;
 }
 
-void ROSSerialClient::isr1() {
+void RobotCore::isr1() {
     _motor1->isr();
 }
 
-void ROSSerialClient::isr2() {
+void RobotCore::isr2() {
     _motor2->isr();
 }
 
-void ROSSerialClient::isr3() {
+void RobotCore::isr3() {
     _motor3->isr();
 }
 
-void ROSSerialClient::isr4() {
+void RobotCore::isr4() {
     _motor4->isr();
 }
 
-void ROSSerialClient::_targetWheelVelocitiesCallback(const robocock::TargetWheelVelocities& msg) {
+void RobotCore::_targetWheelVelocitiesCallback(const robocock::TargetWheelVelocities& msg) {
     _setpoints[0] = msg.wheel1;
     _setpoints[1] = msg.wheel2;
     _setpoints[2] = msg.wheel3;
     _setpoints[3] = msg.wheel4;
 }
 
-void ROSSerialClient::_wheelPIDParametersCallback(const robocock::WheelPIDParameters& msg) {
+void RobotCore::_wheelPIDParametersCallback(const robocock::WheelPIDParameters& msg) {
     _motor1->getPID().setCoefficients(msg.wheel1_p, msg.wheel1_i, msg.wheel1_d);
     _motor2->getPID().setCoefficients(msg.wheel2_p, msg.wheel2_i, msg.wheel2_d);
     _motor3->getPID().setCoefficients(msg.wheel3_p, msg.wheel3_i, msg.wheel3_d);
@@ -61,14 +61,14 @@ void ROSSerialClient::_wheelPIDParametersCallback(const robocock::WheelPIDParame
     _motor4->getEncoder().setMaxAbsAcceleration(msg.wheel4_encoder_acceleration_threshold);
 }
 
-void ROSSerialClient::_wheelAccumulatedICallback(const robocock::WheelAccumulatedI& msg) {
+void RobotCore::_wheelAccumulatedICallback(const robocock::WheelAccumulatedI& msg) {
     _motor1->getPID().iOut = msg.wheel1_i_accum;
     _motor2->getPID().iOut = msg.wheel2_i_accum;
     _motor3->getPID().iOut = msg.wheel3_i_accum;
     _motor4->getPID().iOut = msg.wheel4_i_accum;
 }
 
-void ROSSerialClient::update() {
+void RobotCore::update() {
 
     // Set motor setpoints
     if (disable_motors_flag) {
@@ -117,7 +117,7 @@ void ROSSerialClient::update() {
     _nh.spinOnce();
 }
 
-void ROSSerialClient::emergencyStop() {
+void RobotCore::emergencyStop() {
     disable_motors_flag = true;
     _motor1->getPID().reset();
     _motor2->getPID().reset();
@@ -129,6 +129,6 @@ void ROSSerialClient::emergencyStop() {
     _motor4->setRPS(0);
 }
 
-void ROSSerialClient::resume() {
+void RobotCore::resume() {
     disable_motors_flag = false;
 }

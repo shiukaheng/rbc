@@ -12,6 +12,7 @@
 		"ms-iot.vscode-ros",
 		"vsciot-vscode.vscode-arduino",
 		"GitHub.copilot",
-		"hediet.vscode-drawio"
+		"hediet.vscode-drawio",
+		"tostc.vscl"
 	]
 }

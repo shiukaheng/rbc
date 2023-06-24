@@ -1,7 +1,8 @@
-#include "clock.h"
+#pragma once
+#include <Arduino.h>
 
-struct Motor {
-    // Hardware configuration
+struct MotorState {
+    // Hardware stateuration
     const int lpwm_pin;
     const int rpwm_pin;
     const int hall_a_pin;
@@ -29,17 +30,4 @@ struct Motor {
     // Encoder settings
     double max_abs_acceleration = 200.;
     double max_abs_speed = INFINITY;
-}
-
-class ROSSerialClient {
-    private:
-        long last_update_time;
-        Clock clock;
-        // Vector of motors
-        std::vector<Motor> motors;
-    public:
-        void update() {
-            Tick tick = clock.update();
-
-        }
 };

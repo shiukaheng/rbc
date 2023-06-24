@@ -1,5 +1,9 @@
 #pragma once
-#include "Arduino.h"
+
+#include "../utils/time.h"
+#include "../utils/base_state_updater.h"
+
+#include "../states/motor_state.h"
 
 /**
  * This class is a custom adaptive PID controller that has been heavily
@@ -42,38 +46,10 @@
  * accumulator value would be useful. It could be implemented by storing the value in EEPROM, and also would be useful
  * for ROS to be able to change the accumulator value.
 */
-class AdaptivePID {
+
+class Controller : public BaseStateUpdater<MotorState> {
     public:
-        // The following are all properties that can be changed during runtime
-        double setpoint = 0; // The desired value
-        double p_in = 0; // The P term
-        double i_in = 0; // The I term
-        double i_accumulator = 0; // The I term accumulator
-        double d_in = 0; // The D term
-        double bias = 0; // The bias term
-        double windup_min = -INFINITY; // The minimum value of the I term accumulator
-        double windup_max = INFINITY; // The maximum value of the I term accumulator
-        double output_min = -INFINITY; // The minimum output value
-        double output_max = INFINITY; // The maximum output value
-        double deadband_min = 0; // The minimum error value for the controller to start working
-        double deadband_max = 0; // The maximum error value for the controller to start working
-
-        /**
-         * Calculates the output of the controller
-         * @param input The measured value
-         * @param dt The time since the last update in seconds
-         * @return The output of the controller
-        */
-        double update(double input, double dt) {
-            double i = i_in * dt;
-            double d = d_in / dt;
-            double current_input = current_input;
+        Controller(MotorState& state) : BaseStateUpdater<MotorState>(state) {}
+        void update(Tick& tick) {
         }
-
-    private:
-        double current_input = 0; // The measured value
-        double last_input; // The previous measured value, used for calculating the D term
-        double output; // The output value of the controller
-        double current_error; // The current error value
-        double last_error; // The previous error value, used for trapezoidal integration of the I term
 };
