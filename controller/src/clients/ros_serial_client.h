@@ -10,6 +10,7 @@
 #include <robocock/WheelStates.h>
 #include <robocock/TargetWheelVelocities.h>
 #include <robocock/WheelPIDParameters.h>
+#include <robocock/WheelAccumulatedI.h>
 
 /**
  * @brief A client that listens for PID RPS targets, and uses closed loop control to achieve them
@@ -29,6 +30,8 @@ class ROSSerialClient {
         ros::Subscriber<robocock::TargetWheelVelocities, ROSSerialClient> _target_wheel_velocities_sub = ros::Subscriber<robocock::TargetWheelVelocities, ROSSerialClient>("target_wheel_velocities", &ROSSerialClient::_targetWheelVelocitiesCallback, this);
         void _wheelPIDParametersCallback(const robocock::WheelPIDParameters& msg);
         ros::Subscriber<robocock::WheelPIDParameters, ROSSerialClient> _wheel_pid_parameters_sub = ros::Subscriber<robocock::WheelPIDParameters, ROSSerialClient>("wheel_pid_parameters", &ROSSerialClient::_wheelPIDParametersCallback, this);
+        void _wheelAccumulatedICallback(const robocock::WheelAccumulatedI& msg);
+        ros::Subscriber<robocock::WheelAccumulatedI, ROSSerialClient> _wheel_accumulated_i_sub = ros::Subscriber<robocock::WheelAccumulatedI, ROSSerialClient>("wheel_i_accum", &ROSSerialClient::_wheelAccumulatedICallback, this);
         bool disable_motors_flag;
         float _setpoints[4] = {0,0,0,0};
     public:

@@ -12,6 +12,7 @@ ROSSerialClient::ROSSerialClient(RBCConfig config) {
     _nh.advertise(_wheel_states_pub);
     _nh.subscribe(_target_wheel_velocities_sub);
     _nh.subscribe(_wheel_pid_parameters_sub);
+    _nh.subscribe(_wheel_accumulated_i_sub);
     _motor1->getPID().setOutputLimits(0,0);
     _motor2->getPID().setOutputLimits(0,0);
     _motor3->getPID().setOutputLimits(0,0);
@@ -54,6 +55,17 @@ void ROSSerialClient::_wheelPIDParametersCallback(const robocock::WheelPIDParame
     _motor2->getPID().setCoefficients(msg.wheel2_p, msg.wheel2_i, msg.wheel2_d);
     _motor3->getPID().setCoefficients(msg.wheel3_p, msg.wheel3_i, msg.wheel3_d);
     _motor4->getPID().setCoefficients(msg.wheel4_p, msg.wheel4_i, msg.wheel4_d);
+    _motor1->getEncoder().setMaxAbsAcceleration(msg.wheel1_encoder_acceleration_threshold);
+    _motor2->getEncoder().setMaxAbsAcceleration(msg.wheel2_encoder_acceleration_threshold);
+    _motor3->getEncoder().setMaxAbsAcceleration(msg.wheel3_encoder_acceleration_threshold);
+    _motor4->getEncoder().setMaxAbsAcceleration(msg.wheel4_encoder_acceleration_threshold);
+}
+
+void ROSSerialClient::_wheelAccumulatedICallback(const robocock::WheelAccumulatedI& msg) {
+    _motor1->getPID().iOut = msg.wheel1_i_accum;
+    _motor2->getPID().iOut = msg.wheel2_i_accum;
+    _motor3->getPID().iOut = msg.wheel3_i_accum;
+    _motor4->getPID().iOut = msg.wheel4_i_accum;
 }
 
 void ROSSerialClient::update() {
@@ -80,21 +92,25 @@ void ROSSerialClient::update() {
     _wheel_states_msg.wheel1_setpoint = _motor1->setpoint;
     _wheel_states_msg.wheel1_output = _motor1->output;
     _wheel_states_msg.wheel1_position = _motor1->getCumulativeRad();
+    _wheel_states_msg.wheel1_i_accum = _motor1->getPID().iOut;
 
     _wheel_states_msg.wheel2_velocity = _motor2->getRPS();
     _wheel_states_msg.wheel2_setpoint = _motor2->setpoint;
     _wheel_states_msg.wheel2_output = _motor2->output;
     _wheel_states_msg.wheel2_position = _motor2->getCumulativeRad();
+    _wheel_states_msg.wheel2_i_accum = _motor2->getPID().iOut;
 
     _wheel_states_msg.wheel3_velocity = _motor3->getRPS();
     _wheel_states_msg.wheel3_setpoint = _motor3->setpoint;
     _wheel_states_msg.wheel3_output = _motor3->output;
     _wheel_states_msg.wheel3_position = _motor3->getCumulativeRad();
+    _wheel_states_msg.wheel3_i_accum = _motor3->getPID().iOut;
 
     _wheel_states_msg.wheel4_velocity = _motor4->getRPS();
     _wheel_states_msg.wheel4_setpoint = _motor4->setpoint;
     _wheel_states_msg.wheel4_output = _motor4->output;
     _wheel_states_msg.wheel4_position = _motor4->getCumulativeRad();
+    _wheel_states_msg.wheel4_i_accum = _motor4->getPID().iOut;
 
     _wheel_states_pub.publish(&_wheel_states_msg);
 

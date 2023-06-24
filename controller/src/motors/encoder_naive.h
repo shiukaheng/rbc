@@ -81,9 +81,9 @@ class EncoderReaderNaive{
             _last_radps = _radps; // Used for calculating acceleration
 
             // If the acceleration is too high, return
-            if (radps2 > _max_abs_acceleration) {
-                return -1;
-            }
+            // if (radps2 > _max_abs_acceleration) {
+            //     return -1;
+            // }
 
             // STAGE 3: Update the state
 
@@ -118,6 +118,14 @@ class EncoderReaderNaive{
         */
         double getQuantizationError() {
             return 1. / (double) _ppr * (double) _gear_ratio / (double) _last_dt * 1e6 * 2. * M_PI;
+        }
+        /**
+         * @brief Set the threshold for the maximum absolute acceleration
+         * 
+         * @param max_abs_acceleration The maximum absolute acceleration
+         */
+        void setMaxAbsAcceleration(double max_abs_acceleration) {
+            _max_abs_acceleration = max_abs_acceleration;
         }
     private:
         long _last_update_time = 0;

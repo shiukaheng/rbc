@@ -149,18 +149,18 @@ def main():
     rate = 30
     ramp = create_ramp(
         pub,
-        max_vel=10,
-        duration=40,
-        n=4,
+        max_vel=8,
+        duration=10,
+        n=1,
         # Constrain between -0.5 and 0.5
-        transfer_function=lambda x: min(max(x, -0.5), 0.5),
+        transfer_function=lambda x: x,
         rate=rate
     )
     # Execute the ramp
     data = execute_ramp(pub, ramp, rate)
 
     # Plot the response
-    plot_response(data)
+    # plot_response(data)
     save_response(data)
     # Log done
     rospy.loginfo("Done")

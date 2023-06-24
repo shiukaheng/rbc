@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- Launch base_hardware.launch -->
+    <include file="$(find robocock)/launch/hardware/base_hardware.launch"/>
+
+    <!-- ros_control server, provide ControllerManager which allows controller 
+    plugins (in this case our custom OmniwheelBaseController) to access them -->
+    <node pkg="robocock" type="robocock_hw" name="robocock_hw" output="screen"/>
+
+    <!-- rosparam configuration required to tell ros_control that OmniwheelBaseController is the controller we will use -->
+    <rosparam file="$(find robocock)/config/controller.yaml" command="load"/>
+
+    <!-- Load the controller -->
+    <node pkg="controller_manager" type="spawner" name="controller_spawner" output="screen"
+        args="robocock/OmniwheelBaseController joint_state_controller/JointStateController"/>
+
+</launch>

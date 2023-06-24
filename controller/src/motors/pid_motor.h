@@ -44,6 +44,7 @@ class PIDMotor {
         PIDMotorConfig motor_config;
         // PID functions and variables
         ArduPID& getPID();
+        EncoderReaderNaive& getEncoder();
         double setpoint;
         double input;
         double output;

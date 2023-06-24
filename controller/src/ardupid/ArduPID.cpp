@@ -100,7 +100,7 @@ void ArduPID::compute()
 		double polarity = (curSetpoint >= 0) ? 1 : -1;
 		double zero = (curSetpoint == 0) ? 1 : 0;
 
-		double iTemp = (iIn == 0.0) ? 0.0 : abs(iOut + (ki * ((curError + lastError) / 2.0))) * polarity; // Calculate integral term
+		double iTemp = (iIn == 0.0) ? 0.0 : iOut + (ki * ((curError + lastError) * polarity / 2.0)); // Calculate integral term
 		iTemp        = constrain(iTemp, windupMin, windupMax);       // Prevent integral windup
 
 		// Calculate bias component from setpoint polarity, or 0 if setpoint is 0
@@ -110,7 +110,7 @@ void ArduPID::compute()
         double iMin = constrain(outputMin + outTemp, outputMin, 0); // Minimum allowed integral term before saturating output
 
 		iOut = constrain(iTemp, iMin, iMax);
-		double newOutput = biasTemp * zero + pOut + iOut * abs(curSetpoint) + dOut;
+		double newOutput = biasTemp * zero + pOut + iOut * curSetpoint + dOut;
 
 		newOutput = constrain(newOutput, outputMin, outputMax);
 		*output   = newOutput;

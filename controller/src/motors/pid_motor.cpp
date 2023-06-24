@@ -97,3 +97,7 @@ double PIDMotor::getCumulativeRad() {
 ArduPID& PIDMotor::getPID() {
     return _pid_controller;
 }
+
+EncoderReaderNaive& PIDMotor::getEncoder() {
+    return *_encoder;
+}

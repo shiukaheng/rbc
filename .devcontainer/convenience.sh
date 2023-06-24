@@ -23,26 +23,36 @@ run_in_directory() {
 }
 
 # Aliases
+
+# Generic utils
 alias refreshenv='source ~/.bashrc' # Refresh environment
-alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Compile
-alias au='run_in_directory "arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
-alias acu='ac && au' # Arduino Compile and Upload
-alias cb='run_in_directory "catkin build" "$CATKIN_WS_PATH" && refreshenv' # Catkin Build and refresh environment
 alias editbashrc='nano ~/.bashrc && refreshenv' # Edit bashrc
 alias cdrepo='cd $RBC_REPO' # CD to repo
 alias cdws='cd $CATKIN_WS_PATH' # CD to workspace
+
+# Catkin
+alias cb='run_in_directory "catkin build" "$CATKIN_WS_PATH" && refreshenv' # Catkin Build and refresh environment
+
+# Arduino
+alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Compile
+alias au='run_in_directory "arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
+alias acu='ac && au' # Arduino Compile and Upload
 alias abl='rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries' # Arduino Build Libraries
 alias acm='cb && abl && ac' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
-alias mt='roslaunch robocock motor_tune.launch' # Motor Tune
-alias mvel='roslaunch robocock motor_vel.launch' # Motor Velocity
-alias mrc='roslaunch robocock motor_ros_control.launch' # Motor ros_control
-alias m='roslaunch robocock model.launch' # Model launch
-alias g='roslaunch robocock gazebo.launch'
-alias hw='roslaunch robocock hardware.launch' # Hardware launch
-alias fr='roslaunch robocock full_remote.launch' # Bot remote control and visualization
+
+# Launch files
+alias rbcl='roslaunch robocock' # Robocock Launch
+alias cst='rbcl controller_stress_test.launch' # Controller stress test
+alias g='rbcl gazebo.launch' # Gazebo
+alias m='rbcl model.launch' # Model
+alias mrc='rbcl motor_ros_control.launch' # Motor ROS Control
+alias mt='rbcl motor_tune.launch' # Motor Tune
+
+# Git
 alias update='run_in_directory "git pull && refreshenv" "$RBC_REPO"' # Update repo
 alias discard_changes='run_in_directory "git reset --hard HEAD" "$RBC_REPO"' # Discard changes
 alias commit='run_in_directory "git add . && git commit -m" "$RBC_REPO"' # Commit changes
+
 # Check if ~/.dev has init.lock file. If it doesnt, initialize and create the file, otherwise do nothing
 if [ ! -f ~/.dev/init.lock ]; then
   # Echo in cyan initializing dev environment

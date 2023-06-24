@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <launch>
+
     <!-- Wheel Control -->
     <node pkg="rosserial_arduino" type="serial_node.py" name="rosserial_node" output="screen">
         <param name="port" value="/dev/ttyACM0" />
         <param name="baud" value="57600" />
     </node>
+
     <!-- Wheel parameter server (Custom node to easily set PID parameters using rosparam, 
     as well as switching on the fly with rostopics) -->
     <node pkg="robocock" type="control_parameter_server" name="control_parameter_server" output="screen">
@@ -13,33 +15,23 @@
             wheel1_i: 0.0015
             wheel1_d: 0
             wheel1_encoder_acceleration_threshold: 200
-            wheel1_i_initial: 0
-            wheel2_p: 35
-            wheel2_i: 0.0015
+            wheel1_i_initial: 20
+            wheel2_p: 0
+            wheel2_i: 0
             wheel2_d: 0
             wheel2_encoder_acceleration_threshold: 200
-            wheel2_i_initial: 0
+            wheel2_i_initial: 20
             wheel3_p: 35
             wheel3_i: 0.0015
             wheel3_d: 0
             wheel3_encoder_acceleration_threshold: 200
-            wheel3_i_initial: 0
+            wheel3_i_initial: 20
             wheel4_p: 35
             wheel4_i: 0.0015
             wheel4_d: 0
             wheel4_encoder_acceleration_threshold: 200
-            wheel4_i_initial: 0
+            wheel4_i_initial: 20
         </rosparam>
     </node>
-    <!-- ros_control server, provide ControllerManager which allows controller 
-    plugins (in this case our custom OmniwheelBaseController) to access them -->
-    <node pkg="robocock" type="robocock_hw" name="robocock_hw" output="screen"/>
-    <!-- rosparam configuration required to tell ros_control that OmniwheelBaseController is the controller we will use -->
-    <rosparam file="$(find robocock)/config/controller.yaml" command="load"/>
-    <!-- Load the controller -->
-    <node pkg="controller_manager" type="spawner" name="controller_spawner" output="screen"
-        args="robocock/OmniwheelBaseController joint_state_controller/JointStateController"/>
-    <!-- LIDAR with hls_lfcd_lds_driver hlds_laser.launch -->
-    <!-- <include file="$(find hls_lfcd_lds_driver)/launch/hlds_laser.launch">
-    </include> -->
+    
 </launch>
