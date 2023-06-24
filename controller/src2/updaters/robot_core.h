@@ -12,11 +12,10 @@
 #include "../defs.h"
 
 class RobotCore : public BaseStateUpdater<RobotState> {
-    private:
-        Communication communication;
-        // A pointer to an array of motors
-        Motor* motors[NUM_MOTORS];
     public:
+        Communication communication;
+        Motor* motors[NUM_MOTORS];
+        
         RobotCore(RobotState& state) : BaseStateUpdater<RobotState>(state), communication(Communication(state)) {
             // Let's initialize all the motors
             for (int i = 0; i < NUM_MOTORS; i++) {

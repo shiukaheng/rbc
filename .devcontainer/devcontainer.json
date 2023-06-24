@@ -13,6 +13,8 @@
 		"vsciot-vscode.vscode-arduino",
 		"GitHub.copilot",
 		"hediet.vscode-drawio",
-		"tostc.vscl"
+		"tostc.vscl",
+		"llvm-vs-code-extensions.vscode-clangd",
+		"cschlosser.doxdocgen"
 	]
 }

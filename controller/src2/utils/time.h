@@ -29,21 +29,23 @@ class Clock {
 };
 
 /**
- * Rate is meant to be used in a best-effort loop to call a function at a certain rate.
+ * DynamicRate is meant to be used in a best-effort loop to call a function at a certain rate.
+ * It uses references to the target frequency and the time elapsed to avoid unnecessary copies.
+ * 
+ * @param target_freq A reference to the frequency to call the callback function at in Hz.
 */
-class Rate {
+class DynamicRate {
     private:
-        double target_dt;
+        double& target_freq;
         double time_elapsed = 0;
         bool running = false;
     public:
-        Rate(double freq, bool start = true) {
-            target_dt = 1. / freq;
+        DynamicRate(double& freq, bool start = true) : target_freq(freq) {
             if (start) {
                 this->start();
             }
         }
-        ~Rate() {}
+        ~DynamicRate() {}
         /**
          * Updates the rate
          * 
@@ -52,6 +54,7 @@ class Rate {
         */
         double update(Tick tick) {
             time_elapsed += tick.dt;
+            double target_dt = 1. / target_freq;
             if (time_elapsed >= target_dt) {
                 double time_elapsed_copy = time_elapsed;
                 time_elapsed = 0;
@@ -59,14 +62,6 @@ class Rate {
             } else {
                 return -1;
             }
-        }
-        /**
-         * Sets the rate
-         * 
-         * @param rate The frequency to call the callback function at in Hz.
-        */
-        void set_rate(double freq) {
-            target_dt = 1. / freq;
         }
         void stop() {
             running = false;

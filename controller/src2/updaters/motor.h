@@ -10,11 +10,11 @@
 #include "raw_motor.h"
 
 class Motor : public BaseStateUpdater<MotorState> {
-    private:
+    public:
         Encoder encoder;
         Controller controller;
         RawMotor raw_motor;
-    public:
+        
         Motor(MotorState& state) : BaseStateUpdater<MotorState>(state), encoder(Encoder(state)), controller(Controller(state)), raw_motor(RawMotor(state)) {}
         void update(Tick& tick) {
             encoder.update(tick);
