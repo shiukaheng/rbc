@@ -6,7 +6,7 @@
 #include "../states/motor_state.h"
 
 /**
- * An encoder updater that updates the motor state from encoder readings.
+ * An encoder updater that updates position, velocity, acceleration from encoder readings
  */
 class Encoder : public BaseStateUpdater<MotorState> {
 
@@ -25,9 +25,32 @@ class Encoder : public BaseStateUpdater<MotorState> {
         }
 
         /**
+         * Predictively update the state based on the current state
+         * 
+         * @param time_elapsed The time elapsed since the last update
+         */
+        void predictive_update(double &time_elapsed) {
+            // Method 1: We assume acceleration is constant (this potentially makes it more accurate, but may be impacted by noise)
+            if (state.second_order_predictor) {
+                state.velocity =
+                    state.velocity +
+                    state.acceleration * time_elapsed; // Update velocity in state
+                state.position =
+                    state.position +
+                    state.velocity * time_elapsed; // Update position in state
+            } else { // Method 2: We assume velocity is constant, which is more
+                        // robust to noise. However, acceleration will be left
+                        // unmodified so its not consistent.
+                state.position =
+                    state.position +
+                    state.velocity * time_elapsed; // Update position in state
+            }
+        }
+
+        /**
          * If enough time has elapsed, read and reset delta_ticks, and update the state.
         */
-        void update(Tick& tick) {
+        void update(Tick &tick) {
 
             double time_elapsed = rate.update(tick); // See if enough time has elapsed
 
@@ -57,19 +80,18 @@ class Encoder : public BaseStateUpdater<MotorState> {
                 } else {
 
                     // Otherwise, if it is bigger than a certain threshold, we discard the read data, and predict the position, velocity and acceleration instead
-
-                    // Method 1: We assume acceleration is constant (this potentially makes it more accurate, but may be impacted by noise)
-                    if (state.second_order_predictor) { 
-                        state.velocity = state.velocity + state.acceleration * time_elapsed; // Update velocity in state
-                        state.position = state.position + state.velocity * time_elapsed; // Update position in state
-                    } else { // Method 2: We assume velocity is constant, which is more robust to noise. However, acceleration will be left unmodified so its not consistent.
-                        state.position = state.position + state.velocity * time_elapsed; // Update position in state
-                    }
+                    predictive_update(time_elapsed);
                     state.discarded = true;
 
                 }
-            }
 
+                state.encoder_dt = time_elapsed; // Update fresh_update in state
+
+            } else {
+
+                state.encoder_dt = -1; // Update fresh_update in state
+
+            }
         }
 
         /**

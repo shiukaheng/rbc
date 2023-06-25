@@ -47,9 +47,43 @@
  * for ROS to be able to change the accumulator value.
 */
 
+/**
+ * A custom adaptive PID controller that updates motor output based on the measured speed of the motor
+ */
 class Controller : public BaseStateUpdater<MotorState> {
+    private:
+        double last_error = 0;
+        double last_setpoint = 0;
     public:
         Controller(MotorState& state) : BaseStateUpdater<MotorState>(state) {}
         void update(Tick& tick) {
+            if (state.encoder_dt >= 0) { // Only update if there is a fresh encoder reading. Otherwise, the readings mean nothing!
+                state.error = state.setpoint - state.velocity; // Calculate error
+                if (state.error >= state.deadband_min && state.error <= state.deadband_max) {
+                    state.error = 0;
+                }
+                double p_out = state.p_in * state.error; // Calculate proportional term
+                double d_out = -state.d_in * state.acceleration; // Calculate derivative term
+
+                // Calculate integral term
+                float setpoint_polarity = (state.setpoint >= 0) ? 1 : -1;
+                float last_setpoint_polarity = (last_setpoint >= 0) ? 1 : -1;
+                state.i_accumulator = constrain(
+                    state.i_accumulator + (state.i_in * state.encoder_dt * 
+                        (state.error * setpoint_polarity + last_error * last_setpoint_polarity) / 2 // Trapezoidal integration
+                    )
+                , state.i_accumulator_min, state.i_accumulator_max);
+
+                double bias = state.bias * setpoint_polarity; // Calculate bias term
+
+                // Calculate output
+                state.output = constrain(
+                    p_out + d_out + state.i_accumulator + bias,
+                    state.output_min, state.output_max
+                );
+
+                last_error = state.error;
+                last_setpoint = state.setpoint;
+            }
         }
 };

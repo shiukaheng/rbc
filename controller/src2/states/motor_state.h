@@ -15,8 +15,8 @@ struct MotorState {
     double i_in = 0;
     double d_in = 0;
     double bias = 50;
-    double windup_min = -255;
-    double windup_max = 255;
+    double i_accumulator_max = 50;
+    double i_accumulator_min = 0;
     double output_min = -255;
     double output_max = 255;
     double deadband_min = 0;
@@ -24,6 +24,9 @@ struct MotorState {
 
     // *** Controller state ***
     double i_accumulator = 0;
+    double setpoint = 0;
+    double output = 0;
+    double error = 0;
 
     // *** Encoder settings ***
     double target_update_rate = 30; // The target update rate in Hz
@@ -33,6 +36,7 @@ struct MotorState {
 
     // *** Encoder state ***
     bool discarded = false; // Whether the last update was discarded due to filtering
+    double encoder_dt = -1; // The encoder tick accumulation window in seconds (-1 if it was not sampled for this update)
     // Unfiltered raw values
     long update_time = 0; // The last micros() value when the encoder was updated
     long delta_ticks = 0;  // The number of ticks since the last update
