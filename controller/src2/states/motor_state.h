@@ -45,4 +45,7 @@ struct MotorState {
     double position = 0; // The current position in radians
     double velocity = 0; // The current velocity in radians/s
     double acceleration = 0; // The current acceleration in radians/s^2
+
+    /** Raw motor settings */
+    double smoothener_decay = 0.001;
 };
