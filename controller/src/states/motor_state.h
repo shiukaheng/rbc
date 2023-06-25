@@ -3,12 +3,12 @@
 
 struct MotorState {
     // *** Hardware configuration ***
-    const int lpwm_pin;
-    const int rpwm_pin;
-    const int hall_a_pin;
-    const int hall_b_pin;
-    const double gear_ratio;
-    const int ppr;
+    int lpwm_pin;
+    int rpwm_pin;
+    int hall_a_pin;
+    int hall_b_pin;
+    double gear_ratio;
+    int ppr;
 
     // *** Controller settings ***
     double p_in = 0;

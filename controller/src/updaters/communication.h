@@ -10,39 +10,79 @@
 
 #include <ros.h>
 #include <std_msgs/String.h>
-#include <robocock/WheelStates.h>
-#include <robocock/TargetWheelVelocities.h>
-#include <robocock/WheelPIDParameters.h>
-#include <robocock/WheelAccumulatedI.h>
+#include <robocock/BaseState.h>
+#include <robocock/BaseSetpoint.h>
+#include <robocock/BaseParameters.h>
+#include <robocock/BaseAdaptiveState.h>
+
+#include "../defs.h"
 
 class Communication : public BaseStateUpdater<RobotState> {
     private:
+        // Create node handle
+        ros::NodeHandle nh;
+
         // Create the message objects
-        robocock::WheelStates wheel_states_msg;
-        robocock::TargetWheelVelocities target_wheel_states_msg;
+        robocock::BaseState base_state_msg;
+        robocock::BaseSetpoint base_setpoint_msg;
 
         // Wheel state publisher
-        ros::Publisher wheel_states_pub = ros::Publisher("wheel_states", &wheel_states_msg);
+        ros::Publisher base_state_publisher = ros::Publisher("base_state", &base_state_msg);
 
-        // Target wheel velocities subscriber
-        void setpointCallback(const robocock::TargetWheelVelocities& msg) {
+        void baseSetpointCallback(const robocock::BaseSetpoint& msg) {
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                state.motors[i].setpoint = msg.setpoints[i].velocity;
+            }
         }
-        ros::Subscriber<robocock::TargetWheelVelocities, Communication> target_wheel_velocities_sub = ros::Subscriber<robocock::TargetWheelVelocities, Communication>("target_wheel_velocities", &Communication::setpointCallback, this);
+        ros::Subscriber<robocock::BaseSetpoint, Communication> base_setpoint_sub = ros::Subscriber<robocock::BaseSetpoint, Communication>("base_setpoint", &Communication::baseSetpointCallback, this);
+
+        void baseParametersCallback(const robocock::BaseParameters& msg) {
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                state.motors[i].p_in = msg.parameters[i].p_in;
+                state.motors[i].i_in = msg.parameters[i].i_in;
+                state.motors[i].d_in = msg.parameters[i].d_in;
+                state.motors[i].bias = msg.parameters[i].bias;
+                state.motors[i].i_accumulator_min = msg.parameters[i].i_accumulator_min;
+                state.motors[i].i_accumulator_max = msg.parameters[i].i_accumulator_max;
+                state.motors[i].output_min = msg.parameters[i].output_min;
+                state.motors[i].output_max = msg.parameters[i].output_max;
+                state.motors[i].deadband_min = msg.parameters[i].deadband_min;
+                state.motors[i].deadband_max = msg.parameters[i].deadband_max;
+                state.motors[i].target_update_rate = msg.parameters[i].target_update_rate;
+                state.motors[i].max_abs_acceleration = msg.parameters[i].max_abs_acceleration;
+                state.motors[i].max_abs_velocity = msg.parameters[i].max_abs_velocity;
+                state.motors[i].second_order_predictor = msg.parameters[i].second_order_predictor;
+                state.motors[i].smoothener_alpha = msg.parameters[i].smoothener_alpha;
+            }
+        }
+        ros::Subscriber<robocock::BaseParameters, Communication> base_parameters_sub = ros::Subscriber<robocock::BaseParameters, Communication>("base_parameters", &Communication::baseParametersCallback, this);
         
-        // Wheel PID parameters subscriber
-        void parametersCallback(const robocock::WheelPIDParameters& msg) {
+        void baseAdaptiveStateCallback(const robocock::BaseAdaptiveState& msg) {
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                state.motors[i].i_accumulator = msg.adaptive_states[i].i_accumulator;
+            }
         }
-        ros::Subscriber<robocock::WheelPIDParameters, Communication> wheel_pid_parameters_sub = ros::Subscriber<robocock::WheelPIDParameters, Communication>("wheel_pid_parameters", &Communication::parametersCallback, this);
-        
-        // Wheel accumulated I subscriber
-        void adaptiveStateCallback(const robocock::WheelAccumulatedI& msg) {
-            
-        }
-        ros::Subscriber<robocock::WheelAccumulatedI, Communication> wheel_accumulated_i_sub = ros::Subscriber<robocock::WheelAccumulatedI, Communication>("wheel_i_accum", &Communication::adaptiveStateCallback, this);
+        ros::Subscriber<robocock::BaseAdaptiveState, Communication> base_adaptive_state_sub = ros::Subscriber<robocock::BaseAdaptiveState, Communication>("base_adaptive_state", &Communication::baseAdaptiveStateCallback, this);
     public:
         Communication(RobotState& state) : BaseStateUpdater<RobotState>(state) {
-            static_assert(sizeof(state.motors) / sizeof(state.motors[0]) == 4, "RobotState::motors must be of length 4"); // If we change motor numbers we need to manually rewrite this class!
+            nh.getHardware()->setBaud(BAUD_RATE);
+            nh.initNode();
+            nh.subscribe(base_setpoint_sub);
+            nh.subscribe(base_parameters_sub);
+            nh.subscribe(base_adaptive_state_sub);
+            nh.advertise(base_state_publisher);
         }
         void update(Tick& tick) {
+            // Publish the wheel state
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                base_state_msg.states[i].i_accumulator = state.motors[i].i_accumulator;
+                base_state_msg.states[i].output = state.motors[i].output;
+                base_state_msg.states[i].error = state.motors[i].error;
+                base_state_msg.states[i].delta_ticks = state.motors[i].delta_ticks;
+                base_state_msg.states[i].velocity = state.motors[i].velocity;
+                base_state_msg.states[i].acceleration = state.motors[i].acceleration;
+            }
+            base_state_publisher.publish(&base_state_msg);
+            nh.spinOnce();
         }
 };
