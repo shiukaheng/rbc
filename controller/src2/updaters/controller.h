@@ -53,7 +53,7 @@
 class Controller : public BaseStateUpdater<MotorState> {
     private:
         double last_error = 0;
-        double last_setpoint = 0;
+        short last_setpoint_polarity = 0;
     public:
         Controller(MotorState& state) : BaseStateUpdater<MotorState>(state) {}
         void update(Tick& tick) {
@@ -66,8 +66,8 @@ class Controller : public BaseStateUpdater<MotorState> {
                 double d_out = -state.d_in * state.acceleration; // Calculate derivative term
 
                 // Calculate integral term
-                float setpoint_polarity = (state.setpoint >= 0) ? 1 : -1;
-                float last_setpoint_polarity = (last_setpoint >= 0) ? 1 : -1;
+                // Polarity: -1 if setpoint is negative, 1 if setpoint is positive, 0 if setpoint is 0
+                short setpoint_polarity = (state.setpoint == 0) ? 0 : (state.setpoint >= 0) ? 1 : -1;
                 state.i_accumulator = constrain(
                     state.i_accumulator + (state.i_in * state.encoder_dt * 
                         (state.error * setpoint_polarity + last_error * last_setpoint_polarity) / 2 // Trapezoidal integration
@@ -83,7 +83,7 @@ class Controller : public BaseStateUpdater<MotorState> {
                 );
 
                 last_error = state.error;
-                last_setpoint = state.setpoint;
+                last_setpoint_polarity = setpoint_polarity;
             }
         }
 };
