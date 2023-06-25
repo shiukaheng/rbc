@@ -71,14 +71,15 @@ class Controller : public BaseStateUpdater<MotorState> {
                 state.i_accumulator = constrain(
                     state.i_accumulator + (state.i_in * state.encoder_dt * 
                         (state.error * setpoint_polarity + last_error * last_setpoint_polarity) / 2 // Trapezoidal integration
-                    )
-                , state.i_accumulator_min, state.i_accumulator_max);
+                    ),
+                    state.i_accumulator_min, state.i_accumulator_max
+                );
 
                 double bias = state.bias * setpoint_polarity; // Calculate bias term
 
                 // Calculate output
                 state.output = constrain(
-                    p_out + d_out + state.i_accumulator + bias,
+                    p_out + d_out + state.i_accumulator * state.setpoint + bias,
                     state.output_min, state.output_max
                 );
 

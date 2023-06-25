@@ -27,7 +27,7 @@ public:
             _last_value = value;
         } else {
             // Apply the alpha factor
-            _last_value = _last_value * alpha + value * (1 - alpha);
+            _last_value = _alpha * value + (1 - _alpha) * _last_value;
         }
         return _last_value;
     }

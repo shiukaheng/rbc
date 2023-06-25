@@ -11,11 +11,11 @@ struct MotorState {
     int ppr;
 
     // *** Controller settings ***
-    double p_in = 0;
-    double i_in = 0;
-    double d_in = 0;
-    double bias = 50;
-    double i_accumulator_min = 0;
+    double p_in = 35.0;
+    double i_in = 15.0;
+    double d_in = 0.2;
+    double bias = 20;
+    double i_accumulator_min = -10;
     double i_accumulator_max = 50;
     double output_min = -255;
     double output_max = 255;
@@ -23,13 +23,13 @@ struct MotorState {
     double deadband_max = 0;
 
     // *** Controller state ***
-    double i_accumulator = 0;
+    double i_accumulator = 20;
     double setpoint = 0;
     double output = 0;
     double error = 0;
 
     // *** Encoder settings ***
-    double target_update_rate = 30; // The target update rate in Hz
+    double target_update_rate = 20; // The target update rate in Hz
     double max_abs_acceleration = 200.; // Threshold of acceleration to discard the update
     double max_abs_velocity = INFINITY; // Threshold of velocity to discard the update
     bool second_order_predictor = false; // Whether to use a second order predictor, read encoder source code for more info
