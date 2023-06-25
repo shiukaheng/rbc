@@ -40,6 +40,8 @@ class Communication : public BaseStateUpdater<RobotState> {
         ros::Subscriber<robocock::BaseSetpoint, Communication> base_setpoint_sub = ros::Subscriber<robocock::BaseSetpoint, Communication>("base_setpoint", &Communication::baseSetpointCallback, this);
 
         void baseParametersCallback(const robocock::BaseParameters& msg) {
+            nh.loginfo("Received base parameters");
+            state.motors[0].p_in = 50;
             for (int i = 0; i < NUM_MOTORS; i++) {
                 state.motors[i].p_in = msg.parameters[i].p_in;
                 state.motors[i].i_in = msg.parameters[i].i_in;
@@ -61,6 +63,7 @@ class Communication : public BaseStateUpdater<RobotState> {
         ros::Subscriber<robocock::BaseParameters, Communication> base_parameters_sub = ros::Subscriber<robocock::BaseParameters, Communication>("base_parameters", &Communication::baseParametersCallback, this);
         
         void baseAdaptiveStateCallback(const robocock::BaseAdaptiveState& msg) {
+            nh.loginfo("Received adaptive state");
             for (int i = 0; i < NUM_MOTORS; i++) {
                 state.motors[i].i_accumulator = msg.adaptive_states[i].i_accumulator;
             }
@@ -82,6 +85,7 @@ class Communication : public BaseStateUpdater<RobotState> {
                 base_state_msg.states[i].output = state.motors[i].output;
                 base_state_msg.states[i].error = state.motors[i].error;
                 base_state_msg.states[i].delta_ticks = state.motors[i].delta_ticks;
+                base_state_msg.states[i].position = state.motors[i].position;
                 base_state_msg.states[i].velocity = state.motors[i].velocity;
                 base_state_msg.states[i].acceleration = state.motors[i].acceleration;
             }

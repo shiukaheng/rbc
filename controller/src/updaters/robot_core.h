@@ -34,9 +34,9 @@ class RobotCore : public BaseStateUpdater<RobotState> {
         }
         void update(Tick& tick) {
             // Let's first update all the motors
-            for (int i = 0; i < NUM_MOTORS; i++) {
-                motors[i]->update(tick);
-            }
+            // for (int i = 0; i < NUM_MOTORS; i++) {
+            //     motors[i]->update(tick);
+            // }
             // Then update the communication
             communication->update(tick);
         }

@@ -67,7 +67,7 @@ class Controller : public BaseStateUpdater<MotorState> {
 
                 // Calculate integral term
                 // Polarity: -1 if setpoint is negative, 1 if setpoint is positive, 0 if setpoint is 0
-                short setpoint_polarity = (state.setpoint == 0) ? 0 : (state.setpoint >= 0) ? 1 : -1;
+                double setpoint_polarity = (state.setpoint == 0) ? 0 : (state.setpoint >= 0) ? 1 : -1;
                 state.i_accumulator = constrain(
                     state.i_accumulator + (state.i_in * state.encoder_dt * 
                         (state.error * setpoint_polarity + last_error * last_setpoint_polarity) / 2 // Trapezoidal integration

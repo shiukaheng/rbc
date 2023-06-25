@@ -9,7 +9,7 @@
 
     <!-- Wheel parameter server (Custom node to easily set PID parameters using rosparam, 
     as well as switching on the fly with rostopics) -->
-    <node pkg="robocock" type="hardware_parameter_server" name="hardware_parameter_server" output="screen">
-    </node>
+    <node pkg="robocock" type="hardware_parameter_server" name="hardware_parameter_server" output="screen"/>
+    <node pkg="robocock" type="debug_topics.py" name="debug_topics" output="screen"/>
     
 </launch>

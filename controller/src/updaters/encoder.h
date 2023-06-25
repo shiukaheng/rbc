@@ -74,7 +74,7 @@ class Encoder : public BaseStateUpdater<MotorState> {
                     // If the acceleration and velocity is small enough, we can update the state
                     state.velocity = draft_velocity; // Update velocity in state
                     state.acceleration = draft_acceleration; // Update acceleration in state
-                    state.position = state.velocity * time_elapsed; // Update position in state
+                    state.position = state.position + state.velocity * time_elapsed; // Update position in state
                     state.discarded = false;
 
                 } else {

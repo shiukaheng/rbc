@@ -19,13 +19,14 @@ class RawMotor : public BaseStateUpdater<MotorState> {
             pinMode(state.rpwm_pin, OUTPUT);
         }
         void update(Tick& tick) {
-            double new_output = smoothener.update(state.output, tick.dt);
+            // double new_output = smoothener.update(state.output, tick.dt);
+            double new_output = state.output;
             if (state.output > 0) {
                 analogWrite(state.rpwm_pin, new_output);
                 analogWrite(state.lpwm_pin, 0);
             } else {
                 analogWrite(state.rpwm_pin, 0);
-                analogWrite(state.lpwm_pin, new_output);
+                analogWrite(state.lpwm_pin, -new_output);
             }
         }
 };
