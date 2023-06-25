@@ -11,16 +11,16 @@ struct MotorState {
     int ppr;
 
     // *** Controller settings ***
-    int control_mode = 2;
-    double p_in = 35.0;
-    double i_in = 15.0;
-    double d_in = 0.2;
-    double bias = 20;
-    double i_accumulator_min = -10;
-    double i_accumulator_max = 50;
+    int control_mode = 3;
+    double p_in = 0.0;
+    double i_in = 0.0;
+    double d_in = 0.0;
+    double bias = 0;
+    double i_accumulator_min = -100;
+    double i_accumulator_max = 100;
     double output_min = -255;
     double output_max = 255;
-    double deadband_min = 0;
+    double deadband_min = 0; // These are automatically updated by the encoder updater
     double deadband_max = 0;
 
     // *** Controller state ***

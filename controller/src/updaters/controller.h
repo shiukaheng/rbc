@@ -64,6 +64,7 @@ class Controller : public BaseStateUpdater<MotorState> {
         void update(Tick& tick) {
             if (state.control_mode == OPEN_LOOP) {
                 state.output = state.setpoint;
+                state.error = 0;
                 last_error = 0;
                 last_setpoint_polarity = 0;
                 return;
@@ -75,7 +76,6 @@ class Controller : public BaseStateUpdater<MotorState> {
                 }
                 double p_out = state.p_in * state.error; // Calculate proportional term
                 double d_out = -state.d_in * state.acceleration; // Calculate derivative term
-
                 // Calculate integral term
                 // Polarity: -1 if setpoint is negative, 1 if setpoint is positive, 0 if setpoint is 0
                 double setpoint_polarity;

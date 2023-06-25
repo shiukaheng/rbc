@@ -14,6 +14,8 @@
 #include <robocock/BaseSetpoint.h>
 #include <robocock/BaseParameters.h>
 #include <robocock/BaseAdaptiveState.h>
+#include <robocock/MotorParameters.h>
+#include <robocock/MotorAdaptiveState.h>
 
 #include "../defs.h"
 
@@ -32,52 +34,70 @@ class Communication : public BaseStateUpdater<RobotState> {
         // Wheel state publisher
         ros::Publisher base_state_publisher = ros::Publisher("base_state", &base_state_msg);
 
+        /** Subscribing to topics */
+
+        // "/base_setpoint" topic subscriber, used to set the setpoint of the motors independently
         void baseSetpointCallback(const robocock::BaseSetpoint& msg) {
-            nh.loginfo("Received base setpoint");
             for (int i = 0; i < NUM_MOTORS; i++) {
                 state.motors[i].setpoint = msg.setpoints[i].velocity;
             }
         }
         ros::Subscriber<robocock::BaseSetpoint, Communication> base_setpoint_sub = ros::Subscriber<robocock::BaseSetpoint, Communication>("base_setpoint", &Communication::baseSetpointCallback, this);
 
-        // void baseParametersCallback(const robocock::BaseParameters& msg) {
-        //     nh.loginfo("Received base parameters");
-        //     state.motors[0].p_in = 50;
-        //     for (int i = 0; i < NUM_MOTORS; i++) {
-        //         state.motors[i].p_in = msg.parameters[i].p_in;
-        //         state.motors[i].i_in = msg.parameters[i].i_in;
-        //         state.motors[i].d_in = msg.parameters[i].d_in;
-        //         state.motors[i].bias = msg.parameters[i].bias;
-        //         // state.motors[i].i_accumulator_min = msg.parameters[i].i_accumulator_min;
-        //         // state.motors[i].i_accumulator_max = msg.parameters[i].i_accumulator_max;
-        //         // state.motors[i].output_min = msg.parameters[i].output_min;
-        //         // state.motors[i].output_max = msg.parameters[i].output_max;
-        //         // // state.motors[i].deadband_min = msg.parameters[i].deadband_min;
-        //         // // state.motors[i].deadband_max = msg.parameters[i].deadband_max;
-        //         // state.motors[i].target_update_rate = msg.parameters[i].target_update_rate;
-        //         // state.motors[i].max_abs_acceleration = msg.parameters[i].max_abs_acceleration;
-        //         // state.motors[i].max_abs_velocity = msg.parameters[i].max_abs_velocity;
-        //         // state.motors[i].second_order_predictor = msg.parameters[i].second_order_predictor;
-        //         // state.motors[i].smoothener_alpha = msg.parameters[i].smoothener_alpha;
-        //     }
-        // }
-        // ros::Subscriber<robocock::BaseParameters, Communication> base_parameters_sub = ros::Subscriber<robocock::BaseParameters, Communication>("base_parameters", &Communication::baseParametersCallback, this);
+        // "/base_parameters" topic subscriber, used to set the PID parameters of the motors independently, but may be less reliable because of the big message size and rosserial's limitations
+        void baseParametersCallback(const robocock::BaseParameters& msg) {
+            nh.loginfo("Received base parameters");
+            state.motors[0].p_in = 50;
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                state.motors[i].p_in = msg.parameters[i].p_in;
+                state.motors[i].i_in = msg.parameters[i].i_in;
+                state.motors[i].d_in = msg.parameters[i].d_in;
+                state.motors[i].bias = msg.parameters[i].bias;
+            }
+        }
+        ros::Subscriber<robocock::BaseParameters, Communication> base_parameters_sub = ros::Subscriber<robocock::BaseParameters, Communication>("base_parameters", &Communication::baseParametersCallback, this);
         
-        // void baseAdaptiveStateCallback(const robocock::BaseAdaptiveState& msg) {
-        //     nh.loginfo("Received adaptive state");
-        //     for (int i = 0; i < NUM_MOTORS; i++) {
-        //         state.motors[i].i_accumulator = msg.adaptive_states[i].i_accumulator;
-        //     }
-        // }
-        // ros::Subscriber<robocock::BaseAdaptiveState, Communication> base_adaptive_state_sub = ros::Subscriber<robocock::BaseAdaptiveState, Communication>("base_adaptive_state", &Communication::baseAdaptiveStateCallback, this);
+        // "/base_global_parameters" topic subscriber, used to set the PID parameters of all motors at once
+        void baseGlobalParametersCallback(const robocock::MotorParameters& msg) {
+            nh.loginfo("Received global parameters");
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                state.motors[i].p_in = msg.p_in;
+                state.motors[i].i_in = msg.i_in;
+                state.motors[i].d_in = msg.d_in;
+                state.motors[i].bias = msg.bias;
+                state.motors[i].control_mode = msg.control_mode;
+            }
+        }
+        ros::Subscriber<robocock::MotorParameters, Communication> base_global_parameters_sub = ros::Subscriber<robocock::MotorParameters, Communication>("base_global_parameters", &Communication::baseGlobalParametersCallback, this);
+
+        // "/base_adaptive_state" topic subscriber, used to set the adaptive state of the motors independently
+        void baseAdaptiveStateCallback(const robocock::BaseAdaptiveState& msg) {
+            nh.loginfo("Received adaptive state");
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                state.motors[i].i_accumulator = msg.adaptive_states[i].i_accumulator;
+            }
+        }
+        ros::Subscriber<robocock::BaseAdaptiveState, Communication> base_adaptive_state_sub = ros::Subscriber<robocock::BaseAdaptiveState, Communication>("base_adaptive_state", &Communication::baseAdaptiveStateCallback, this);
+
+        // "/base_global_adaptive_state" topic subscriber, used to set the adaptive state of all motors at once
+        void baseGlobalAdaptiveStateCallback(const robocock::MotorAdaptiveState& msg) {
+            nh.loginfo("Received global adaptive state");
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                state.motors[i].i_accumulator = msg.i_accumulator;
+            }
+        }
+        ros::Subscriber<robocock::MotorAdaptiveState, Communication> base_global_adaptive_state_sub = ros::Subscriber<robocock::MotorAdaptiveState, Communication>("base_global_adaptive_state", &Communication::baseGlobalAdaptiveStateCallback, this);
+
     public:
         Communication(RobotState& state) : BaseStateUpdater<RobotState>(state) {
             nh.getHardware()->setBaud(BAUD_RATE);
             nh.initNode();
             nh.subscribe(base_setpoint_sub);
-            // nh.subscribe(base_parameters_sub);
-            // nh.subscribe(base_adaptive_state_sub);
+            nh.subscribe(base_parameters_sub);
+            nh.subscribe(base_adaptive_state_sub);
             nh.advertise(base_state_publisher);
+            nh.subscribe(base_global_parameters_sub);
+            nh.subscribe(base_global_adaptive_state_sub);
         }
         void update(Tick& tick) {
             // Publish the wheel state

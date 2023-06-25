@@ -17,12 +17,8 @@ class HardwareParameterServer {
         void initParam(T& param, int motor_id, std::string name, T default_value) {
             _nh.param<T>("motor_" + std::to_string(motor_id + 1) + "/" + name, param, default_value);
         }
-        bool second_order_predictor_buffer[NUM_MOTORS] = {false};
-        // void syncBoolToUint() {
-        //     for (int i = 0; i < NUM_MOTORS; i++) {
-        //         base_parameters_msg.parameters[i].second_order_predictor = second_order_predictor_buffer[i];
-        //     }
-        // }
+        // Create integer array of size NUM_MOTORS to store motor mode
+        int motor_mode[NUM_MOTORS] = {0};
     public:
         HardwareParameterServer() : _nh("hardware_parameter_server") {
             
@@ -35,17 +31,7 @@ class HardwareParameterServer {
                 initParam<float>(base_parameters_msg.parameters[i].i_in, i, "i_in", 0.0015);
                 initParam<float>(base_parameters_msg.parameters[i].d_in, i, "d_in", 0.0);
                 initParam<float>(base_parameters_msg.parameters[i].bias, i, "bias", 50.0);
-                // initParam<float>(base_parameters_msg.parameters[i].i_accumulator_min, i, "i_accumulator_min", 0.0);
-                // initParam<float>(base_parameters_msg.parameters[i].i_accumulator_max, i, "i_accumulator_max", 60.0);
-                // initParam<float>(base_parameters_msg.parameters[i].output_min, i, "output_min", -255.0);
-                // initParam<float>(base_parameters_msg.parameters[i].output_max, i, "output_max", 255.0);
-                // // initParam<float>(base_parameters_msg.parameters[i].deadband_min, i, "deadband_min", 0.0);
-                // // initParam<float>(base_parameters_msg.parameters[i].deadband_max, i, "deadband_max", 0.0);
-                // initParam<float>(base_parameters_msg.parameters[i].target_update_rate, i, "target_update_rate", 30.0);
-                // initParam<float>(base_parameters_msg.parameters[i].max_abs_acceleration, i, "max_abs_acceleration", 200.0);
-                // initParam<float>(base_parameters_msg.parameters[i].max_abs_velocity, i, "max_abs_velocity", 20.0);
-                // initParam<bool>(second_order_predictor_buffer[i], i, "second_order_predictor", false); // Required because the message type is uint and requires conversion
-                // initParam<float>(base_parameters_msg.parameters[i].smoothener_alpha, i, "smoothener_alpha", 0.0001);    
+                initParam<int>(motor_mode[i], i, "control_mode", 3);
                 initParam<float>(base_adaptive_state_msg.adaptive_states[i].i_accumulator, i, "i_accumulator_initial", 20.0);
             }
             
@@ -53,21 +39,10 @@ class HardwareParameterServer {
             ros::topic::waitForMessage<robocock::BaseState>("/base_state");
             ROS_INFO("Received /base_state message, publishing parameters /base_parameters and /adaptive_state");
 
-            // Publish parameters every 1 second
-            ros::Rate loop_rate(1);
+            // Wait 1 second for the subscriber to connect
 
-            while (ros::ok()) {
-                ROS_INFO("Publishing parameters...");
-                base_parameters_pub.publish(base_parameters_msg);
-                base_adaptive_state_pub.publish(base_adaptive_state_msg);
-                ros::spinOnce();
-                loop_rate.sleep();
-            }
-
-            // // Delay 0.5 seconds to make sure the subscriber is ready
-            // ros::Duration(0.5).sleep();
-
-            // // syncBoolToUint();
-            // base_parameters_pub.publish(base_parameters_msg);
+            // syncBoolToUint();
+            base_parameters_pub.publish(base_parameters_msg);
+            base_adaptive_state_pub.publish(base_adaptive_state_msg);
         }
 };
