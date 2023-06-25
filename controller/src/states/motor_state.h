@@ -15,8 +15,8 @@ struct MotorState {
     double i_in = 0;
     double d_in = 0;
     double bias = 50;
-    double i_accumulator_max = 50;
     double i_accumulator_min = 0;
+    double i_accumulator_max = 50;
     double output_min = -255;
     double output_max = 255;
     double deadband_min = 0;
@@ -47,5 +47,5 @@ struct MotorState {
     double acceleration = 0; // The current acceleration in radians/s^2
 
     /** Raw motor settings */
-    double smoothener_decay = 0.001;
+    double smoothener_alpha = 0.001;
 };

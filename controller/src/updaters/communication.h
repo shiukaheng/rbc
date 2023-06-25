@@ -35,8 +35,10 @@ class Communication : public BaseStateUpdater<RobotState> {
         ros::Subscriber<robocock::WheelPIDParameters, Communication> wheel_pid_parameters_sub = ros::Subscriber<robocock::WheelPIDParameters, Communication>("wheel_pid_parameters", &Communication::parametersCallback, this);
         
         // Wheel accumulated I subscriber
-        void wheelAccumulatedICallback(const robocock::WheelAccumulatedI& msg);
-        ros::Subscriber<robocock::WheelAccumulatedI, Communication> wheel_accumulated_i_sub = ros::Subscriber<robocock::WheelAccumulatedI, Communication>("wheel_i_accum", &Communication::wheelAccumulatedICallback, this);
+        void adaptiveStateCallback(const robocock::WheelAccumulatedI& msg) {
+            
+        }
+        ros::Subscriber<robocock::WheelAccumulatedI, Communication> wheel_accumulated_i_sub = ros::Subscriber<robocock::WheelAccumulatedI, Communication>("wheel_i_accum", &Communication::adaptiveStateCallback, this);
     public:
         Communication(RobotState& state) : BaseStateUpdater<RobotState>(state) {
             static_assert(sizeof(state.motors) / sizeof(state.motors[0]) == 4, "RobotState::motors must be of length 4"); // If we change motor numbers we need to manually rewrite this class!

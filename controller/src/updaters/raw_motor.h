@@ -11,7 +11,7 @@ class RawMotor : public BaseStateUpdater<MotorState> {
         ExpSmoothener smoothener;
         
     public:
-        RawMotor(MotorState& state) : BaseStateUpdater<MotorState>(state), smoothener(ExpSmoothener(state.smoothener_decay)) {
+        RawMotor(MotorState& state) : BaseStateUpdater<MotorState>(state), smoothener(ExpSmoothener(state.smoothener_alpha)) {
             pinMode(state.lpwm_pin, OUTPUT);
             pinMode(state.rpwm_pin, OUTPUT);
         }
