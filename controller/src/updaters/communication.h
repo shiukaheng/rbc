@@ -49,8 +49,8 @@ class Communication : public BaseStateUpdater<RobotState> {
                 state.motors[i].i_accumulator_max = msg.parameters[i].i_accumulator_max;
                 state.motors[i].output_min = msg.parameters[i].output_min;
                 state.motors[i].output_max = msg.parameters[i].output_max;
-                state.motors[i].deadband_min = msg.parameters[i].deadband_min;
-                state.motors[i].deadband_max = msg.parameters[i].deadband_max;
+                // state.motors[i].deadband_min = msg.parameters[i].deadband_min;
+                // state.motors[i].deadband_max = msg.parameters[i].deadband_max;
                 state.motors[i].target_update_rate = msg.parameters[i].target_update_rate;
                 state.motors[i].max_abs_acceleration = msg.parameters[i].max_abs_acceleration;
                 state.motors[i].max_abs_velocity = msg.parameters[i].max_abs_velocity;

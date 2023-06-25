@@ -39,8 +39,8 @@ class HardwareParameterServer {
                 initParam<float>(base_parameters_msg.parameters[i].i_accumulator_max, i, "i_accumulator_max", 0.0);
                 initParam<float>(base_parameters_msg.parameters[i].output_min, i, "output_min", 0.0);
                 initParam<float>(base_parameters_msg.parameters[i].output_max, i, "output_max", 0.0);
-                initParam<float>(base_parameters_msg.parameters[i].deadband_min, i, "deadband_min", 0.0);
-                initParam<float>(base_parameters_msg.parameters[i].deadband_max, i, "deadband_max", 0.0);
+                // initParam<float>(base_parameters_msg.parameters[i].deadband_min, i, "deadband_min", 0.0);
+                // initParam<float>(base_parameters_msg.parameters[i].deadband_max, i, "deadband_max", 0.0);
                 initParam<float>(base_parameters_msg.parameters[i].target_update_rate, i, "target_update_rate", 30.0);
                 initParam<float>(base_parameters_msg.parameters[i].max_abs_acceleration, i, "max_abs_acceleration", 0.0);
                 initParam<float>(base_parameters_msg.parameters[i].max_abs_velocity, i, "max_abs_velocity", 0.0);
@@ -49,7 +49,7 @@ class HardwareParameterServer {
 
                 initParam<float>(base_adaptive_state_msg.adaptive_states[i].i_accumulator, i, "i_accumulator_initial", 0.0);
             }
-
+            
             ROS_INFO("Waiting for /base_state to be published...");
             ros::topic::waitForMessage<robocock::BaseState>("/base_state");
             ROS_INFO("Received /base_state message, publishing parameters /base_parameters.");
