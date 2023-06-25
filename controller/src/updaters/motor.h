@@ -8,7 +8,6 @@
 #include "encoder.h"
 #include "controller.h"
 #include "raw_motor.h"
-#include "free_spin_controller.h"
 
 /**
  * Motor class that contains all the sub-updaters for closed-loop control
@@ -18,12 +17,10 @@ class Motor : public BaseStateUpdater<MotorState> {
         Encoder encoder;
         Controller controller;
         RawMotor raw_motor;
-        FreeSpinAddonController free_spin_controller;
         
-        Motor(MotorState& state) : BaseStateUpdater<MotorState>(state), encoder(Encoder(state)), controller(Controller(state)), raw_motor(RawMotor(state)), free_spin_controller(FreeSpinAddonController(state)) {}
+        Motor(MotorState& state) : BaseStateUpdater<MotorState>(state), encoder(Encoder(state)), controller(Controller(state)), raw_motor(RawMotor(state)) {}
         void update(Tick& tick) {
             encoder.update(tick);
-            free_spin_controller.update(tick);
             controller.update(tick);
             raw_motor.update(tick);
         }

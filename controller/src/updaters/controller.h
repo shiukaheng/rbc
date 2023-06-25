@@ -47,6 +47,11 @@
  * for ROS to be able to change the accumulator value.
 */
 
+#define OPEN_LOOP 0 // No feedback control
+#define CLASSIC_PID 1 // Original ArduPID implementation
+#define CLASSIC_PID_B_I_FLIPPING 2 // Bias and integral term flips polarity when setpoint changes sign
+#define ADAPTIVE_PID 3 // I is multiplied with setpoint before being added to output
+
 /**
  * A custom adaptive PID controller that updates motor output based on the measured speed of the motor
  */
@@ -57,6 +62,12 @@ class Controller : public BaseStateUpdater<MotorState> {
     public:
         Controller(MotorState& state) : BaseStateUpdater<MotorState>(state) {}
         void update(Tick& tick) {
+            if (state.control_mode == OPEN_LOOP) {
+                state.output = state.setpoint;
+                last_error = 0;
+                last_setpoint_polarity = 0;
+                return;
+            }
             if (state.encoder_dt >= 0) { // Only update if there is a fresh encoder reading. Otherwise, the readings mean nothing!
                 state.error = state.setpoint - state.velocity; // Calculate error
                 if (state.error >= state.deadband_min && state.error <= state.deadband_max) {
@@ -67,21 +78,46 @@ class Controller : public BaseStateUpdater<MotorState> {
 
                 // Calculate integral term
                 // Polarity: -1 if setpoint is negative, 1 if setpoint is positive, 0 if setpoint is 0
-                double setpoint_polarity = (state.setpoint == 0) ? 0 : (state.setpoint >= 0) ? 1 : -1;
-                state.i_accumulator = constrain(
-                    state.i_accumulator + (state.i_in * state.encoder_dt * 
-                        (state.error * setpoint_polarity + last_error * last_setpoint_polarity) / 2 // Trapezoidal integration
-                    ),
-                    state.i_accumulator_min, state.i_accumulator_max
+                double setpoint_polarity;
+                if (state.control_mode == CLASSIC_PID) {
+                    setpoint_polarity = 1;
+                    last_setpoint_polarity = 1;
+                } else { // CLASSIC_PID_B_I_FLIPPING or ADAPTIVE_PID
+                    setpoint_polarity = (state.setpoint == 0) ? 0 : (state.setpoint >= 0) ? 1 : -1;
+                }
+
+                double bias_out = state.bias * setpoint_polarity; // Calculate bias term
+
+                double i_temp = state.i_accumulator + (state.i_in * state.encoder_dt * 
+                    (state.error * setpoint_polarity + last_error * last_setpoint_polarity) / 2 // Trapezoidal integration
                 );
 
-                double bias = state.bias * setpoint_polarity; // Calculate bias term
+                // Constrain using windup limits
+                i_temp = constrain( i_temp, state.i_accumulator_min, state.i_accumulator_max ); // Temporary variable before we constrain with limits
+
+                // Constrain using output limits, so the integral term doesnt grow if we saturate the output
+                double pdb_out_temp = p_out + d_out + bias_out; // Calculate output without integral term
+                if ( state.control_mode == CLASSIC_PID || state.control_mode == CLASSIC_PID_B_I_FLIPPING ) {
+                    double i_out_max = constrain(state.output_max - pdb_out_temp, 0, state.output_max); // We constrain the integral term to the range of the output just to be safe
+                    double i_out_min = constrain(state.output_min - pdb_out_temp, state.output_min, 0); 
+                    i_temp = constrain( i_temp, i_out_min, i_out_max );
+                } else if ( state.control_mode == ADAPTIVE_PID && state.setpoint != 0 ) {
+                    double i_out_max = constrain((state.output_max - pdb_out_temp) / state.setpoint, 0, state.output_max); // We constrain the integral term to the range of the output just to be safe
+                    double i_out_min = constrain((state.output_min - pdb_out_temp) / state.setpoint, state.output_min, 0);
+                    i_temp = constrain( i_temp, i_out_min, i_out_max );
+                }
+                state.i_accumulator = i_temp;
 
                 // Calculate output
-                state.output = constrain(
-                    p_out + d_out + state.i_accumulator * state.setpoint + bias,
-                    state.output_min, state.output_max
-                );
+                double temp_out;
+                if ( state.control_mode == CLASSIC_PID || state.control_mode == CLASSIC_PID_B_I_FLIPPING ) {
+                    temp_out = p_out + d_out + state.i_accumulator * setpoint_polarity + bias_out;
+                } else if ( state.control_mode == ADAPTIVE_PID ) {
+                    temp_out = p_out + d_out + state.i_accumulator * state.setpoint + bias_out;
+                }
+
+                // Constrain using output limits
+                state.output = constrain( temp_out, state.output_min, state.output_max );
 
                 last_error = state.error;
                 last_setpoint_polarity = setpoint_polarity;
