@@ -9,6 +9,9 @@
 #include "controller.h"
 #include "raw_motor.h"
 
+/**
+ * Motor class that contains all the sub-updaters for closed-loop control
+ */
 class Motor : public BaseStateUpdater<MotorState> {
     public:
         Encoder encoder;

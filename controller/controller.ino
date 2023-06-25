@@ -2,8 +2,9 @@
 #include "src/updaters/robot_core.h"
 #include "src/utils/time.h"
 
-RobotCore* client;
+// Global variables
 
+RobotCore* core;
 RobotState state;
 Clock clock;
 Tick tick;
@@ -11,19 +12,19 @@ Tick tick;
 // Setting up the interrupts
 
 void isr1() {
-    client->motors[0]->encoder.hall_a_interrupt();
+    core->motors[0]->encoder.hall_a_interrupt();
 }
 
 void isr2() {
-    client->motors[1]->encoder.hall_a_interrupt();
+    core->motors[1]->encoder.hall_a_interrupt();
 }
 
 void isr3() {
-    client->motors[2]->encoder.hall_a_interrupt();
+    core->motors[2]->encoder.hall_a_interrupt();
 }
 
 void isr4() {
-    client->motors[3]->encoder.hall_a_interrupt();
+    core->motors[3]->encoder.hall_a_interrupt();
 }
 
 
@@ -64,7 +65,7 @@ void setup() {
     state.motors[3].ppr = 16;
 
     Serial.begin(57600);
-    client = new RobotCore(state);
+    core = new RobotCore(state);
 
     // Attach interrupts
     attachInterrupt(digitalPinToInterrupt(state.motors[0].hall_a_pin), isr1, RISING);
@@ -75,6 +76,7 @@ void setup() {
 }
 
 void loop() {
+    // Update the robot
     tick = clock.update();
-    client->update(tick);
+    core->update(tick);
 }

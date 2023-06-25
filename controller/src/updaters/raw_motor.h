@@ -6,6 +6,9 @@
 
 #include "../states/motor_state.h"
 
+/**
+ * Actuates the motor using the raw PWM pins from state
+ */
 class RawMotor : public BaseStateUpdater<MotorState> {
     private:
         ExpSmoothener smoothener;

@@ -17,6 +17,9 @@
 
 #include "../defs.h"
 
+/**
+ * This class communicates the internal controller states and parameters to ROS via rosserial
+ */
 class Communication : public BaseStateUpdater<RobotState> {
     private:
         // Create node handle
