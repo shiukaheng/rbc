@@ -102,9 +102,9 @@ class Controller : public BaseStateUpdater<MotorState> {
                     double i_out_min = constrain(state.output_min - pdb_out_temp, state.output_min, 0); 
                     i_temp = constrain( i_temp, i_out_min, i_out_max );
                 } else if ( state.control_mode == ADAPTIVE_PID && state.setpoint != 0 ) {
-                    double i_out_max = constrain((state.output_max - pdb_out_temp) / state.setpoint, 0, state.output_max); // We constrain the integral term to the range of the output just to be safe
-                    double i_out_min = constrain((state.output_min - pdb_out_temp) / state.setpoint, state.output_min, 0);
-                    i_temp = constrain( i_temp, i_out_min, i_out_max );
+                    // double i_out_max = constrain((state.output_max - pdb_out_temp) / state.setpoint, 0, state.output_max); // We constrain the integral term to the range of the output just to be safe
+                    // double i_out_min = constrain((state.output_min - pdb_out_temp) / state.setpoint, state.output_min, 0);
+                    // i_temp = constrain( i_temp, i_out_min, i_out_max );
                 }
                 state.i_accumulator = i_temp;
 

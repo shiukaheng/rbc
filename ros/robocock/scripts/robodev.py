@@ -317,29 +317,34 @@ class RampResult:
         self.wheel_states = wheel_states
         self.wheel_commands = wheel_commands
 
-    def plot(self):
+    def plot(self, exclude_wheel_indices=[]):
         # Initialize figure and axis
         fig, ax = plt.subplots()
 
         # Extract command times and velocities
-        command_velocities = [command["wheel_velocity"] for command in self.wheel_commands]
-        command_times = [command["time"] for command in self.wheel_commands]
-
-        # Extract wheel state times and velocities for each wheel
-        state_times = [state["time"] for state in self.wheel_states]
-        wheel1_velocities = [state["wheel1"][0] for state in self.wheel_states]
-        wheel2_velocities = [state["wheel2"][0] for state in self.wheel_states]
-        wheel3_velocities = [state["wheel3"][0] for state in self.wheel_states]
-        wheel4_velocities = [state["wheel4"][0] for state in self.wheel_states]
+        command_velocities = []
+        command_times = []
+        for command in self.wheel_commands:
+            command_velocities.append(command["wheel_velocity"])
+            command_times.append(command["time"])
 
         # Plot commanded velocities
-        ax.plot(command_times, command_velocities, label='Commanded velocities', linestyle='--', color='k')  # made dashed line for visibility
+        ax.plot(command_times, command_velocities, label='Commanded velocities', linestyle='--', color='k')
+
+        # Prepare lists to store wheel state times and velocities
+        state_times = []
+        wheel_velocities = [[] for _ in range(4)]  # create a list of 4 empty lists
+
+        for state in self.wheel_states:
+            state_times.append(state["time"])
+            for i in range(4):
+                if i not in exclude_wheel_indices:
+                    wheel_velocities[i].append(state["wheel" + str(i+1)][0])
 
         # Plot wheel velocities
-        ax.plot(state_times, wheel1_velocities, label='Wheel 1 velocities')
-        ax.plot(state_times, wheel2_velocities, label='Wheel 2 velocities')
-        ax.plot(state_times, wheel3_velocities, label='Wheel 3 velocities')
-        ax.plot(state_times, wheel4_velocities, label='Wheel 4 velocities')
+        for i in range(4):
+            if i not in exclude_wheel_indices:
+                ax.plot(state_times, wheel_velocities[i], label='Wheel {} velocities'.format(i+1))
 
         # Set the y-axis limit to be between the min and max of the commanded velocities
         ax.set_ylim([min(command_velocities), max(command_velocities)])
@@ -350,6 +355,7 @@ class RampResult:
 
         # Display the plot
         plt.show()
+
 
     def save(self, filename=None):
         # If no filename is given, use the current time
@@ -372,11 +378,13 @@ class RampResult:
         self.wheel_states = data["wheel_states"]
         self.wheel_commands = data["wheel_commands"]
 
-    def plot_error(self):
+    def plot_error(self, exclude_wheel_indices: list = []):
         """Plot the error over time for each wheel."""
         fig, ax = plt.subplots()
 
         for i in range(1, 5):
+            if i in exclude_wheel_indices:
+                continue
             error = [state["wheel"+str(i)][6] for state in self.wheel_states]
             time = [state["time"] for state in self.wheel_states]
 
@@ -387,11 +395,13 @@ class RampResult:
         ax.legend(loc='upper right')
         plt.show()
 
-    def plot_output_velocity_scatter(self):
+    def plot_output_velocity_scatter(self, exclude_wheel_indices: list = []):
         """Plot a scatter of the output and velocity for each wheel."""
         fig, ax = plt.subplots()
 
         for i in range(1, 5):
+            if i in exclude_wheel_indices:
+                continue
             output = [state["wheel"+str(i)][2] for state in self.wheel_states]
             velocity = [state["wheel"+str(i)][0] for state in self.wheel_states]
 
@@ -407,38 +417,50 @@ class RampResult:
         Calculate correlation metrics between setpoint and velocity.
 
         Returns:
-            dict: A dictionary containing Pearson and Spearman correlation coefficients.
+            dict: An array of dictionaries containing Pearson and Spearman correlation coefficients for each wheel.
         """
-        setpoints = [state["wheel1"][1] for state in self.wheel_states]
-        velocities = [state["wheel1"][0] for state in self.wheel_states]
+        results = []
+        for i in range(1, 5):
+            setpoints = [state["wheel"+str(i)][1] for state in self.wheel_states]
+            velocities = [state["wheel"+str(i)][0] for state in self.wheel_states]
 
-        # Calculate Pearson correlation
-        pearson_corr, _ = pearsonr(setpoints, velocities)
+            # Calculate Pearson correlation
+            pearson_corr, _ = pearsonr(setpoints, velocities)
 
-        # Calculate Spearman correlation
-        spearman_corr, _ = spearmanr(setpoints, velocities)
+            # Calculate Spearman correlation
+            spearman_corr, _ = spearmanr(setpoints, velocities)
 
-        return {
-            'pearson': pearson_corr,
-            'spearman': spearman_corr
-        }
+            results.append({
+                'pearson': pearson_corr,
+                'spearman': spearman_corr
+            })
 
-    def plot_setpoint_v_velocity(self):
+    def plot_setpoint_v_velocity(self, exclude_wheel_indices: list = []):
         """
         Create a scatter plot between setpoint and velocity.
         """
-        setpoints = [state["wheel1"][1] for state in self.wheel_states]
-        velocities = [state["wheel1"][0] for state in self.wheel_states]
+        fig, ax = plt.subplots()
 
-        plt.scatter(setpoints, velocities)
-        plt.title('Setpoint vs Velocity')
-        plt.xlabel('Setpoint')
-        plt.ylabel('Velocity')
+        for i in range(1, 5):
+            if i in exclude_wheel_indices:
+                continue
+            setpoints = [state["wheel"+str(i)][1] for state in self.wheel_states]
+            velocities = [state["wheel"+str(i)][0] for state in self.wheel_states]
+
+            ax.scatter(setpoints, velocities, label='Wheel ' + str(i))
+
+        ax.set_xlabel('Setpoint')
+        ax.set_ylabel('Velocity')
+        ax.legend(loc='upper right')
         plt.show()
 
-    def plot_all(self):
+
+    def plot_all(self, exlucde_wheel_indices: list = []):
         """
         Plot all the data in wheel_states.
+
+        Args:
+            exlucde_wheel_indices (list): A list of wheel indices to exclude from the plot.
         """
         fig, axs = plt.subplots(7, figsize=(10, 20))
         labels = ["velocity", "setpoint", "output", "position", "acceleration", "error", "i_accumulator", "delta_ticks"]
@@ -448,6 +470,8 @@ class RampResult:
             # axs[i].plot(data)
             # axs[i].set(ylabel=labels[i])
             for j in range(1, 5):
+                if j in exlucde_wheel_indices:
+                    continue
                 data = [state["wheel"+str(j)][i] for state in self.wheel_states]
                 axs[i].plot(data, label='Wheel ' + str(j))
                 axs[i].set(ylabel=labels[i])
