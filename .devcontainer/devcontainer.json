@@ -5,15 +5,21 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "dev",
 	"workspaceFolder": "/root/rbc",
-	"settings": {},
-	"extensions": [
-		"ms-vscode.cpptools",
-		"ms-vscode.cpptools-extension-pack",
-		"ms-iot.vscode-ros",
-		"vsciot-vscode.vscode-arduino",
-		"GitHub.copilot",
-		"hediet.vscode-drawio",
-		"tostc.vscl",
-		"ms-toolsai.jupyter"
-	]
+	"postCreateCommand": "/root/rbc/.devcontainer/post_create.sh",
+	"postStartCommand": "/root/rbc/.devcontainer/post_start.sh",
+	"customizations": {
+		"vscode": {
+			"settings": {},
+			"extensions": [
+				"ms-vscode.cpptools",
+				"ms-vscode.cpptools-extension-pack",
+				"ms-iot.vscode-ros",
+				"vsciot-vscode.vscode-arduino",
+				"GitHub.copilot",
+				"hediet.vscode-drawio",
+				"tostc.vscl",
+				"ms-toolsai.jupyter"
+			]
+		}
+	}
 }

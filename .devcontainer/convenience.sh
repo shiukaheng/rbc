@@ -54,18 +54,6 @@ alias update='run_in_directory "git pull && refreshenv" "$RBC_REPO"' # Update re
 alias discard_changes='run_in_directory "git reset --hard HEAD" "$RBC_REPO"' # Discard changes
 alias commit='run_in_directory "git add . && git commit -m" "$RBC_REPO"' # Commit changes
 
-# Check if ~/.dev has init.lock file. If it doesnt, initialize and create the file, otherwise do nothing
-if [ ! -f ~/.dev/init.lock ]; then
-  # Echo in cyan initializing dev environment
-  echo -e "\e[36mInitializing dev environment...\e[0m"   
-  run_in_directory "catkin build" "$CATKIN_WS_PATH" # Build catkin workspace
-  source $CATKIN_WS_PATH/devel/setup.bash # Source catkin workspace
-  abl # Build Arduino libraries
-  ac # Compile Arduino sketch
-  touch ~/.dev/init.lock
-  echo -e "\e[36mDev environment initialized, compiled catkin_ws, arduino rosserial libraries, and arduino sketch.\e[0m"
-fi
-
 # Convenience alias for setting remote or local ROS_MASTER_URI
 
 export DEV_MASTER_URI="http://localhost:11311"

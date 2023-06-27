@@ -1,4 +1,4 @@
-# Robocock/controller
+# Controller
 This directory contains the code for the arduino motor controller, which implements the PID control loop.
 In order to compile and upload the code to the arduino, you will need to install the [Arduino IDE](https://www.arduino.cc/en/Main/Software).
 ## Dependencies for building the code
