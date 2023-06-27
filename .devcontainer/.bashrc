@@ -123,4 +123,6 @@ export PATH=$PATH:~/bin
 export CATKIN_WS_PATH=~/catkin_ws
 export RBC_REPO=~/rbc
 
+export DOCKERFILE=$RBC_REPO/.devcontainer/Dockerfile
+
 source ~/convenience.sh
