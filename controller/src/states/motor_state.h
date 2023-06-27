@@ -3,33 +3,34 @@
 
 struct MotorState {
     // *** Hardware configuration ***
-    const int lpwm_pin;
-    const int rpwm_pin;
-    const int hall_a_pin;
-    const int hall_b_pin;
-    const double gear_ratio;
-    const int ppr;
+    int lpwm_pin;
+    int rpwm_pin;
+    int hall_a_pin;
+    int hall_b_pin;
+    double gear_ratio;
+    int ppr;
 
     // *** Controller settings ***
-    double p_in = 0;
-    double i_in = 0;
-    double d_in = 0;
-    double bias = 50;
-    double i_accumulator_max = 50;
-    double i_accumulator_min = 0;
+    int control_mode = 3;
+    double p_in = 0.0;
+    double i_in = 0.0;
+    double d_in = 0.0;
+    double bias = 0;
+    double i_accumulator_min = -100;
+    double i_accumulator_max = 100;
     double output_min = -255;
     double output_max = 255;
-    double deadband_min = 0;
+    double deadband_min = 0; // These are automatically updated by the encoder updater
     double deadband_max = 0;
 
     // *** Controller state ***
-    double i_accumulator = 0;
+    double i_accumulator = 20;
     double setpoint = 0;
     double output = 0;
     double error = 0;
 
     // *** Encoder settings ***
-    double target_update_rate = 30; // The target update rate in Hz
+    double target_update_rate = 20; // The target update rate in Hz
     double max_abs_acceleration = 200.; // Threshold of acceleration to discard the update
     double max_abs_velocity = INFINITY; // Threshold of velocity to discard the update
     bool second_order_predictor = false; // Whether to use a second order predictor, read encoder source code for more info
@@ -47,5 +48,5 @@ struct MotorState {
     double acceleration = 0; // The current acceleration in radians/s^2
 
     /** Raw motor settings */
-    double smoothener_decay = 0.001;
+    double smoothener_alpha = 0.001;
 };

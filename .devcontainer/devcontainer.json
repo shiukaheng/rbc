@@ -5,20 +5,15 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "dev",
 	"workspaceFolder": "/root/rbc",
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"ms-vscode.cpptools",
-				"ms-vscode.cpptools-extension-pack",
-				"ms-iot.vscode-ros",
-				"vsciot-vscode.vscode-arduino",
-				"GitHub.copilot",
-				"hediet.vscode-drawio",
-				"tostc.vscl",
-				"llvm-vs-code-extensions.vscode-clangd",
-				"cschlosser.doxdocgen"
-			],
-			"settings": {}
-		}
-	},
+	"settings": {},
+	"extensions": [
+		"ms-vscode.cpptools",
+		"ms-vscode.cpptools-extension-pack",
+		"ms-iot.vscode-ros",
+		"vsciot-vscode.vscode-arduino",
+		"GitHub.copilot",
+		"hediet.vscode-drawio",
+		"tostc.vscl",
+		"ms-toolsai.jupyter"
+	]
 }

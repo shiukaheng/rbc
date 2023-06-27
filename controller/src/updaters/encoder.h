@@ -74,8 +74,12 @@ class Encoder : public BaseStateUpdater<MotorState> {
                     // If the acceleration and velocity is small enough, we can update the state
                     state.velocity = draft_velocity; // Update velocity in state
                     state.acceleration = draft_acceleration; // Update acceleration in state
-                    state.position = state.velocity * time_elapsed; // Update position in state
+                    state.position = state.position + state.velocity * time_elapsed; // Update position in state
                     state.discarded = false;
+                    double resolution = 1. / state.ppr * state.gear_ratio / time_elapsed * 2. * M_PI; // Calculate the resolution of the encoder
+                    // Set the deadband
+                    state.deadband_min = -resolution + 0.0001;
+                    state.deadband_max = resolution - 0.0001;
 
                 } else {
 

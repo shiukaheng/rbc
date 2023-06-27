@@ -41,6 +41,13 @@ COPY ./sshd_config /etc/ssh/sshd_config
 # Install avahi-daemon for mDNS
 RUN apt-get install -y avahi-daemon iputils-ping
 
+# Install ipykernel and pip for python3
+RUN apt-get install -y python3-pip
+RUN pip3 install ipykernel
+
+# Install scipy, numpy, matplotlib, pandas, scikit-learn, jupyterlab
+RUN pip3 install --upgrade numpy matplotlib scipy pandas scikit-learn ipympl jupyterlab
+
 # Copying source code over
 COPY .. /root/rbc
 COPY ./.bashrc /root/.bashrc

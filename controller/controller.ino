@@ -1,98 +1,82 @@
-// #include "rbc.h"
-// #include "rbc_config.h"
-// #include <math.h>
-// #include <Arduino.h>
-
-// // Limits
-// #define RPS_LIMIT 80.
-// #define PWM_LIMIT 255.
-
-// ROSSerialClient* client;
-
-// void isr1() {
-//     client->isr1();
-// }
-
-// void isr2() {
-//     client->isr2();
-// }
-
-// void isr3() {
-//     client->isr3();
-// }
-
-// void isr4() {
-//     client->isr4();
-// }
-
-// void setup() {
-//     // PWM frequency configuration
-//     TCCR1B = TCCR1B & B11111000 | B00000001;  // for PWM frequency of 31372.55 Hz on D11, D12
-//     TCCR3B = TCCR3B & B11111000 | B00000001;   // for PWM frequency of 31372.55 Hz on D2, D3, D5
-//     TCCR4B = TCCR4B & B11111000 | B00000001;   // for PWM frequency of 31372.55 Hz on D6, D7, D8
-
-//     // Start serial
-//     Serial.begin(57600);
-
-//     // Initial PID parameters (0,0,0) so that the wheels don't move on startup, instead we wait for the first message
-//     double kp = 0.0;
-//     double ki = 0.0;
-//     double kd = 0.0;
-
-//     // Motor configurations
-//     double gear_ratio = 1./82.;
-//     int ppr = 16;
-//     int smoothener_window_size = 1;
-
-//     // Pinouts: { lpwm_pin, rpwm_pin, hall_a_pin, hall_b_pin }
-//     int motor_pinouts[4][4] = {
-//         { 2, 7, 18, 30 },   // Wheel 1
-//         { 3, 8, 19, 31 },   // Wheel 2
-//         { 5, 11, 20, 32 },  // Wheel 3
-//         { 6, 12, 21, 33 }   // Wheel 4
-//     };
-
-//     // Create config
-//     RBCConfig config = createConfig(
-//         // Pinouts
-//         motor_pinouts,
-//         // Wheel parameters 
-//         ppr, 
-//         gear_ratio, 
-//         // Smoothener parameters
-//         smoothener_window_size,
-//         // PID parameters
-//         kp, 
-//         ki, 
-//         kd,
-//         // Minimum startup PWM  
-//         50
-//     );
-
-//     // Create client
-//     client = new ROSSerialClient(config);
-
-//     // Attach interrupts
-//     attachInterrupt(digitalPinToInterrupt(motor_pinouts[0][2]), isr1, RISING);
-//     attachInterrupt(digitalPinToInterrupt(motor_pinouts[1][2]), isr2, RISING);
-//     attachInterrupt(digitalPinToInterrupt(motor_pinouts[2][2]), isr3, RISING);
-//     attachInterrupt(digitalPinToInterrupt(motor_pinouts[3][2]), isr4, RISING);
-// }
-
-// void loop() {
-//     client->update();
-// }
-
 #include <Arduino.h>
-#include "src2/robot_core.h"
+#include "src/updaters/robot_core.h"
+#include "src/utils/time.h"
 
-RobotCore* client;
+// Global variables
+
+RobotCore* core;
+RobotState state;
+Clock clock;
+Tick tick;
+
+// Setting up the interrupts
+
+void isr1() {
+    core->motors[0]->encoder.hall_a_interrupt();
+}
+
+void isr2() {
+    core->motors[1]->encoder.hall_a_interrupt();
+}
+
+void isr3() {
+    core->motors[2]->encoder.hall_a_interrupt();
+}
+
+void isr4() {
+    core->motors[3]->encoder.hall_a_interrupt();
+}
+
 
 void setup() {
+
+    // PWM frequency configuration
+    TCCR1B = TCCR1B & B11111000 | B00000001;  // for PWM frequency of 31372.55 Hz on D11, D12
+    TCCR3B = TCCR3B & B11111000 | B00000001;   // for PWM frequency of 31372.55 Hz on D2, D3, D5
+    TCCR4B = TCCR4B & B11111000 | B00000001;   // for PWM frequency of 31372.55 Hz on D6, D7, D8
+
+    // Configure the robot state
+    state.motors[0].lpwm_pin = 2;
+    state.motors[0].rpwm_pin = 7;
+    state.motors[0].hall_a_pin = 18;
+    state.motors[0].hall_b_pin = 30;
+    state.motors[0].gear_ratio = 1./82.;
+    state.motors[0].ppr = 16;
+
+    state.motors[1].lpwm_pin = 3;
+    state.motors[1].rpwm_pin = 8;
+    state.motors[1].hall_a_pin = 19;
+    state.motors[1].hall_b_pin = 31;
+    state.motors[1].gear_ratio = 1./82.;
+    state.motors[1].ppr = 16;
+
+    state.motors[2].lpwm_pin = 5;
+    state.motors[2].rpwm_pin = 11;
+    state.motors[2].hall_a_pin = 20;
+    state.motors[2].hall_b_pin = 32;
+    state.motors[2].gear_ratio = 1./82.;
+    state.motors[2].ppr = 16;
+
+    state.motors[3].lpwm_pin = 6;
+    state.motors[3].rpwm_pin = 12;
+    state.motors[3].hall_a_pin = 21;
+    state.motors[3].hall_b_pin = 33;
+    state.motors[3].gear_ratio = 1./82.;
+    state.motors[3].ppr = 16;
+
     Serial.begin(57600);
-    client = new RobotCore();
+    core = new RobotCore(state);
+
+    // Attach interrupts
+    attachInterrupt(digitalPinToInterrupt(state.motors[0].hall_a_pin), isr1, RISING);
+    attachInterrupt(digitalPinToInterrupt(state.motors[1].hall_a_pin), isr2, RISING);
+    attachInterrupt(digitalPinToInterrupt(state.motors[2].hall_a_pin), isr3, RISING);
+    attachInterrupt(digitalPinToInterrupt(state.motors[3].hall_a_pin), isr4, RISING);
+
 }
 
 void loop() {
-    client->update();
+    // Update the robot
+    tick = clock.update();
+    core->update(tick);
 }

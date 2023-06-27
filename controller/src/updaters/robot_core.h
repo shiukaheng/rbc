@@ -13,17 +13,21 @@
 
 class RobotCore : public BaseStateUpdater<RobotState> {
     public:
-        Communication communication;
+        Communication* communication;
         Motor* motors[NUM_MOTORS];
         
-        RobotCore(RobotState& state) : BaseStateUpdater<RobotState>(state), communication(Communication(state)) {
-            // Let's initialize all the motors
+        RobotCore(RobotState& state) : BaseStateUpdater<RobotState>(state) {
+            // Let's initialize the communication
+            communication = new Communication(state);
+            // Then initialize all the motors
             for (int i = 0; i < NUM_MOTORS; i++) {
                 motors[i] = new Motor(state.motors[i]);
             }
         }
         ~RobotCore() {
-            // Let's delete all the motors
+            // Delete the communication
+            delete communication;
+            // Delete all the motors
             for (int i = 0; i < NUM_MOTORS; i++) {
                 delete motors[i];
             }
@@ -33,7 +37,7 @@ class RobotCore : public BaseStateUpdater<RobotState> {
             for (int i = 0; i < NUM_MOTORS; i++) {
                 motors[i]->update(tick);
             }
-            // Let's then update the communication
-            communication.update(tick);
+            // Then update the communication
+            communication->update(tick);
         }
 };

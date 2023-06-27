@@ -2,10 +2,12 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
-#include <robocock/WheelStates.h>
-#include <robocock/TargetWheelVelocities.h>
+#include <robocock/BaseState.h>
+#include <robocock/BaseSetpoint.h>
 #include <controller_manager/controller_manager.h>
 #include <sensor_msgs/JointState.h>
+
+#define NUM_MOTORS 4
 
 class RobocockHW : public hardware_interface::RobotHW {
     private:
@@ -21,31 +23,13 @@ class RobocockHW : public hardware_interface::RobotHW {
         // ROS node
         ros::Publisher wheel_vel_pub;
         ros::Subscriber wheel_state_sub;
-        // ros::Publisher joint_state_pub;
 
-        void wheelStateCallback(const robocock::WheelStates& msg) {
-            vel[0] = msg.wheel1_velocity;
-            vel[1] = msg.wheel2_velocity;
-            vel[2] = msg.wheel3_velocity;
-            vel[3] = msg.wheel4_velocity;
-            pos[0] = msg.wheel1_position;
-            pos[1] = msg.wheel2_position;
-            pos[2] = msg.wheel3_position;
-            pos[3] = msg.wheel4_position;
-            // Not sure if PWM is a good measure of effort, but it's the only thing we have for now
-            eff[0] = msg.wheel1_output;
-            eff[1] = msg.wheel2_output;
-            eff[2] = msg.wheel3_output;
-            eff[3] = msg.wheel4_output;
-
-            // Now, we publish the joint states
-            // sensor_msgs::JointState joint_state_msg;
-            // joint_state_msg.header.stamp = ros::Time::now();
-            // joint_state_msg.name = {"wheel_1_joint", "wheel_2_joint", "wheel_3_joint", "wheel_4_joint"};
-            // joint_state_msg.position = {pos[0], pos[1], pos[2], pos[3]};
-            // joint_state_msg.velocity = {vel[0], vel[1], vel[2], vel[3]};
-            // joint_state_msg.effort = {eff[0], eff[1], eff[2], eff[3]};
-            // joint_state_pub.publish(joint_state_msg);
+        void baseStateCallback(const robocock::BaseState& msg) {
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                pos[i] = msg.states[i].position;
+                vel[i] = msg.states[i].velocity;
+                eff[i] = msg.states[i].output;
+            }
         }
 
         float control_frequency;
@@ -55,34 +39,26 @@ class RobocockHW : public hardware_interface::RobotHW {
         ros::Rate* control_rate;
         RobocockHW() {
             ROS_INFO("Initializing robocock hardware interface");
-            // Register the joints with the state and velocity interfaces
 
-            hardware_interface::JointStateHandle state_handle_1("wheel_1_joint", &pos[0], &vel[0], &eff[0]);
-            jnt_state_interface.registerHandle(state_handle_1);
-            hardware_interface::JointStateHandle state_handle_2("wheel_2_joint", &pos[1], &vel[1], &eff[1]);
-            jnt_state_interface.registerHandle(state_handle_2);
-            hardware_interface::JointStateHandle state_handle_3("wheel_3_joint", &pos[2], &vel[2], &eff[2]);
-            jnt_state_interface.registerHandle(state_handle_3);
-            hardware_interface::JointStateHandle state_handle_4("wheel_4_joint", &pos[3], &vel[3], &eff[3]);
-            jnt_state_interface.registerHandle(state_handle_4);
+            // Register the joints with the state and velocity interfaces
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                std::string joint_name = "wheel_" + std::to_string(i + 1) + "_joint";
+                hardware_interface::JointStateHandle state_handle(joint_name, &pos[i], &vel[i], &eff[i]);
+                jnt_state_interface.registerHandle(state_handle);
+            }
 
             registerInterface(&jnt_state_interface);
 
-            hardware_interface::JointHandle vel_handle_1(jnt_state_interface.getHandle("wheel_1_joint"), &cmd[0]);
-            jnt_vel_interface.registerHandle(vel_handle_1);
-            hardware_interface::JointHandle vel_handle_2(jnt_state_interface.getHandle("wheel_2_joint"), &cmd[1]);
-            jnt_vel_interface.registerHandle(vel_handle_2);
-            hardware_interface::JointHandle vel_handle_3(jnt_state_interface.getHandle("wheel_3_joint"), &cmd[2]);
-            jnt_vel_interface.registerHandle(vel_handle_3);
-            hardware_interface::JointHandle vel_handle_4(jnt_state_interface.getHandle("wheel_4_joint"), &cmd[3]);
-            jnt_vel_interface.registerHandle(vel_handle_4);
-
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                std::string joint_name = "wheel_" + std::to_string(i + 1) + "_joint";
+                hardware_interface::JointHandle vel_handle(jnt_state_interface.getHandle(joint_name), &cmd[i]);
+                jnt_vel_interface.registerHandle(vel_handle);
+            }
             registerInterface(&jnt_vel_interface);
 
             // Initialize the publisher and subscriber
-            wheel_vel_pub = nh.advertise<robocock::TargetWheelVelocities>("target_wheel_velocities", 1000);
-            // joint_state_pub = nh.advertise<sensor_msgs::JointState>("joint_states", 1000);
-            wheel_state_sub = nh.subscribe("wheel_states", 1000, &RobocockHW::wheelStateCallback, this);
+            wheel_vel_pub = nh.advertise<robocock::BaseSetpoint>("base_setpoint", 1000);
+            wheel_state_sub = nh.subscribe("base_state", 1000, &RobocockHW::baseStateCallback, this);
 
             // Get the controller frequency
             nh.param<float>("control_frequency", control_frequency, 100.0);
@@ -94,11 +70,10 @@ class RobocockHW : public hardware_interface::RobotHW {
         }
         void write() {
             // Publish the target wheel velocities
-            robocock::TargetWheelVelocities msg;
-            msg.wheel1 = cmd[0];
-            msg.wheel2 = cmd[1];
-            msg.wheel3 = cmd[2];
-            msg.wheel4 = cmd[3];
+            robocock::BaseSetpoint msg;
+            for (int i = 0; i < NUM_MOTORS; i++) {
+                msg.setpoints[i].velocity = cmd[i];
+            }
             wheel_vel_pub.publish(msg);
         }
         void read() {

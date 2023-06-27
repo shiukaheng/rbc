@@ -7,18 +7,15 @@ find_package(Eigen3 REQUIRED)
 
 add_message_files(
     FILES
-    WheelAccumulatedI.msg
-    WheelStates.msg
-    TargetWheelVelocities.msg
-    WheelPIDParameters.msg
+    MotorAdaptiveState.msg
+    MotorParameters.msg
+    MotorSetpoint.msg
+    MotorState.msg
+    BaseAdaptiveState.msg
+    BaseParameters.msg
+    BaseSetpoint.msg
+    BaseState.msg
 )
-
-# add_service_files(
-#     FILES
-#     EmergencyStop.srv
-#     Resume.srv
-#     ResetPID.srv
-# )
 
 generate_messages(
     DEPENDENCIES
@@ -30,11 +27,11 @@ catkin_package(
     CATKIN_DEPENDS message_runtime
 )
 
-## Build talker and listener
+
 include_directories(include ${catkin_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS})
 
-add_executable(control_parameter_server src/control/control_parameter_server/main.cpp)
-target_link_libraries(control_parameter_server ${catkin_LIBRARIES})
+add_executable(hardware_parameter_server src/control/hardware_parameter_server/main.cpp)
+target_link_libraries(hardware_parameter_server ${catkin_LIBRARIES})
 
 add_executable(robocock_hw src/control/hardware/main.cpp)
 target_link_libraries(robocock_hw ${catkin_LIBRARIES})

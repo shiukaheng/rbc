@@ -47,6 +47,7 @@ alias g='rbcl gazebo.launch' # Gazebo
 alias m='rbcl model.launch' # Model
 alias mrc='rbcl motor_ros_control.launch' # Motor ROS Control
 alias mt='rbcl motor_tune.launch' # Motor Tune
+alias bhw='rbcl base_hardware.launch' # Hardware
 
 # Git
 alias update='run_in_directory "git pull && refreshenv" "$RBC_REPO"' # Update repo
