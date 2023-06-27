@@ -1,5 +1,3 @@
-# Robocock/ros
-This directory contains the Robocock ROS packages.
 ## Dependencies for building the code
 - Ubuntu 20.04 (Focal Fossa)
 - ROS noetic: `sudo apt install ros-noetic-ros-base ros-noetic-ros-perception`
