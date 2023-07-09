@@ -60,3 +60,6 @@ RUN echo 'root:roboc0ck' | chpasswd
 
 # Remove ~/.dev
 RUN rm -rf ~/.dev
+RUN apt-get -y install ros-noetic-smach
+RUN apt-get -y install ros-noetic-smach-msgs
+RUN apt-get -y install ros-noetic-smach-ros
