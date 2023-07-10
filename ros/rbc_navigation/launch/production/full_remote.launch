@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find robocock)/description/robot.urdf.xacro" />
+
+    <!-- Robot state publisher on the other hand takes in the joint data to compute the TFs -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+    <!-- slam_toolbox -->
+    <node pkg="slam_toolbox" type="localization_slam_toolbox_node" name="slam_toolbox" output="screen">
+        <rosparam command="load" file="$(find robocock)/config/mapper_params_localization.yaml" />
+    </node>
+
+    <!-- Debug GUI -->
+    <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/model.perspective"/>
+    <!--  launch-prefix="bash -c 'sleep 5; $0 $@'" -->
+    
+    <!-- Rviz with robocock/config/motor_ros_control.rviz -->
+    <node pkg="rviz" type="rviz" name="rviz" output="screen" respawn="false" args="-d $(find robocock)/config/motor_ros_control.rviz"/>
+</launch>
