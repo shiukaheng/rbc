@@ -66,7 +66,7 @@ class RobotHW : public hardware_interface::RobotHW {
             // Initialize the control rate
             control_rate = new ros::Rate(control_frequency);
 
-            ROS_INFO("Robocock hardware interface initialized");
+            ROS_INFO("Hardware interface initialized");
         }
         void write() {
             // Publish the target wheel velocities
