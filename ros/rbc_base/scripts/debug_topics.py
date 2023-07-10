@@ -3,7 +3,7 @@
 from __future__ import annotations
 import rospy
 
-from robocock.msg import BaseState, BaseSetpoint
+from rbc_base.msg import BaseState, BaseSetpoint
 from std_msgs.msg import Float32
 
 import threading

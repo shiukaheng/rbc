@@ -3,7 +3,7 @@
 import copy
 import threading
 import rospy
-from robocock.msg import BaseSetpoint, BaseState, MotorParameters, MotorAdaptiveState
+from rbc_base.msg import BaseSetpoint, BaseState, MotorParameters, MotorAdaptiveState
 import numpy as np
 import matplotlib.pyplot as plt
 import json
