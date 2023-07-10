@@ -38,7 +38,7 @@ class RobotHW : public hardware_interface::RobotHW {
         ros::NodeHandle nh;
         ros::Rate* control_rate;
         RobotHW() {
-            ROS_INFO("Initializing robocock hardware interface");
+            ROS_INFO("Initializing hardware interface");
 
             // Register the joints with the state and velocity interfaces
             for (int i = 0; i < NUM_MOTORS; i++) {

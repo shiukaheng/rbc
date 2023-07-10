@@ -6,7 +6,7 @@
 
     <!-- ros_control server, provide ControllerManager which allows controller 
     plugins (in this case our custom OmniwheelBaseController) to access them -->
-    <node pkg="rbc_base" type="robocock_hw" name="robocock_hw" output="screen"/>
+    <node pkg="rbc_base" type="robot_hw" name="robot_hw" output="screen"/>
 
     <!-- rosparam configuration required to tell ros_control that OmniwheelBaseController is the controller we will use -->
     <rosparam file="$(find rbc_base)/config/controller.yaml" command="load"/>

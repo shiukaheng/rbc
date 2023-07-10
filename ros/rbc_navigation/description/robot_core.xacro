@@ -15,14 +15,14 @@
         <child link="chassis"/>
         <origin xyz="0 0 0"/>
     </joint> launch-prefix="bash -c 'sleep 5; $0 $@'"
-    <!-- chassis description goes here. It describes the chassis of robocock which is a 54cm x 54cm x 150cm box -->
+    <!-- chassis description goes here. It describes the chassis of the bot which is a 54cm x 54cm x 150cm box -->
     <link name="chassis">
         <visual>
             <!-- by default, the origin is centred around the link origin, so offset it by half the height -->
             <!-- <origin xyz="0 0 0.75" rpy="0 0 0"/> -->
             <geometry>
                 <!-- <box size="0.54 0.54 1.5"/> -->
-                <mesh filename="package://robocock/meshes/frame_ultra_low_poly.stl"/>
+                <mesh filename="package://rbc_base/meshes/frame_ultra_low_poly.stl"/>
                 <!-- <mesh filename="model://frame_ultra_low_poly.stl"/> -->
             </geometry>
             <material name="white"/>

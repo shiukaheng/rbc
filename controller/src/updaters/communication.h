@@ -10,12 +10,12 @@
 
 #include <ros.h>
 #include <std_msgs/String.h>
-#include <robocock/BaseState.h>
-#include <robocock/BaseSetpoint.h>
-#include <robocock/BaseParameters.h>
-#include <robocock/BaseAdaptiveState.h>
-#include <robocock/MotorParameters.h>
-#include <robocock/MotorAdaptiveState.h>
+#include <rbc_base/BaseState.h>
+#include <rbc_base/BaseSetpoint.h>
+#include <rbc_base/BaseParameters.h>
+#include <rbc_base/BaseAdaptiveState.h>
+#include <rbc_base/MotorParameters.h>
+#include <rbc_base/MotorAdaptiveState.h>
 
 #include "../defs.h"
 

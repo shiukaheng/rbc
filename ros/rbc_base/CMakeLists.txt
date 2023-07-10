@@ -33,8 +33,8 @@ include_directories(include ${catkin_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS})
 add_executable(hardware_parameter_server src/control/hardware_parameter_server/main.cpp)
 target_link_libraries(hardware_parameter_server ${catkin_LIBRARIES})
 
-add_executable(robocock_hw src/control/hardware/main.cpp)
-target_link_libraries(robocock_hw ${catkin_LIBRARIES})
+add_executable(robot_hw src/control/hardware/main.cpp)
+target_link_libraries(robot_hw ${catkin_LIBRARIES})
 
 add_library(omniwheel_base_controller 
   src/control/omniwheel_base_controller/omniwheel_base_controller.cpp

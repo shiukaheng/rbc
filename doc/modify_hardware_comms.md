@@ -1,4 +1,4 @@
 - Change the motor_state.h under controller code if necessary.
-- Change robocock messages
+- Change rbc messages
 - Change hardware_parameter_server
 - Change RobocockHW (If impacted setpoint)
