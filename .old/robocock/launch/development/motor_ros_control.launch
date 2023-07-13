@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Include hardware.launch -->
+    <include file="$(find robocock)/launch/hardware.launch"/>
+    <!-- Debug GUI -->
+    <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" output="screen" respawn="false" args="--perspective-file $(find robocock)/config/motor_ros_control.perspective" launch-prefix="bash -c 'sleep 5; $0 $@'"/>
+    <!-- Rviz with robocock/config/motor_ros_control.rviz -->
+    <node pkg="rviz" type="rviz" name="rviz" output="screen" respawn="false" args="-d $(find robocock)/config/motor_ros_control.rviz"/>
+</launch>
