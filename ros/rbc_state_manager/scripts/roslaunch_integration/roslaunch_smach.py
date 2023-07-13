@@ -4,6 +4,7 @@ import roslaunch
 import os
 import threading
 
+# Helper class monitoring a single launchfile
 class MonitoredLaunchFileProcessListener(roslaunch.pmon.ProcessListener):
     def __init__(self, monitored_launchfile):
         self.monitored_launchfile = monitored_launchfile
@@ -17,12 +18,29 @@ class MonitoredLaunchFileProcessListener(roslaunch.pmon.ProcessListener):
         self.monitored_launchfile.processes_exit_code[name] = exit_code
         self.monitored_launchfile._processes_exit_code_updated()
 
-class MonitoredLaunchfile:
-    def __init__(self, path):
-        self.path = path
+# ROSLaunch integration with smach
+# User provides:
+# - A launchfile that can launch any arbritrary number of nodes
+# - A "wait_for_topics" array, which would be an array of topics that 
+#   needs to start being broadcast for the system to be considered as ready
+# - A "topic_ready_predicates" dict (for more advanced verification of system 
+#   readiness), which maps topics to a predicate that should determine whether
+#   a given message indicates that a particular part of the system is ready.
+# After which, the node behaves as a nested state machine:
+# - We start by default in the stage "initialization"
+# - We wait for all conditions in "wait_for_topics" and "topic_ready_predicates" to return true, after which we enter stage "running"
+# - If any of the nodes in this process die with a non-zero return code, we enter stage "error"
+# - However, if a subset of nodes have exited with a zero return code, we assume its normal behaviour
+# - If all of the nodes return with zero, we assume everything is fine, and we transition to "exited"
+
+# A custom smach launch class that provides "initializing", "running", "initialization_timeout", "error" and "exited" states depending on the state of the processes.
+# Class also exposes methods users can override, such as when it enters a state, or when a process exits.
+class ROSLaunchSmach:
+    def __init__(self, launchfiles=[], wait_for_topics=[], topic_ready_predicates={}):
+        self.launchfiles = launchfiles
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch.configure_logging(self.uuid)
-        self.launch = roslaunch.parent.ROSLaunchParent(self.uuid, [self.path], 
+        self.launch = roslaunch.parent.ROSLaunchParent(self.uuid, self.launchfile, 
                                                         process_listeners=[MonitoredLaunchFileProcessListener(self)])
         self.processes_exit_code = None
         self.observers = set()
@@ -58,29 +76,27 @@ class MonitoredLaunchfile:
         for observer in self.observers:
             observer.update(result)
 
-    def kill(self):
-        self.all_processes_exited.set()
-    
     def stop(self):
         self.launch.shutdown()
+        self.all_processes_exited.set()
 
 class Observer:
     def update(self, result):
         print(f"All processes exited, success: {result}")
 
-def main():
-    raw_launchfile = "~/catkin_ws/src/rbc_state_manager/launch/test.launch"
-    absolute_launchfile = os.path.expanduser(raw_launchfile)
+# def main():
+#     raw_launchfile = "~/catkin_ws/src/rbc_state_manager/launch/test.launch"
+#     absolute_launchfile = os.path.expanduser(raw_launchfile)
 
-    monitored_launchfile = MonitoredLaunchfile(absolute_launchfile)
-    monitored_launchfile.start()
+#     monitored_launchfile = MonitoredLaunchfile(absolute_launchfile)
+#     monitored_launchfile.start()
 
-    observer = Observer()
-    monitored_launchfile.subscribe(observer)
+#     observer = Observer()
+#     monitored_launchfile.subscribe(observer)
 
-    monitored_launchfile.all_processes_exited.wait()
+#     monitored_launchfile.all_processes_exited.wait()
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
     
 # Todo: Passing out errors / exit codes if something goes wrong
