@@ -15,13 +15,14 @@ services:
       - /root/catkin_ws/devel
       - /root/catkin_ws/install
       - /root/catkin_ws/logs
-      - '/tmp/.X11-unix:/tmp/.X11-unix:rw'
-      - '$HOME/.Xauthority:/root/.Xauthority:rw'
       - /root/.dev
       - /root/.bash_history
-      - ./sshd_config:/etc/ssh/sshd_config
-      - /var/run/dbus:/var/run/dbus
-      - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
+      # The following are optional for Linux hosts for better integration, and is optional
+      # - ./sshd_config:/etc/ssh/sshd_config
+      # - '/tmp/.X11-unix:/tmp/.X11-unix:rw'
+      # - '$HOME/.Xauthority:/root/.Xauthority:rw'
+      # - /var/run/dbus:/var/run/dbus
+      # - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
     devices:
       - /dev/ttyACM0:/dev/ttyACM0 # Arduino motor controller
       # - /dev/astra_s:/dev/astra_s # Orbbec Astra S

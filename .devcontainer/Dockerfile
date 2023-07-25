@@ -55,8 +55,11 @@ RUN mkdir -p /root/catkin_ws
 WORKDIR /root/catkin_ws
 RUN ln -s /root/rbc/ros src
 
-# Set password for root to be roboc0ck
-RUN echo 'root:roboc0ck' | chpasswd
+# Set password for root to be rbc
+RUN echo 'root:rbc' | chpasswd
 
 # Remove ~/.dev
 RUN rm -rf ~/.dev
+RUN apt-get -y install ros-noetic-smach
+RUN apt-get -y install ros-noetic-smach-msgs
+RUN apt-get -y install ros-noetic-smach-ros
