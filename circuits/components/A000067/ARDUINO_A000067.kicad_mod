@@ -181,7 +181,7 @@
   (pad "SCL" thru_hole circle (at 24.13 -32.004) (size 1.358 1.358) (drill 0.85) (layers "*.Cu" "*.Mask") (tstamp 01f8b7da-cfdd-4f17-9f6b-630151f69a98))
   (pad "SDA" thru_hole circle (at 24.13 -29.464) (size 1.358 1.358) (drill 0.85) (layers "*.Cu" "*.Mask") (tstamp 69e0533e-cd47-4c7e-85d1-6344681f4182))
   (pad "VIN" thru_hole circle (at -24.13 -5.08) (size 1.358 1.358) (drill 0.85) (layers "*.Cu" "*.Mask") (tstamp c93c8862-7c8c-4138-a0fc-6a81bd973e1b))
-  (model "${KIPRJMOD}/components/A000067/A000067.step"
+  (model "C:/Users/Kenneth/OneDrive/Desktop/circuits/components/A000067/A000067.step"
     (offset (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz -90 0 0))
