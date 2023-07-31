@@ -40,12 +40,45 @@ class ROSLaunchSmach:
         self.launchfiles = launchfiles
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch.configure_logging(self.uuid)
-        self.launch = roslaunch.parent.ROSLaunchParent(self.uuid, self.launchfile, 
+        self.launch = roslaunch.parent.ROSLaunchParent(self.uuid, self.launchfiles,
                                                         process_listeners=[MonitoredLaunchFileProcessListener(self)])
         self.processes_exit_code = None
         self.observers = set()
 
-        self.all_processes_exited = threading.Event()
+        # wait_for_topics must be an array of tuples in the form of (topic_name, message_type)
+        if not isinstance(wait_for_topics, list):
+            raise TypeError("wait_for_topics must be an array")
+        if not all(isinstance(x, tuple) for x in wait_for_topics):
+            raise TypeError("wait_for_topics must be an array of tuples")
+        if not all(len(x) == 2 for x in wait_for_topics):
+            raise TypeError("wait_for_topics tuples must be of length 2")
+        if not all(isinstance(x[0], str) for x in wait_for_topics):
+            raise TypeError("wait_for_topics tuples first element must be a string")
+        # Check if second element of tuple is a valid message type
+        
+        # Check if topic_ready_predicates is a dict of strings to functions
+        if not isinstance(topic_ready_predicates, dict):
+            raise TypeError("topic_ready_predicates must be a dict")
+        if not all(isinstance(x, str) for x in topic_ready_predicates.keys()):
+            raise TypeError("topic_ready_predicates keys must be strings")
+        # Check if all values are functions (or None)
+        if not all(callable(x) or x is None for x in topic_ready_predicates.values()):
+            raise TypeError("topic_ready_predicates values must be functions or None")
+        
+        # Warn if wait_for_topics and topic_ready_predicates keys have overlap
+        if len(set(wait_for_topics).intersection(set(topic_ready_predicates.keys()))) > 0:
+            print("Warning: wait_for_topics and topic_ready_predicates keys overlap, topic_ready_predicates will take precedence")
+        
+        # Populate topic_ready_predicates with None if topic is in wait_for_topics but not a key in topic_ready_predicates
+        for topic in wait_for_topics:
+            if topic not in topic_ready_predicates:
+                topic_ready_predicates[topic] = None
+
+        # For all topics in topic_ready_predicates, subscribe
+        self.topic_subscribers  = {}
+
+
+        self.all_processes_exited = threading.Event() # Event that is set when all processes have exited, which is triggered by the process listener
 
     def start(self):
         self.launch.start()

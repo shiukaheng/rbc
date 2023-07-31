@@ -10,12 +10,15 @@ import rospy
 
 class Initialization(BaseState):
     def __init__(self, topic_monitors=[]):
-        super().__init__(["running", "error", "exited"])
+        super().__init__(["running", "error"])
+        # Running occurs when all topics are ready
+        # Error occurs when any of the nodes exit with a non-zero return code before all topics are ready, or if timeout occurs
         # Block until all topics are ready
         self.wait_for_topics_ready(topic_monitors)
-    def wait_for_topics_ready(self, topics=[]): # Topics in form of (topic name, topic type (for deserialization), predicate (optional, default to always true))
+
+    def wait_for_topics_ready(self, topic_monitors=[]): # Topics in form of (topic name, topic type (for deserialization), predicate (optional, default to always true))
         # Deep clone topics
-        self.wait_for_topics = topics.copy()
+        self.wait_for_topics = topic_monitors.copy()
         # First check if all items are of length 2 or 3
         if not all(len(topic) in [2, 3] for topic in self.wait_for_topics):
             raise ValueError("All topics must be of length 2 or 3")
@@ -24,40 +27,37 @@ class Initialization(BaseState):
             raise ValueError("There are duplicate topic names")
         # Then, if all items are of length 2, we add a dummy predicate (always true for any value)
         self.wait_for_topics = [topic + (lambda x: True,) if len(topic) == 2 else topic for topic in self.wait_for_topics]
-        self.topic_ready_predicates = topic_ready_predicates.copy()
-        # Now, we create a set of topic keys, which is the first element of each topic
-        self.topic_keys = set(topic[0] for topic in self.wait_for_topics)
-        # Now we need to subscribe to all the topics and link them to a callback that on message received:
-        # - First, we evaluate the message against the predicate
-        # - If the value returned is true, we remove the topic from the set of topic keys
-        # - We unsubscribe from the topic for the callback
-        # - We then call self.on_topic_update() to check if we can transition to running
+        # Now we convert this to a dictionary using the index in the list as the key
+        self.wait_for_topics = {i: topic for i, topic in enumerate(self.wait_for_topics)}
+
+        # Now we create a new dict that stores the subscription objects
         self.topic_subscribers = {}
-        for topic in self.topic_keys:
-            self.topic_subscribers[topic] = rospy.Subscriber(
-                self.wait_for_topics[topic][0],
-                self.wait_for_topics[topic][1],
-                functools.partial(self.on_topic_update, topic)
-            )
+        for i, topic in self.wait_for_topics.items():
+            # Create a subscriber that calls a lambda function that calls the predicate on the message, and if true, unsubscribes from the topic, and removes the wait_for_topics entry, then calls self.on_topic_update()
+            self.topic_subscribers[i] = rospy.Subscriber(topic[0], topic[1], lambda x: self.on_topic_update(i, x))
+
         # Now we start blocking until all topics are ready
         self.event = threading.Event()
         self.event.wait()
         return True
 
-    def on_topic_update(self, topic, msg):
-        # Check if topic is in topic keys, if not, return
-        if topic not in self.topic_keys:
+    def on_topic_update(self, i, msg):
+        # Check if i is a key in the dict, if not early return
+        if i not in self.topic_keys:
             return
         # Evaluate the predicate
-        result = self.wait_for_topics[topic][2](msg)
-        # If result is true, remove topic from topic keys
+        result = self.wait_for_topics[i][2](msg)
+        # If result is true, unsubscribe and remove from self.topic_subscribers
         if result:
-            self.topic_keys.remove(topic)
-            # Unsubscribe from topic
-            self.topic_subscribers[topic].unregister()
+            self.topic_subscribers[i].unregister()
+            del self.topic_subscribers[i]
             # Check if the set is empty, which implies transition to running and so, we can stop the blocking
             if len(self.topic_keys) == 0:
                 self.event.set()
+
+    def unsubscribe_all(self):
+        for subscriber in self.topic_subscribers.values():
+            subscriber.unregister()
 
     def execute(self, userdata):
         # Wait for topics to be ready
