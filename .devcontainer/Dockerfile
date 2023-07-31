@@ -13,6 +13,14 @@ RUN apt-get install -y libgoogle-glog-dev
 # LDS-01
 RUN apt-get install -y ros-noetic-hls-lfcd-lds-driver
 
+# SMACH
+RUN apt-get -y install ros-noetic-smach
+RUN apt-get -y install ros-noetic-smach-msgs
+RUN apt-get -y install ros-noetic-smach-ros
+
+# ROSBridge
+RUN apt-get -y install ros-noetic-rosbridge-suite
+
 WORKDIR /root
 RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
 RUN /root/bin/arduino-cli core update-index
@@ -60,6 +68,3 @@ RUN echo 'root:rbc' | chpasswd
 
 # Remove ~/.dev
 RUN rm -rf ~/.dev
-RUN apt-get -y install ros-noetic-smach
-RUN apt-get -y install ros-noetic-smach-msgs
-RUN apt-get -y install ros-noetic-smach-ros
