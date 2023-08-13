@@ -73,6 +73,8 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(state.motors[2].hall_a_pin), isr3, RISING);
     attachInterrupt(digitalPinToInterrupt(state.motors[3].hall_a_pin), isr4, RISING);
 
+    // Enable pin 13 as output
+    pinMode(13, OUTPUT);
 }
 
 void loop() {

@@ -101,6 +101,7 @@ class Communication : public BaseStateUpdater<RobotState> {
         }
         void update(Tick& tick) {
             // Publish the wheel state
+            bool has_movement = false;
             for (int i = 0; i < NUM_MOTORS; i++) {
                 base_state_msg.states[i].i_accumulator = state.motors[i].i_accumulator;
                 base_state_msg.states[i].output = state.motors[i].output;
@@ -109,7 +110,13 @@ class Communication : public BaseStateUpdater<RobotState> {
                 base_state_msg.states[i].position = state.motors[i].position;
                 base_state_msg.states[i].velocity = state.motors[i].velocity;
                 base_state_msg.states[i].acceleration = state.motors[i].acceleration;
+                // Check if there is any movement, if yes, set the flag
+                if (state.motors[i].delta_ticks != 0) {
+                    has_movement = true;
+                }
             }
+            // Set pin 13 to HIGH if there is any movement, LOW otherwise
+            digitalWrite(13, has_movement ? HIGH : LOW);
             base_state_publisher.publish(&base_state_msg);
             nh.spinOnce();
         }
