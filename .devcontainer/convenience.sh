@@ -41,8 +41,8 @@ alias acu='ac && au' # Arduino Compile and Upload
 alias abl='rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries' # Arduino Build Libraries
 alias acm='cb && abl && acu' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
 
-alias setuartport = 'export UART_PORT=/dev/ttyS0' # Set UART Port
-alias setusbport = 'export USB_PORT=/dev/ttyACM0' # Set USB Port
+alias setuartport = 'export ARDUINO_PORT=/dev/ttyS0' # Set UART Port
+alias setusbport = 'export ARDUINO=/dev/ttyACM0' # Set USB Port
 
 # Launch files
 
