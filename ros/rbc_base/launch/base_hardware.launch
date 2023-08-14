@@ -3,7 +3,7 @@
 
     <!-- Wheel Control -->
     <node pkg="rosserial_arduino" type="serial_node.py" name="rosserial_node" output="screen">
-        <param name="port" value="/dev/ttyACM0" />
+        <param name="port" value="/dev/ttyS0" />
         <param name="baud" value="57600" />
     </node>
 
