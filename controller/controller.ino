@@ -64,7 +64,7 @@ void setup() {
     state.motors[3].gear_ratio = 1./82.;
     state.motors[3].ppr = 16;
 
-    Serial3.begin(57600);
+    Serial.begin(57600);
     core = new RobotCore(state);
 
     // Attach interrupts
