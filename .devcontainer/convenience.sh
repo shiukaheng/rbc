@@ -35,10 +35,10 @@ alias cb='run_in_directory "catkin build" "$CATKIN_WS_PATH" && refreshenv' # Cat
 
 # Arduino
 alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Compile
-alias au='run_in_directory "arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
+alias au='run_in_directory "arduino-cli upload -p /dev/ttyS0 --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
 alias acu='ac && au' # Arduino Compile and Upload
 alias abl='rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries' # Arduino Build Libraries
-alias acm='cb && abl && ac' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
+alias acm='cb && abl && acu' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
 
 # Launch files
 
