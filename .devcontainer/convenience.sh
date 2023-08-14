@@ -34,11 +34,15 @@ alias cdws='cd $CATKIN_WS_PATH' # CD to workspace
 alias cb='run_in_directory "catkin build" "$CATKIN_WS_PATH" && refreshenv' # Catkin Build and refresh environment
 
 # Arduino
+export ARDUINO_PORT=/dev/ttyS0 # Arduino Port
 alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Compile
-alias au='run_in_directory "arduino-cli upload -p /dev/ttyS0 --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
+alias au='run_in_directory "arduino-cli upload -p $ARDUINO_PORT --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
 alias acu='ac && au' # Arduino Compile and Upload
 alias abl='rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries' # Arduino Build Libraries
 alias acm='cb && abl && acu' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
+
+alias setuartport = 'export UART_PORT=/dev/ttyS0' # Set UART Port
+alias setusbport = 'export USB_PORT=/dev/ttyACM0' # Set USB Port
 
 # Launch files
 
