@@ -22,6 +22,24 @@ run_in_directory() {
   cd "$current_dir" || return
 }
 
+check_var_not_empty() { # Takes in a variable name, value, command to run if not empty, and command to run if empty
+  local var_name="$1"
+  local var_value="$2"
+  local not_empty_command="$3"
+  local empty_command="$4"
+
+  if [ -z "$var_value" ]; then
+    echoColor yellow "Warning: Variable $var_name is empty"
+    if [ -n "$empty_command" ]; then
+    eval "$empty_command"
+    fi
+  else
+    if [ -n "$not_empty_command" ]; then
+    eval "$not_empty_command"
+    fi
+  fi
+}
+
 # Aliases
 
 # Generic utils
@@ -33,16 +51,22 @@ alias cdws='cd $CATKIN_WS_PATH' # CD to workspace
 # Catkin
 alias cb='run_in_directory "catkin build" "$CATKIN_WS_PATH" && refreshenv' # Catkin Build and refresh environment
 
+# Patch files with string replacement
+function patch() {
+  local file="$1"
+  local search="$2"
+  local replace="$3"
+  sed -i "s/$search/$replace/g" "$file"
+}
+
 # Arduino
-export ARDUINO_PORT=/dev/ttyS0 # Arduino Port
+export ARDUINO_PORT="/dev/ttyACM0" # Arduino port
 alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Compile
 alias au='run_in_directory "arduino-cli upload -p $ARDUINO_PORT --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
 alias acu='ac && au' # Arduino Compile and Upload
-alias abl='rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries' # Arduino Build Libraries
-alias acm='cb && abl && acu' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
-
-alias setuartport = 'export ARDUINO_PORT=/dev/ttyS0' # Set UART Port
-alias setusbport = 'export ARDUINO=/dev/ttyACM0' # Set USB Port
+alias patch_rosserial_arduino_port='patch "/root/Arduino/libraries/ros_lib/ArduinoHardware.h" "iostream = &Serial;" "iostream = \\&Serial3;"' # Patch rosserial_arduino port
+alias abl='rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries && patch_rosserial_arduino_port' # Arduino Build Libraries
+alias acm='cb && abl && ac' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
 
 # Launch files
 
