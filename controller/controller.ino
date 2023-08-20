@@ -42,6 +42,7 @@ void setup() {
     state.motors[0].hall_b_pin = 30;
     state.motors[0].gear_ratio = 1./82.;
     state.motors[0].ppr = 16;
+    state.motors[0].isense = 54;
 
     state.motors[1].lpwm_pin = 3;
     state.motors[1].rpwm_pin = 8;
@@ -49,6 +50,7 @@ void setup() {
     state.motors[1].hall_b_pin = 31;
     state.motors[1].gear_ratio = 1./82.;
     state.motors[1].ppr = 16;
+    state.motors[1].isense = 55;
 
     state.motors[2].lpwm_pin = 5;
     state.motors[2].rpwm_pin = 11;
@@ -56,6 +58,7 @@ void setup() {
     state.motors[2].hall_b_pin = 32;
     state.motors[2].gear_ratio = 1./82.;
     state.motors[2].ppr = 16;
+    state.motors[2].isense = 56;
 
     state.motors[3].lpwm_pin = 6;
     state.motors[3].rpwm_pin = 12;
@@ -63,6 +66,7 @@ void setup() {
     state.motors[3].hall_b_pin = 33;
     state.motors[3].gear_ratio = 1./82.;
     state.motors[3].ppr = 16;
+    state.motors[3].isense = 57;
 
     Serial.begin(57600);
     core = new RobotCore(state);
