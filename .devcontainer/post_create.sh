@@ -1,6 +1,13 @@
 source ~/.bashrc
 source ~/convenience.sh
 
+# Generate ssh keys if they don't exist at ~/.ssh/id_rsa
+if [ ! -f ~/.ssh/id_rsa ]; then
+    echo -e "\e[36mGenerating ssh keys...\e[0m"
+    ssh-keygen -t rsa -b 4096 -C "rbc@devcontainer" -f ~/.ssh/id_rsa -q -N ""
+    echo -e "\e[36mSSH keys generated.\e[0m"
+fi
+
 echo -e "\e[36mInitializing dev environment...\e[0m"   
 run_in_directory "catkin build" "$CATKIN_WS_PATH" # Build catkin workspace
 source $CATKIN_WS_PATH/devel/setup.bash # Source catkin workspace

@@ -17,6 +17,7 @@ services:
       - /root/catkin_ws/logs
       - /root/.dev
       - /root/.bash_history
+      - ./.ssh:/root/.ssh # So that we can use ssh keys, initialized automatically in post_create.sh
       # The following are optional for Linux hosts for better integration, and is optional
       - ./sshd_config:/etc/ssh/sshd_config
       - '/tmp/.X11-unix:/tmp/.X11-unix:rw'
