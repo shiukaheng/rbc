@@ -127,6 +127,8 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(state.motors[2].hall_a_pin), isr3, RISING);
     attachInterrupt(digitalPinToInterrupt(state.motors[3].hall_a_pin), isr4, RISING);
 
+    // Set up onboard LED
+    pinMode(13, OUTPUT);
 }
 
 void loop() {
