@@ -490,4 +490,4 @@ function rbcinfo() {
     fi
 }
 
-alias syncbot="git ls-files --others -i --exclude-standard > .gitignore-list && rsync --dry-run -avz --exclude-from=.gitignore-list ~/rbc/ ubuntu@rbc.local:~/rbc/ && rm .gitignore-list"
+alias syncbot="rsync -avz --exclude='/rbc/.git/' ~/rbc/ ubuntu@rbc.local:~/rbc/" # Directly sync bot repo with local repo without github
