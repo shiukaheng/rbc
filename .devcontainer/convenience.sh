@@ -31,7 +31,7 @@ pexport() {
     # Add the new pexport line
     echo "export $var_name=\"$value\" $comment" >> "$bashrc"
 
-    echo "The variable has been pexported."
+    echo "Variable $var_name has been set to \"$value\" and pexported."
     source "$bashrc"
 }
 
@@ -55,7 +55,7 @@ punset() {
     grep -v "export $var_name=" "$bashrc" | grep -v "$var_name=.*$comment" > "${bashrc}.tmp"
     mv "${bashrc}.tmp" "$bashrc"
 
-    echo "The variable has been punset."
+    echo "Variable $var_name has been unset and removed from pexported variables."
     source "$bashrc"
 }
 
@@ -98,6 +98,30 @@ check_var_not_empty() { # Takes in a variable name, value, command to run if not
 
 # Robocock hardware
 alias botsh='ssh ubuntu@rbc.local'
+
+# Make bot run command with all environmental variables
+function botdo() {
+    local command="$@"
+    # Early terminate if no command is given
+    if [ -z "$command" ]; then
+        echo "Usage: botdo <command>"
+        return 1
+    fi
+    ssh -t ubuntu@rbc.local "bash -i -c 'shopt -s expand_aliases; source ~/.bashrc; $command'"
+}
+
+function alldo() {
+    local command="$@"
+    if [ -z "$command" ]; then
+        echo "Usage: alldo <command>"
+        return 1
+    fi
+    # Run command locally, then run command on bot
+    echoColor yellow "Running command locally..."
+    eval "$command"
+    echoColor yellow "Running command on bot..."
+    botdo "$command"
+}
 
 # Generic utils
 alias refreshenv='source ~/.bashrc' # Refresh environment
@@ -428,19 +452,20 @@ function rbcinfo() {
         fi
     fi
     # Check if roscore is running on the master by trying to run rostopic list
-    echo -n "$(echoColor white "Master status: ")"
+    local roscore_line="$(echoColor white "roscore status: ")"
+    echo -n "$roscore_line"
     echoColor "yellow" "$(echoStyle blink "Checking master status...")"
     if rostopic list &> /dev/null; then
         # Remove last line (the checking master status message)
         tput cuu 1 && tput el
         # Echo that it is running
-        echo -n "$(echoColor white "Master status: ")"
+        echo -n "$roscore_line"
         echoColor "green" "$(echoStyle bold "Running")"
     else
         # Remove last line (the checking master status message)
         tput cuu 1 && tput el
         # Echo that it is not running
-        echo -n "$(echoColor white "Master status: ")"
+        echo -n "$roscore_line"
         echoColor "red" "$(echoStyle bold "Not running")"
     fi
     # Check if bot hostname is reachable (ping)
@@ -464,3 +489,5 @@ function rbcinfo() {
         echoColor "red" "$(echoStyle bold "Unreachable")"
     fi
 }
+
+alias syncbot="git ls-files --others -i --exclude-standard > .gitignore-list && rsync --dry-run -avz --exclude-from=.gitignore-list ~/rbc/ ubuntu@rbc.local:~/rbc/ && rm .gitignore-list"

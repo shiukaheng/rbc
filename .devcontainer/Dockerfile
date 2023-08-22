@@ -65,6 +65,10 @@ RUN /usr/local/bin/apt-get-wrapper.sh install -y openssh-server
 # Install sshpass
 RUN /usr/local/bin/apt-get-wrapper.sh install -y sshpass
 
+RUN /usr/local/bin/apt-get-wrapper.sh install -y sshfs
+
+RUN /usr/local/bin/apt-get-wrapper.sh install -y rsync
+
 # Configure it to run on port 2222
 RUN sed -i 's/#Port 22/Port 2222/g' /etc/ssh/sshd_config
 

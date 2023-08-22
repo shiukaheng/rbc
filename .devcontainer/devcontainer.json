@@ -18,7 +18,8 @@
 				"GitHub.copilot",
 				"hediet.vscode-drawio",
 				"tostc.vscl",
-				"ms-toolsai.jupyter"
+				"ms-toolsai.jupyter",
+				"michelemelluso.gitignore"
 			]
 		}
 	}
