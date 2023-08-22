@@ -110,7 +110,7 @@ class Communication : public BaseStateUpdater<RobotState> {
                 base_state_msg.states[i].position = state.motors[i].position;
                 base_state_msg.states[i].velocity = state.motors[i].velocity;
                 base_state_msg.states[i].acceleration = state.motors[i].acceleration;
-                base_state_msg.states[i].icurrent = state.motors[i].state.icurrent;
+                base_state_msg.states[i].icurrent = state.motors[i].icurrent;
                 // Check if there is any movement, if yes, set the flag
                 if (state.motors[i].delta_ticks != 0) {
                     has_movement = true;
