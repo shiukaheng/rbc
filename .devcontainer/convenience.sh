@@ -316,3 +316,55 @@ function UNRUN() {
         fi
     fi
 }
+
+pexport() {
+    # Check for the correct number of arguments
+    if [[ $# -ne 2 ]]; then
+        echo "Usage: pexport VARNAME VALUE"
+        return 1
+    fi
+
+    local var_name="$1"
+    local value="$2"
+    local bashrc="$HOME/.dev/.bashrc_vars"
+    local comment="# pexport generated"
+
+    # If bashrc does not exist, create it
+    if [ ! -f "$bashrc" ]; then
+        touch "$bashrc"
+    fi
+
+    # Remove the previous pexported line if it exists
+    grep -v "export $var_name=" "$bashrc" | grep -v "$var_name=.*$comment" > "${bashrc}.tmp"
+    mv "${bashrc}.tmp" "$bashrc"
+
+    # Add the new pexport line
+    echo "export $var_name=\"$value\" $comment" >> "$bashrc"
+
+    echo "The variable has been pexported."
+    source "$bashrc"
+}
+
+punset() {
+    # Check for the correct number of arguments
+    if [[ $# -ne 1 ]]; then
+        echo "Usage: punset VARNAME"
+        return 1
+    fi
+
+    local var_name="$1"
+    local bashrc="$HOME/.dev/.bashrc_vars"
+    local comment="# pexport generated"
+
+    # If bashrc does not exist, create it
+    if [ ! -f "$bashrc" ]; then
+        touch "$bashrc"
+    fi
+
+    # Remove the pexported line
+    grep -v "export $var_name=" "$bashrc" | grep -v "$var_name=.*$comment" > "${bashrc}.tmp"
+    mv "${bashrc}.tmp" "$bashrc"
+
+    echo "The variable has been punset."
+    source "$bashrc"
+}

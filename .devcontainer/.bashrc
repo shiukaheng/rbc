@@ -125,4 +125,14 @@ export RBC_REPO=~/rbc
 
 export DOCKERFILE=$RBC_REPO/.devcontainer/Dockerfile
 
+# If $DEV_ENV is not 1, set to 0
+if [ -z "$DEV_ENV" ]; then
+    export DEV_ENV=0
+fi
+
+# Source ~/.dev/.bashrc_vars if it exists
+if [ -f ~/.dev/.bashrc_vars ]; then
+    source ~/.dev/.bashrc_vars
+fi
+
 source ~/convenience.sh

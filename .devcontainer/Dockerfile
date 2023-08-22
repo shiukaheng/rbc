@@ -59,6 +59,12 @@ RUN pip3 install ipykernel
 # Install scipy, numpy, matplotlib, pandas, scikit-learn, jupyterlab
 RUN pip3 install --upgrade numpy matplotlib scipy pandas scikit-learn ipympl jupyterlab
 
+# Install openssh-server
+RUN /usr/local/bin/apt-get-wrapper.sh install -y openssh-server
+
+# Configure it to run on port 2222
+RUN sed -i 's/#Port 22/Port 2222/g' /etc/ssh/sshd_config
+
 # Copying source code over
 COPY .. /root/rbc
 COPY ./.bashrc /root/.bashrc
@@ -69,5 +75,4 @@ RUN ln -s /root/rbc/ros src
 # Set password for root to be rbc
 RUN echo 'root:rbc' | chpasswd
 
-# Remove ~/.dev
-RUN rm -rf ~/.dev
+ENV DEV_ENV=1

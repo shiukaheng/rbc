@@ -1,4 +1,5 @@
-source /root/.bashrc
+source ~/.bashrc
+source ~/convenience.sh
 
 echo -e "\e[36mInitializing dev environment...\e[0m"   
 run_in_directory "catkin build" "$CATKIN_WS_PATH" # Build catkin workspace

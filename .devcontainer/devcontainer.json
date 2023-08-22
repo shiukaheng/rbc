@@ -5,8 +5,8 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "dev",
 	"workspaceFolder": "/root/rbc",
-	"postCreateCommand": "/root/rbc/.devcontainer/post_create.sh",
-	"postStartCommand": "/root/rbc/.devcontainer/post_start.sh",
+	"postCreateCommand": "/bin/bash -c '/root/rbc/.devcontainer/post_create.sh'",
+	"postStartCommand": "/bin/bash -c '/root/rbc/.devcontainer/post_start.sh'",
 	"customizations": {
 		"vscode": {
 			"settings": {},
