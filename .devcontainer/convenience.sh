@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Source ROS
 source /opt/ros/noetic/setup.bash
 # Source overlay IF it exists
@@ -41,6 +43,9 @@ check_var_not_empty() { # Takes in a variable name, value, command to run if not
 }
 
 # Aliases
+
+# Robocock hardware
+alias botsh='ssh ubuntu@rbc.local'
 
 # Generic utils
 alias refreshenv='source ~/.bashrc' # Refresh environment
