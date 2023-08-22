@@ -125,6 +125,11 @@ export RBC_REPO=~/rbc
 
 export DOCKERFILE=$RBC_REPO/.devcontainer/Dockerfile
 
+export DEV_MASTER_URI="http://localhost:11311"
+export DEV_BOT_HOSTNAME="rbc.local"
+export DEV_BOT_USER="ubuntu"
+export DEV_BOT_MASTER_URI="http://$DEV_BOT_HOSTNAME:11311"
+
 # If $DEV_ENV is not 1, set to 0
 if [ -z "$DEV_ENV" ]; then
     export DEV_ENV=0

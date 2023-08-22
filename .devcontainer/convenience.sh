@@ -97,7 +97,7 @@ check_var_not_empty() { # Takes in a variable name, value, command to run if not
 # Aliases
 
 # Robocock hardware
-alias botsh='ssh ubuntu@rbc.local'
+alias botsh='ssh $DEV_BOT_USER@$DEV_BOT_HOSTNAME'
 
 # Make bot run command with all environmental variables
 function botdo() {
@@ -107,7 +107,7 @@ function botdo() {
         echo "Usage: botdo <command>"
         return 1
     fi
-    ssh -t ubuntu@rbc.local "bash -i -c 'shopt -s expand_aliases; source ~/.bashrc; $command'"
+    ssh -t $DEV_BOT_USER@$DEV_BOT_HOSTNAME "bash -i -c 'shopt -s expand_aliases; source ~/.bashrc; $command'"
 }
 
 function alldo() {
@@ -145,7 +145,7 @@ export ARDUINO_PORT="/dev/ttyACM0" # Arduino port
 alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Compile
 alias au='run_in_directory "arduino-cli upload -p $ARDUINO_PORT --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
 alias acu='ac && au' # Arduino Compile and Upload
-alias patch_rosserial_arduino_port='patch "/root/Arduino/libraries/ros_lib/ArduinoHardware.h" "iostream = &Serial;" "iostream = \\&Serial3;"' # Patch rosserial_arduino port
+alias patch_rosserial_arduino_port='patch "~/Arduino/libraries/ros_lib/ArduinoHardware.h" "iostream = &Serial;" "iostream = \\&Serial3;"' # Patch rosserial_arduino port
 alias abl='rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries && patch_rosserial_arduino_port' # Arduino Build Libraries
 alias acm='cb && abl && ac' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
 
@@ -158,15 +158,8 @@ alias commit='run_in_directory "git add . && git commit -m" "$RBC_REPO"' # Commi
 
 # Convenience alias for setting remote or local ROS_MASTER_URI
 
-export DEV_MASTER_URI="http://localhost:11311"
-export DEV_BOT_HOSTNAME="rbc.local"
-export DEV_BOT_MASTER_URI="http://$DEV_BOT_HOSTNAME:11311"
-
-export LOCAL_IP=$(hostname -I | awk '{print $1}')
-
-
-alias setdevmaster='pexport ROS_MASTER_URI $DEV_MASTER_URI && pexport ROS_HOSTNAME $LOCAL_IP && pexport RBC_MASTER "local"'
-alias setbotmaster='pexport ROS_MASTER_URI $DEV_BOT_MASTER_URI && pexport ROS_HOSTNAME $LOCAL_IP && pexport RBC_MASTER "bot"'
+alias setdevmaster="pexport ROS_MASTER_URI $DEV_MASTER_URI && pexport ROS_HOSTNAME \$(hostname -I | awk '{print \$1}') && pexport RBC_MASTER 'local'"
+alias setbotmaster="pexport ROS_MASTER_URI $DEV_BOT_MASTER_URI && pexport ROS_HOSTNAME \$(hostname -I | awk '{print \$1}') && pexport RBC_MASTER 'bot'"
 alias checkmaster='echo Hostname: $ROS_HOSTNAME, Master URI: $ROS_MASTER_URI'
 
 # Convenience function for echoing with color
@@ -490,4 +483,4 @@ function rbcinfo() {
     fi
 }
 
-alias syncbot="rsync -avz ~/rbc/ ubuntu@rbc.local:~/rbc/" # Directly sync bot repo with local repo without github
+alias syncbot="rsync -avz ~/rbc/ $DEV_BOT_USER@$DEV_BOT_HOSTNAME:~/rbc/" # Directly sync bot repo with local repo without github
