@@ -7,6 +7,58 @@ if [ -f ~/catkin_ws/devel/setup.bash ]; then
   source ~/catkin_ws/devel/setup.bash
 fi
 
+pexport() {
+    # Check for the correct number of arguments
+    if [[ $# -ne 2 ]]; then
+        echo "Usage: pexport VARNAME VALUE"
+        return 1
+    fi
+
+    local var_name="$1"
+    local value="$2"
+    local bashrc="$HOME/.dev/.bashrc_vars"
+    local comment="# pexport generated"
+
+    # If bashrc does not exist, create it
+    if [ ! -f "$bashrc" ]; then
+        touch "$bashrc"
+    fi
+
+    # Remove the previous pexported line if it exists
+    grep -v "export $var_name=" "$bashrc" | grep -v "$var_name=.*$comment" > "${bashrc}.tmp"
+    mv "${bashrc}.tmp" "$bashrc"
+
+    # Add the new pexport line
+    echo "export $var_name=\"$value\" $comment" >> "$bashrc"
+
+    echo "The variable has been pexported."
+    source "$bashrc"
+}
+
+punset() {
+    # Check for the correct number of arguments
+    if [[ $# -ne 1 ]]; then
+        echo "Usage: punset VARNAME"
+        return 1
+    fi
+
+    local var_name="$1"
+    local bashrc="$HOME/.dev/.bashrc_vars"
+    local comment="# pexport generated"
+
+    # If bashrc does not exist, create it
+    if [ ! -f "$bashrc" ]; then
+        touch "$bashrc"
+    fi
+
+    # Remove the pexported line
+    grep -v "export $var_name=" "$bashrc" | grep -v "$var_name=.*$comment" > "${bashrc}.tmp"
+    mv "${bashrc}.tmp" "$bashrc"
+
+    echo "The variable has been punset."
+    source "$bashrc"
+}
+
 run_in_directory() {
   local command="$1"
   local directory="$2"
@@ -89,8 +141,8 @@ export DEV_BOT_MASTER_URI="http://$DEV_BOT_HOSTNAME:11311"
 export LOCAL_IP=$(hostname -I | awk '{print $1}')
 
 
-alias setdevmaster='export ROS_MASTER_URI=$DEV_MASTER_URI && export ROS_HOSTNAME=$LOCAL_IP'
-alias setbotmaster='export ROS_MASTER_URI=$DEV_BOT_MASTER_URI && export ROS_HOSTNAME=$LOCAL_IP'
+alias setdevmaster='pexport ROS_MASTER_URI $DEV_MASTER_URI && pexport ROS_HOSTNAME $LOCAL_IP && pexport RBC_MASTER "local"'
+alias setbotmaster='pexport ROS_MASTER_URI $DEV_BOT_MASTER_URI && pexport ROS_HOSTNAME $LOCAL_IP && pexport RBC_MASTER "bot"'
 alias checkmaster='echo Hostname: $ROS_HOSTNAME, Master URI: $ROS_MASTER_URI'
 
 # Convenience function for echoing with color
@@ -100,6 +152,7 @@ function echoColor() {
     local color=$1
     local message=$2
     local colorCode
+
     case $color in
         black)
             colorCode=0
@@ -125,12 +178,36 @@ function echoColor() {
         white)
             colorCode=7
             ;;
+        bright-black)
+            colorCode=8
+            ;;
+        bright-red)
+            colorCode=9
+            ;;
+        bright-green)
+            colorCode=10
+            ;;
+        bright-yellow)
+            colorCode=11
+            ;;
+        bright-blue)
+            colorCode=12
+            ;;
+        bright-magenta)
+            colorCode=13
+            ;;
+        bright-cyan)
+            colorCode=14
+            ;;
+        bright-white)
+            colorCode=15
+            ;;
         *)
             echo "Invalid color: $color"
             return 1
             ;;
     esac
-    echo -e "\033[3${colorCode}m${message}\033[0m"
+    echo -e "\033[38;5;${colorCode}m${message}\033[0m"
 }
 
 # Convenience function for piping to echoColor
@@ -322,54 +399,68 @@ function UNRUN() {
     fi
 }
 
-pexport() {
-    # Check for the correct number of arguments
-    if [[ $# -ne 2 ]]; then
-        echo "Usage: pexport VARNAME VALUE"
-        return 1
+function rbcinfo() {
+    # Show what device we are on
+    echo -n "$(echoColor white "Device: ")"
+    if [ $DEV_ENV -eq 0 ]; then
+        echoColor "blue" "$(echoStyle bold "RoboCapture Raspberry Pi")"
+    elif [ $DEV_ENV -eq 1 ]; then
+        echoColor "green" "$(echoStyle bold "RoboCapture Dev Environment")"
+    else
+        # if $DEV_ENV not set, echo Device: Unknown
+        if [ -z "$DEV_ENV" ]; then
+            echoColor "red" "$(echoStyle bold "Unknown, \$DEV_ENV is not set")"
+        else
+            echoColor "red" "$(echoStyle bold "Unknown ($DEV_ENV)")"
+        fi
     fi
-
-    local var_name="$1"
-    local value="$2"
-    local bashrc="$HOME/.dev/.bashrc_vars"
-    local comment="# pexport generated"
-
-    # If bashrc does not exist, create it
-    if [ ! -f "$bashrc" ]; then
-        touch "$bashrc"
+    # Show if we are on bot or local
+    echo -n "$(echoColor white "Master: ")"
+    if [ "$RBC_MASTER" == "bot" ]; then
+        echoColor "blue" "$(echoStyle bold "Bot")"
+    elif [ "$RBC_MASTER" == "local" ]; then
+        echoColor "green" "$(echoStyle bold "Local")"
+    else
+        if [ -z "$RBC_MASTER" ]; then
+            echoColor "red" "$(echoStyle bold "Unknown, \$RBC_MASTER is not set")"
+        else
+            echoColor "red" "$(echoStyle bold "Unknown ($RBC_MASTER)")"
+        fi
     fi
-
-    # Remove the previous pexported line if it exists
-    grep -v "export $var_name=" "$bashrc" | grep -v "$var_name=.*$comment" > "${bashrc}.tmp"
-    mv "${bashrc}.tmp" "$bashrc"
-
-    # Add the new pexport line
-    echo "export $var_name=\"$value\" $comment" >> "$bashrc"
-
-    echo "The variable has been pexported."
-    source "$bashrc"
-}
-
-punset() {
-    # Check for the correct number of arguments
-    if [[ $# -ne 1 ]]; then
-        echo "Usage: punset VARNAME"
-        return 1
+    # Check if roscore is running on the master by trying to run rostopic list
+    echo -n "$(echoColor white "Master status: ")"
+    echoColor "yellow" "$(echoStyle blink "Checking master status...")"
+    if rostopic list &> /dev/null; then
+        # Remove last line (the checking master status message)
+        tput cuu 1 && tput el
+        # Echo that it is running
+        echo -n "$(echoColor white "Master status: ")"
+        echoColor "green" "$(echoStyle bold "Running")"
+    else
+        # Remove last line (the checking master status message)
+        tput cuu 1 && tput el
+        # Echo that it is not running
+        echo -n "$(echoColor white "Master status: ")"
+        echoColor "red" "$(echoStyle bold "Not running")"
     fi
+    # Check if bot hostname is reachable (ping)
+    local hostname_line="$(echoColor white "Bot status ($DEV_BOT_HOSTNAME): ")"
+    echo -n "$hostname_line"
+    echoColor "yellow" "$(echoStyle blink "Pinging...")"
 
-    local var_name="$1"
-    local bashrc="$HOME/.dev/.bashrc_vars"
-    local comment="# pexport generated"
+    if ping -w 1 "$DEV_BOT_HOSTNAME" &> /dev/null; then
+        # Remove last line (the pinging message)
+        tput cuu 1 && tput el
 
-    # If bashrc does not exist, create it
-    if [ ! -f "$bashrc" ]; then
-        touch "$bashrc"
+        # Echo that it is reachable
+        echo -n "$hostname_line"
+        echoColor "green" "$(echoStyle bold "Online on $(getent hosts "$DEV_BOT_HOSTNAME" | awk '{ print $1 }')")"
+    else
+        # Remove last line (the pinging message)
+        tput cuu 1 && tput el
+
+        # Echo that it is not reachable
+        echo -n "$hostname_line"
+        echoColor "red" "$(echoStyle bold "Unreachable")"
     fi
-
-    # Remove the pexported line
-    grep -v "export $var_name=" "$bashrc" | grep -v "$var_name=.*$comment" > "${bashrc}.tmp"
-    mv "${bashrc}.tmp" "$bashrc"
-
-    echo "The variable has been punset."
-    source "$bashrc"
 }
