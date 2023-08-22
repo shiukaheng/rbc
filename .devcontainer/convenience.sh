@@ -490,4 +490,4 @@ function rbcinfo() {
     fi
 }
 
-alias syncbot="rsync -avz --exclude='/rbc/.git/' ~/rbc/ ubuntu@rbc.local:~/rbc/" # Directly sync bot repo with local repo without github
+alias syncbot="rsync -avz ~/rbc/ ubuntu@rbc.local:~/rbc/" # Directly sync bot repo with local repo without github
