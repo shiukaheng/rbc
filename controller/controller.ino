@@ -29,21 +29,21 @@ void isr4() {
 
 // Setting up the interrupt for current sense
 
-volatile int icurrent_counter = 0;  // Keep track of how many times we've read the current sense voltage
-volatile int maxSenseValue = 0;  // Maximum current sense value during the PWM cycle
+volatile int icurrent_counter[4] = {0, 0, 0, 0};  // Counter for each motor
+volatile int maxSenseValue[4] = {0, 0, 0, 0};    // Max sense value for each motor
 
 ISR(TIMER1_COMPA_vect) {
-    int senseValue = analogRead(A0);  // Assuming the current sense is connected to A0
-    if (senseValue > maxSenseValue) {
-        maxSenseValue = senseValue;
-    }
-    icurrent_counter++;
-    if (icurrent_counter >= 5) {  // Reset every 5 readings (1 PWM cycle)
-        // Update current sense value to topic
-
-        
-        maxSenseValue = 0;  // Reset the max value
-        icurrent_counter = 0;       // Reset the counter
+    for (int i = 0; i < 4; i++) {
+        int senseValue = analogRead(state.motors[i].isense_pin);
+        if (senseValue > maxSenseValue[i]) {
+            maxSenseValue[i] = senseValue;
+        }
+        icurrent_counter[i]++;
+        if (icurrent_counter[i] >= 5) {  
+            core->motors[i]->state.icurrent = maxSenseValue[i];
+            maxSenseValue[i] = 0;  
+            icurrent_counter[i] = 0;       
+        }
     }
 }
 
@@ -127,6 +127,8 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(state.motors[2].hall_a_pin), isr3, RISING);
     attachInterrupt(digitalPinToInterrupt(state.motors[3].hall_a_pin), isr4, RISING);
 
+    // Set up onboard LED
+    pinMode(13, OUTPUT);
 }
 
 void loop() {
