@@ -1,16 +1,18 @@
 <?xml version="1.0"?>
 <launch>
 
-    <machine name="rbc_pi" address="rbc.local" env-loader="/home/ubuntu/ros_env.sh" user="ubuntu"/>
+    <machine name="rbc_pi" address="rbc.local" env-loader="~/rbc/bot_scripts/env.sh" user="ubuntu" />
 
     <!-- Wheel Control -->
-    <node pkg="rosserial_arduino" type="serial_node.py" name="rosserial_node" output="screen" machine="rbc_pi">
+    <node pkg="rosserial_arduino" type="serial_node.py" name="rosserial_node" output="screen"
+        machine="rbc_pi">
         <param name="port" value="/dev/ttyS0" />
         <param name="baud" value="57600" />
     </node>
 
     <!-- Wheel parameter server (Custom node to easily set PID parameters using rosparam, 
     as well as switching on the fly with rostopics) -->
-    <node pkg="rbc_base" type="hardware_parameter_server" name="hardware_parameter_server" output="screen" machine="rbc_pi"/>
-    
+    <node pkg="rbc_base" type="hardware_parameter_server" name="hardware_parameter_server"
+        output="screen" machine="rbc_pi" />
+
 </launch>

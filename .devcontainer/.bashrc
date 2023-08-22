@@ -130,9 +130,15 @@ export DEV_BOT_HOSTNAME="rbc.local"
 export DEV_BOT_USER="ubuntu"
 export DEV_BOT_MASTER_URI="http://$DEV_BOT_HOSTNAME:11311"
 
-# If $DEV_ENV is not 1, set to 0
+export ARDUINO_UPDATE_PORT="/dev/ttyACM0"
+
+# If $DEV_ENV is empty, set it to 0
 if [ -z "$DEV_ENV" ]; then
     export DEV_ENV=0
+    # We are probably running outside of a dev container, lets assume we are on the robot
+    export ROS_MASTER_URI=$DEV_BOT_MASTER_URI
+    export ROS_HOSTNAME=$DEV_BOT_HOSTNAME    
+    export RBC_MASTER="bot"
 fi
 
 # Source ~/.dev/.bashrc_vars if it exists

@@ -96,7 +96,45 @@ check_var_not_empty() { # Takes in a variable name, value, command to run if not
 
 # Aliases
 
-# Robocock hardware
+# Generic utils
+alias refreshenv='source ~/.bashrc' # Refresh environment
+alias editbashrc='nano ~/.bashrc && refreshenv' # Edit bashrc
+alias cdrepo='cd $RBC_REPO' # CD to repo
+alias cdws='cd $CATKIN_WS_PATH' # CD to workspace
+
+# Catkin
+alias cb='run_in_directory "catkin build" "$CATKIN_WS_PATH" && refreshenv' # Catkin Build and refresh environment
+
+# Patch files with string replacement
+function patch() {
+  local file="$1"
+  local search="$2"
+  local replace="$3"
+  sed -i "s/$search/$replace/g" "$file"
+}
+
+# Arduino
+alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Compile
+alias au='run_in_directory "arduino-cli upload -p $ARDUINO_PORT --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
+alias acu='ac && au' # Arduino Compile and Upload
+alias patch_rosserial_arduino_port='patch "~/Arduino/libraries/ros_lib/ArduinoHardware.h" "iostream = &Serial;" "iostream = \\&Serial3;"' # Patch rosserial_arduino port
+alias abl='rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries && patch_rosserial_arduino_port' # Arduino Build Libraries
+alias acm='cb && abl && ac' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
+
+# Launch files
+
+# Git
+alias update='run_in_directory "git pull && refreshenv" "$RBC_REPO"' # Update repo
+alias discard_changes='run_in_directory "git reset --hard HEAD" "$RBC_REPO"' # Discard changes
+alias commit='run_in_directory "git add . && git commit -m" "$RBC_REPO"' # Commit changes
+
+# Convenience alias for setting remote or local ROS_MASTER_URI
+
+alias setdevmaster="pexport ROS_MASTER_URI $DEV_MASTER_URI && pexport ROS_HOSTNAME \$(hostname -I | awk '{print \$1}') && pexport RBC_MASTER 'local'"
+alias setbotmaster="pexport ROS_MASTER_URI $DEV_BOT_MASTER_URI && pexport ROS_HOSTNAME \$(hostname -I | awk '{print \$1}') && pexport RBC_MASTER 'bot'"
+alias checkmaster='echo Hostname: $ROS_HOSTNAME, Master URI: $ROS_MASTER_URI'
+
+# Convenience function for echoing with color# Robocock hardware
 alias botsh='ssh $DEV_BOT_USER@$DEV_BOT_HOSTNAME'
 
 # Make bot run command with all environmental variables
@@ -122,47 +160,6 @@ function alldo() {
     echoColor yellow "Running command on bot..."
     botdo "$command"
 }
-
-# Generic utils
-alias refreshenv='source ~/.bashrc' # Refresh environment
-alias editbashrc='nano ~/.bashrc && refreshenv' # Edit bashrc
-alias cdrepo='cd $RBC_REPO' # CD to repo
-alias cdws='cd $CATKIN_WS_PATH' # CD to workspace
-
-# Catkin
-alias cb='run_in_directory "catkin build" "$CATKIN_WS_PATH" && refreshenv' # Catkin Build and refresh environment
-
-# Patch files with string replacement
-function patch() {
-  local file="$1"
-  local search="$2"
-  local replace="$3"
-  sed -i "s/$search/$replace/g" "$file"
-}
-
-# Arduino
-export ARDUINO_PORT="/dev/ttyACM0" # Arduino port
-alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Compile
-alias au='run_in_directory "arduino-cli upload -p $ARDUINO_PORT --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
-alias acu='ac && au' # Arduino Compile and Upload
-alias patch_rosserial_arduino_port='patch "~/Arduino/libraries/ros_lib/ArduinoHardware.h" "iostream = &Serial;" "iostream = \\&Serial3;"' # Patch rosserial_arduino port
-alias abl='rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries && patch_rosserial_arduino_port' # Arduino Build Libraries
-alias acm='cb && abl && ac' # Arduino Compile Macro (Compiles all dependencies, compiles the sketch)
-
-# Launch files
-
-# Git
-alias update='run_in_directory "git pull && refreshenv" "$RBC_REPO"' # Update repo
-alias discard_changes='run_in_directory "git reset --hard HEAD" "$RBC_REPO"' # Discard changes
-alias commit='run_in_directory "git add . && git commit -m" "$RBC_REPO"' # Commit changes
-
-# Convenience alias for setting remote or local ROS_MASTER_URI
-
-alias setdevmaster="pexport ROS_MASTER_URI $DEV_MASTER_URI && pexport ROS_HOSTNAME \$(hostname -I | awk '{print \$1}') && pexport RBC_MASTER 'local'"
-alias setbotmaster="pexport ROS_MASTER_URI $DEV_BOT_MASTER_URI && pexport ROS_HOSTNAME \$(hostname -I | awk '{print \$1}') && pexport RBC_MASTER 'bot'"
-alias checkmaster='echo Hostname: $ROS_HOSTNAME, Master URI: $ROS_MASTER_URI'
-
-# Convenience function for echoing with color
 # Usage: echoColor <color> <message>
 # Colors: black, red, green, yellow, blue, magenta, cyan, white
 function echoColor() {
@@ -419,14 +416,14 @@ function UNRUN() {
 function rbcinfo() {
     # Show what device we are on
     echo -n "$(echoColor white "Device: ")"
-    if [ $DEV_ENV -eq 0 ]; then
+    if [ "$DEV_ENV" == "0" ]; then
         echoColor "blue" "$(echoStyle bold "RoboCapture Raspberry Pi")"
-    elif [ $DEV_ENV -eq 1 ]; then
+    elif [ "$DEV_ENV" == "1" ]; then
         echoColor "green" "$(echoStyle bold "RoboCapture Dev Environment")"
     else
         # if $DEV_ENV not set, echo Device: Unknown
         if [ -z "$DEV_ENV" ]; then
-            echoColor "red" "$(echoStyle bold "Unknown, \$DEV_ENV is not set")"
+            echoColor "red" "$(echoStyle bold "Unknown, \$DEV_ENV is not set, should not happen!")"
         else
             echoColor "red" "$(echoStyle bold "Unknown ($DEV_ENV)")"
         fi
@@ -483,4 +480,37 @@ function rbcinfo() {
     fi
 }
 
-alias syncbot="rsync -avz ~/rbc/ $DEV_BOT_USER@$DEV_BOT_HOSTNAME:~/rbc/" # Directly sync bot repo with local repo without github
+# Remote bot utilities
+alias botsh='ssh $DEV_BOT_USER@$DEV_BOT_HOSTNAME' # SSH into bot. Technically, can be used like botdo, but it does not support the aliases defined in .bashrc.
+
+function botdo() { # Make bot run command with all environmental variables, usage: botdo <command>
+    local command="$@"
+    # Early terminate if no command is given
+    if [ -z "$command" ]; then
+        echo "Usage: botdo <command>"
+        return 1
+    fi
+    ssh -t $DEV_BOT_USER@$DEV_BOT_HOSTNAME "bash -i -c 'shopt -s expand_aliases; source ~/.bashrc; $command'"
+}
+
+function alldo() { # Run command locally, then run command on bot, usage: alldo <command>
+    local command="$@"
+    if [ -z "$command" ]; then
+        echo "Usage: alldo <command>"
+        return 1
+    fi
+    # Run command locally, then run command on bot
+    echoColor yellow "Running command locally..."
+    eval "$command"
+    echoColor yellow "Running command on bot..."
+    botdo "$command"
+}
+
+alias botsync="rsync -avz ~/rbc/ $DEV_BOT_USER@$DEV_BOT_HOSTNAME:~/rbc/" # Directly sync bot repo with local repo without github
+botlsync() {
+    lsyncd -nodaemon \
+           -rsync \
+           ~/rbc/ \
+           "$DEV_BOT_USER@$DEV_BOT_HOSTNAME:/home/ubuntu/rbc/"
+}
+alias cbs="botsync && alldo cb" # Catkin build on both local and bot; catkin build sync
