@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-    <machine name="rbc_pi" address="rbc.local" env-loader="/home/ubuntu/convenience.sh" user="ubuntu"/>
+    <machine name="rbc_pi" address="rbc.local" env-loader="/home/ubuntu/ros_env.sh" user="ubuntu"/>
 
     <!-- Wheel Control -->
     <node pkg="rosserial_arduino" type="serial_node.py" name="rosserial_node" output="screen" machine="rbc_pi">
