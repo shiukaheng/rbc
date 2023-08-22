@@ -9,6 +9,7 @@ struct MotorState {
     int hall_b_pin;
     double gear_ratio;
     int ppr;
+    int isense_pin;
 
     // *** Controller settings ***
     int control_mode = 3;
@@ -28,6 +29,7 @@ struct MotorState {
     double setpoint = 0;
     double output = 0;
     double error = 0;
+    int icurrent = 0;
 
     // *** Encoder settings ***
     double target_update_rate = 20; // The target update rate in Hz
