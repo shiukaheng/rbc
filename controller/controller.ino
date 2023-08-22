@@ -9,7 +9,7 @@ RobotState state;
 Clock clock;
 Tick tick;
 
-// Setting up the interrupts
+// Setting up the interrupts for encoders
 
 void isr1() {
     core->motors[0]->encoder.hall_a_interrupt();
@@ -27,6 +27,52 @@ void isr4() {
     core->motors[3]->encoder.hall_a_interrupt();
 }
 
+// Setting up the interrupt for current sense
+
+volatile int icurrent_counter = 0;  // Keep track of how many times we've read the current sense voltage
+volatile int maxSenseValue = 0;  // Maximum current sense value during the PWM cycle
+
+ISR(TIMER1_COMPA_vect) {
+    int senseValue = analogRead(A0);  // Assuming the current sense is connected to A0
+    if (senseValue > maxSenseValue) {
+        maxSenseValue = senseValue;
+    }
+    icurrent_counter++;
+    if (icurrent_counter >= 5) {  // Reset every 5 readings (1 PWM cycle)
+        // Update current sense value to topic
+
+        
+        maxSenseValue = 0;  // Reset the max value
+        icurrent_counter = 0;       // Reset the counter
+    }
+}
+
+// Setting up ADC clock
+
+void setupADC() {
+    // Set ADC prescaler to 16 for faster ADC readings.
+    // increase prescaler for better accuracy (but slower).
+    ADCSRA &= ~(bit(ADPS2) | bit(ADPS1));
+    ADCSRA |= bit(ADPS2);
+}
+
+// Setting up timer interrupt
+
+
+void setupTimerInterrupt() {
+    noInterrupts(); // Disable interrupts
+
+    TCCR1A = 0;     // Clear registers
+    TCCR1B = 0;
+    TCNT1 = 0;      // Counter value = 0
+    
+    OCR1A = 6531;   // Corresponds to 408.16µs
+    TCCR1B |= (1 << WGM12);    // CTC mode
+    TCCR1B |= (1 << CS10);     // No prescaler
+    TIMSK1 |= (1 << OCIE1A);   // Enable timer compare interrupt
+
+    interrupts(); // Enable interrupts
+}
 
 void setup() {
 
@@ -42,7 +88,7 @@ void setup() {
     state.motors[0].hall_b_pin = 30;
     state.motors[0].gear_ratio = 1./82.;
     state.motors[0].ppr = 16;
-    state.motors[0].isense = 54;
+    state.motors[0].isense_pin = 54;
 
     state.motors[1].lpwm_pin = 3;
     state.motors[1].rpwm_pin = 8;
@@ -50,7 +96,7 @@ void setup() {
     state.motors[1].hall_b_pin = 31;
     state.motors[1].gear_ratio = 1./82.;
     state.motors[1].ppr = 16;
-    state.motors[1].isense = 55;
+    state.motors[1].isense_pin = 55;
 
     state.motors[2].lpwm_pin = 5;
     state.motors[2].rpwm_pin = 11;
@@ -58,7 +104,7 @@ void setup() {
     state.motors[2].hall_b_pin = 32;
     state.motors[2].gear_ratio = 1./82.;
     state.motors[2].ppr = 16;
-    state.motors[2].isense = 56;
+    state.motors[2].isense_pin = 56;
 
     state.motors[3].lpwm_pin = 6;
     state.motors[3].rpwm_pin = 12;
@@ -66,10 +112,14 @@ void setup() {
     state.motors[3].hall_b_pin = 33;
     state.motors[3].gear_ratio = 1./82.;
     state.motors[3].ppr = 16;
-    state.motors[3].isense = 57;
+    state.motors[3].isense_pin = 57;
 
     Serial.begin(57600);
     core = new RobotCore(state);
+
+    // Current Sense Setup
+    setupADC();
+    setupTimerInterrupt();
 
     // Attach interrupts
     attachInterrupt(digitalPinToInterrupt(state.motors[0].hall_a_pin), isr1, RISING);
@@ -77,8 +127,6 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(state.motors[2].hall_a_pin), isr3, RISING);
     attachInterrupt(digitalPinToInterrupt(state.motors[3].hall_a_pin), isr4, RISING);
 
-    // Enable pin 13 as output
-    pinMode(13, OUTPUT);
 }
 
 void loop() {
@@ -86,3 +134,4 @@ void loop() {
     tick = clock.update();
     core->update(tick);
 }
+

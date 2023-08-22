@@ -8,3 +8,4 @@ int32 delta_ticks
 float32 position
 float32 velocity
 float32 acceleration
+int16 icurrent
