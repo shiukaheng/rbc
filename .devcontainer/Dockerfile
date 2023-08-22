@@ -2,24 +2,27 @@ FROM shiukaheng/ros-base:latest
 
 ENTRYPOINT [ "/usr/bin/env" ]
 
-RUN apt-get update
-RUN apt-get install -y python3-catkin-tools nano curl git x11-apps
-RUN apt-get install -y ros-noetic-rosserial ros-noetic-rosserial-arduino ros-noetic-rqt-ez-publisher ros-noetic-ros-control ros-noetic-ros-controllers libeigen3-dev
+# Copy in ./apt-get-wrapper.sh
+COPY ./apt-get-wrapper.sh /usr/local/bin/apt-get-wrapper.sh
+RUN chmod +x /usr/local/bin/apt-get-wrapper.sh
+
+RUN /usr/local/bin/apt-get-wrapper.sh install -y python3-catkin-tools nano curl git x11-apps
+RUN /usr/local/bin/apt-get-wrapper.sh install -y ros-noetic-rosserial ros-noetic-rosserial-arduino ros-noetic-rqt-ez-publisher ros-noetic-ros-control ros-noetic-ros-controllers libeigen3-dev
 
 # Astra Camera
-RUN apt-get install -y ros-noetic-rgbd-launch ros-noetic-libuvc-camera ros-noetic-libuvc-ros libuvc-dev
-RUN apt-get install -y libgoogle-glog-dev
+RUN /usr/local/bin/apt-get-wrapper.sh install -y ros-noetic-rgbd-launch ros-noetic-libuvc-camera ros-noetic-libuvc-ros libuvc-dev
+RUN /usr/local/bin/apt-get-wrapper.sh install -y libgoogle-glog-dev
 
 # LDS-01
-RUN apt-get install -y ros-noetic-hls-lfcd-lds-driver
+RUN /usr/local/bin/apt-get-wrapper.sh install -y ros-noetic-hls-lfcd-lds-driver
 
 # SMACH
-RUN apt-get -y install ros-noetic-smach
-RUN apt-get -y install ros-noetic-smach-msgs
-RUN apt-get -y install ros-noetic-smach-ros
+RUN /usr/local/bin/apt-get-wrapper.sh -y install ros-noetic-smach
+RUN /usr/local/bin/apt-get-wrapper.sh -y install ros-noetic-smach-msgs
+RUN /usr/local/bin/apt-get-wrapper.sh -y install ros-noetic-smach-ros
 
 # ROSBridge
-RUN apt-get -y install ros-noetic-rosbridge-suite
+RUN /usr/local/bin/apt-get-wrapper.sh -y install ros-noetic-rosbridge-suite
 
 WORKDIR /root
 RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
@@ -29,28 +32,28 @@ RUN /root/bin/arduino-cli board install arduino:avr:mega
 RUN /root/bin/arduino-cli lib install "FireTimer"
 
 # Install slam_toolbox
-RUN apt-get install -y ros-noetic-slam-toolbox
+RUN /usr/local/bin/apt-get-wrapper.sh install -y ros-noetic-slam-toolbox
 
 # Install move_base_flex
-RUN apt-get install -y ros-noetic-move-base
+RUN /usr/local/bin/apt-get-wrapper.sh install -y ros-noetic-move-base
 
 # Install tkinter for python3
-RUN apt-get install -y python3-tk
+RUN /usr/local/bin/apt-get-wrapper.sh install -y python3-tk
 
 # End of ROS dependencies
 
 # Install OpenSSH for remote development
-RUN apt-get install -y openssh-server
+RUN /usr/local/bin/apt-get-wrapper.sh install -y openssh-server
 RUN service ssh start
 
 # Copy in sshd_config file
 COPY ./sshd_config /etc/ssh/sshd_config
 
 # Install avahi-daemon for mDNS
-RUN apt-get install -y avahi-daemon iputils-ping
+RUN /usr/local/bin/apt-get-wrapper.sh install -y avahi-daemon iputils-ping
 
 # Install ipykernel and pip for python3
-RUN apt-get install -y python3-pip
+RUN /usr/local/bin/apt-get-wrapper.sh install -y python3-pip
 RUN pip3 install ipykernel
 
 # Install scipy, numpy, matplotlib, pandas, scikit-learn, jupyterlab

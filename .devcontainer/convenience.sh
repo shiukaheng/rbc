@@ -214,9 +214,10 @@ append_line() {
 }
 
 function RUN() {
-    "$@"
+    local cmd="$@"
+    cmd=${cmd/apt-get /\/usr\/local\/bin\/apt-get-wrapper.sh }
+    eval "$cmd"
     local status=$?
-    local cmd="$*"
     if [ $status -ne 0 ]; then
         echoColor "red" "The command failed with exit code $status." >&2
         echoColor "red" "Do you want to add this command to the Dockerfile? (y/n)" >&2
@@ -267,6 +268,9 @@ function SUGGEST_UNINSTALL() {
         uninstall_command=$(echo "$command" | sed 's/install/uninstall/')
     elif [[ $command == cargo\ install* ]]; then
         uninstall_command=$(echo "$command" | sed 's/install/uninstall/')
+    elif [[ $command == /usr/local/bin/apt-get-wrapper.sh\ install* ]]; then
+        uninstall_command=$(echo "$command" | sed 's/install/purge/')
+        uninstall_command=${uninstall_command//apt-get-wrapper.sh/apt-get}
     fi
 
     uninstall_command="${sudo_prefix}${uninstall_command}"
@@ -312,19 +316,3 @@ function UNRUN() {
         fi
     fi
 }
-
-# Autocompletion for UNRUN
-function _UNRUN() {
-    local curr_arg;
-    COMPREPLY=()
-    curr_arg=${COMP_WORDS[COMP_CWORD]}
-    local dockerfile_contents=$(grep "^RUN " $REPOSITORY/.devcontainer/Dockerfile | sed 's/^RUN //')
-
-    # Join the matched commands into a single string
-    local matches=$(compgen -W "${dockerfile_contents}" -- $curr_arg)
-    if [ -n "$matches" ]; then
-        COMPREPLY=( $(echo "${matches[*]}" | tr ' ' '\n') )
-    fi
-}
-
-complete -F _UNRUN UNRUN
