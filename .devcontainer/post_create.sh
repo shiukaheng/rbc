@@ -8,6 +8,9 @@ if [ ! -f ~/.ssh/id_rsa ]; then
     echo -e "\e[36mSSH keys generated.\e[0m"
 fi
 
+# Add ssh keys to ssh-agent
+ssh-add ~/.ssh/id_rsa
+
 echo -e "\e[36mInitializing dev environment...\e[0m"   
 cb # Catkin build
 abl # Build Arduino libraries

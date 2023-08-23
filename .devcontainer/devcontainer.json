@@ -20,7 +20,8 @@
 				"tostc.vscl",
 				"ms-toolsai.jupyter",
 				"michelemelluso.gitignore",
-				"redhat.vscode-xml"
+				"redhat.vscode-xml",
+				"dlech.chmod"
 			]
 		}
 	}

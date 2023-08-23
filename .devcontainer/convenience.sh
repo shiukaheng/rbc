@@ -100,10 +100,12 @@ check_var_not_empty() { # Takes in a variable name, value, command to run if not
 alias refreshenv='source ~/.bashrc' # Refresh environment
 alias editbashrc='nano ~/.bashrc && refreshenv' # Edit bashrc
 alias cdrepo='cd $RBC_REPO' # CD to repo
+alias cdr='cdrepo'
 alias cdws='cd $CATKIN_WS_PATH' # CD to workspace
-
+alias cdw='cdws'
 # Catkin
 alias cb='run_in_directory "catkin build" "$CATKIN_WS_PATH" && refreshenv' # Catkin Build and refresh environment
+alias ccp='run_in_directory "catkin_create_pkg" "$CATKIN_WS_PATH/src"' # Catkin Create Package
 
 # Patch files with string replacement
 function patch() {
@@ -130,36 +132,13 @@ alias commit='run_in_directory "git add . && git commit -m" "$RBC_REPO"' # Commi
 
 # Convenience alias for setting remote or local ROS_MASTER_URI
 
-alias setdevmaster="pexport ROS_MASTER_URI $DEV_MASTER_URI && pexport ROS_HOSTNAME \$(hostname -I | awk '{print \$1}') && pexport RBC_MASTER 'local'"
-alias setbotmaster="pexport ROS_MASTER_URI $DEV_BOT_MASTER_URI && pexport ROS_HOSTNAME \$(hostname -I | awk '{print \$1}') && pexport RBC_MASTER 'bot'"
+alias setdevmaster="pexport ROS_MASTER_URI $DEV_MASTER_URI && pexport ROS_HOSTNAME \$(hostname).local && pexport RBC_MASTER 'local'"
+alias sdm='setdevmaster'
+alias setbotmaster="pexport ROS_MASTER_URI $DEV_BOT_MASTER_URI && pexport ROS_HOSTNAME \$(hostname).local && pexport RBC_MASTER 'bot'"
+alias sbm='setbotmaster'
 alias checkmaster='echo Hostname: $ROS_HOSTNAME, Master URI: $ROS_MASTER_URI'
+alias cm='checkmaster'
 
-# Convenience function for echoing with color# Robocock hardware
-alias botsh='ssh $DEV_BOT_USER@$DEV_BOT_HOSTNAME'
-
-# Make bot run command with all environmental variables
-function botdo() {
-    local command="$@"
-    # Early terminate if no command is given
-    if [ -z "$command" ]; then
-        echo "Usage: botdo <command>"
-        return 1
-    fi
-    ssh -t $DEV_BOT_USER@$DEV_BOT_HOSTNAME "bash -i -c 'shopt -s expand_aliases; source ~/.bashrc; $command'"
-}
-
-function alldo() {
-    local command="$@"
-    if [ -z "$command" ]; then
-        echo "Usage: alldo <command>"
-        return 1
-    fi
-    # Run command locally, then run command on bot
-    echoColor yellow "Running command locally..."
-    eval "$command"
-    echoColor yellow "Running command on bot..."
-    botdo "$command"
-}
 # Usage: echoColor <color> <message>
 # Colors: black, red, green, yellow, blue, magenta, cyan, white
 function echoColor() {
@@ -441,6 +420,40 @@ function rbcinfo() {
             echoColor "red" "$(echoStyle bold "Unknown ($RBC_MASTER)")"
         fi
     fi
+    # Display ROS_MASTER_URI
+    local uri_line="$(echoColor white "ROS_MASTER_URI: ")"
+    echo -n "$uri_line"
+    if [ -z "$ROS_MASTER_URI" ]; then
+        echoColor "red" "$(echoStyle bold "Not set")"
+    else
+        echoColor "green" "$(echoStyle bold "$ROS_MASTER_URI")"
+    fi
+
+    # Display ROS_IP
+    local ip_line="$(echoColor white "ROS_IP: ")"
+    echo -n "$ip_line"
+    if [ -z "$ROS_IP" ]; then
+        if [ -z "$ROS_HOSTNAME" ]; then
+            echoColor "red" "$(echoStyle bold "Not set")"
+        else
+            echo "Not set, using ROS_HOSTNAME"
+        fi
+    else
+        echoColor "green" "$(echoStyle bold "$ROS_IP")"
+    fi
+
+    # Display ROS_HOSTNAME
+    local hostname_ros_line="$(echoColor white "ROS_HOSTNAME: ")"
+    echo -n "$hostname_ros_line"
+    if [ -z "$ROS_HOSTNAME" ]; then
+        if [ -z "$ROS_IP" ]; then
+            echoColor "red" "$(echoStyle bold "Not set")"
+        else
+            echo "Not set, using ROS_IP"
+        fi
+    else
+        echoColor "green" "$(echoStyle bold "$ROS_HOSTNAME")"
+    fi
     # Check if roscore is running on the master by trying to run rostopic list
     local roscore_line="$(echoColor white "roscore status: ")"
     echo -n "$roscore_line"
@@ -482,8 +495,10 @@ function rbcinfo() {
 
 # Remote bot utilities
 alias botsh='ssh $DEV_BOT_USER@$DEV_BOT_HOSTNAME' # SSH into bot. Technically, can be used like botdo, but it does not support the aliases defined in .bashrc.
+alias bsh='botsh'
 
-function botdo() { # Make bot run command with all environmental variables, usage: botdo <command>
+# Make bot run command with all environmental variables
+function botdo() {
     local command="$@"
     # Early terminate if no command is given
     if [ -z "$command" ]; then
@@ -492,8 +507,9 @@ function botdo() { # Make bot run command with all environmental variables, usag
     fi
     ssh -t $DEV_BOT_USER@$DEV_BOT_HOSTNAME "bash -i -c 'shopt -s expand_aliases; source ~/.bashrc; $command'"
 }
+alias bd='botdo'
 
-function alldo() { # Run command locally, then run command on bot, usage: alldo <command>
+function alldo() {
     local command="$@"
     if [ -z "$command" ]; then
         echo "Usage: alldo <command>"
@@ -505,12 +521,10 @@ function alldo() { # Run command locally, then run command on bot, usage: alldo 
     echoColor yellow "Running command on bot..."
     botdo "$command"
 }
+alias ad='alldo'
 
 alias botsync="rsync -avz ~/rbc/ $DEV_BOT_USER@$DEV_BOT_HOSTNAME:~/rbc/" # Directly sync bot repo with local repo without github
-botlsync() {
-    lsyncd -nodaemon \
-           -rsync \
-           ~/rbc/ \
-           "$DEV_BOT_USER@$DEV_BOT_HOSTNAME:/home/ubuntu/rbc/"
-}
+alias bs='botsync'
+
 alias cbs="botsync && alldo cb" # Catkin build on both local and bot; catkin build sync
+

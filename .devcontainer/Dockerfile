@@ -90,4 +90,3 @@ RUN ln -s /root/rbc/ros src
 RUN echo 'root:rbc' | chpasswd
 
 ENV DEV_ENV=1
-RUN /usr/local/bin/apt-get-wrapper.sh install -y x11-utils

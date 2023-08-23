@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+    <machine name="rbc_pi" address="rbc.local" env-loader="~/rbc/bot_scripts/env.sh" user="ubuntu" />
+
+    <!-- Launch debug_topics.py in rbc_base remotely -->
+    <node pkg="rbc_base" type="debug_topics.py" name="debug_topics" output="screen" />
+
+</launch>
