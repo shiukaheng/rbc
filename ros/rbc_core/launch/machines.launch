@@ -3,6 +3,5 @@
 
     <!-- Convenience file defining remote launching targets, and a nicer logger -->
     <machine name="rbc_bot" address="rbc.local" env-loader="~/rbc/bot_scripts/env.sh" user="ubuntu" />
-    <node pkg="rbc_core" type="rosout_display.py" name="rosout_display" output="screen" />
 
 </launch>

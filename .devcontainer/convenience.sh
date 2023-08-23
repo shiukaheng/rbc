@@ -29,3 +29,4 @@ import dockerfile_emu
 import master_switching
 import rbcinfo
 import remote_bot_utils
+import rosbash_enhancements
