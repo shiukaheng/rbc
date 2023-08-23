@@ -1,5 +1,5 @@
-source ~/.bashrc
-source ~/convenience.sh
+# Make link from ~/rbc/ros to ~/catkin_ws/src
+ln -s ~/rbc/ros ~/catkin_ws/src
 
 # Generate ssh keys if they don't exist at ~/.ssh/id_rsa
 if [ ! -f ~/.ssh/id_rsa ]; then
@@ -11,15 +11,5 @@ fi
 # Add ssh keys to ssh-agent
 ssh-add ~/.ssh/id_rsa
 
-echo -e "\e[36mInitializing dev environment...\e[0m"   
-
-# cb # Catkin build
-cd $CATKIN_WS_PATH
-catkin build
-# abl # Build Arduino libraries
-rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries && patch_rosserial_arduino_port
-# ac # Compile Arduino sketch
-cd $RBC_REPO/controller
-arduino-cli compile --fqbn arduino:avr:mega
-
-echo -e "\e[36mDev environment initialized, compiled catkin_ws, arduino rosserial libraries, and arduino sketch.\e[0m"
+# Run acm
+bash -ic "source ~/.bashrc && acm"
