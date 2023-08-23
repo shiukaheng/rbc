@@ -12,4 +12,4 @@ fi
 ssh-add ~/.ssh/id_rsa
 
 # Run acm
-bash -ic "source ~/.bashrc && acm"
+bash -ic "source ~/.bashrc && acm && setbotmaster"

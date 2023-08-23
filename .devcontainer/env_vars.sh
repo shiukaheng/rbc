@@ -23,4 +23,4 @@ export ARDUINO_UPDATE_PORT="/dev/ttyACM0"
 export ARDUINO_COMMUNICATION_PORT="/dev/ttyS0"
 
 # Persistent variables
-export PERSISTENT_FILE="$HOME/.dev/.bashrc_vars"
+export PERSISTENT_FILE=$(realpath ~/.penv/persistent_vars.sh)
