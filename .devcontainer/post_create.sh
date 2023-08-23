@@ -12,4 +12,4 @@ fi
 ssh-add ~/.ssh/id_rsa
 
 # Run acm
-/bin/bash -c "source ~/rbc/.devcontainer/env_vars.sh && source ~/rbc/.devcontainer/convenience.sh && acm"
+bash -ic "source ~/.bashrc && acm"
