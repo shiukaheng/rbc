@@ -12,7 +12,14 @@ fi
 ssh-add ~/.ssh/id_rsa
 
 echo -e "\e[36mInitializing dev environment...\e[0m"   
-cb # Catkin build
-abl # Build Arduino libraries
-ac # Compile Arduino sketch
+
+# cb # Catkin build
+cd $CATKIN_WS_PATH
+catkin build
+# abl # Build Arduino libraries
+rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries && patch_rosserial_arduino_port
+# ac # Compile Arduino sketch
+cd $RBC_REPO/controller
+arduino-cli compile --fqbn arduino:avr:mega
+
 echo -e "\e[36mDev environment initialized, compiled catkin_ws, arduino rosserial libraries, and arduino sketch.\e[0m"

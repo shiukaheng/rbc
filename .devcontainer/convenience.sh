@@ -114,8 +114,7 @@ alias cdr='cdrepo'
 alias cdws='cd $CATKIN_WS_PATH' # CD to workspace
 alias cdw='cdws'
 # Catkin
-alias cb='run_in_directory catkin "$CATKIN_WS_PATH" build && refreshenv'
-alias ccp='run_in_directory "catkin_create_pkg" "$CATKIN_WS_PATH/src"' # Catkin Create Package
+alias cb='run_in_directory "catkin build" "$CATKIN_WS_PATH"' # Catkin build
 
 # Patch files with string replacement
 function patch() {
