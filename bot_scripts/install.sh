@@ -50,7 +50,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bin/bash -c 'source ~/.bashrc && roscore'
+ExecStart=/bin/bash -ic 'source ~/.bashrc && roscore'
 Restart=always
 User=$USER
 
