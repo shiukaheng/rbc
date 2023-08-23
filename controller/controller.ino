@@ -32,7 +32,7 @@ void isr4() {
 volatile int icurrent_counter[4] = {0, 0, 0, 0};  // Counter for each motor
 volatile int maxSenseValue[4] = {0, 0, 0, 0};    // Max sense value for each motor
 
-ISR(TIMER1_COMPA_vect) {
+ISR(TIMER5_COMPA_vect) {
     for (int i = 0; i < 4; i++) {
         int senseValue = analogRead(state.motors[i].isense_pin);
         if (senseValue > maxSenseValue[i]) {
@@ -62,25 +62,23 @@ void setupADC() {
 void setupTimerInterrupt() {
     noInterrupts(); // Disable interrupts
 
-    TCCR1A = 0;     // Clear registers
-    TCCR1B = 0;
-    TCNT1 = 0;      // Counter value = 0
-    
-    OCR1A = 6531;   // Corresponds to 408.16µs
-    TCCR1B |= (1 << WGM12);    // CTC mode
-    TCCR1B |= (1 << CS10);     // No prescaler
-    TIMSK1 |= (1 << OCIE1A);   // Enable timer compare interrupt
+    TCCR5A = 0; // set entire TCCR5A register to 0
+    TCCR5B = 0; // same for TCCR5B
+    TCNT5  = 0; // initialize counter value to 0
+    // set compare match register for 1hz increments
+    OCR5A = 6531; // = (16*10^6) / (1*1024) - 1 (must be <65536)
+    // turn on CTC mode
+    TCCR5B |= (1 << WGM52);
+    // Set CS52 and CS50 bits for 1024 prescaler
+    TCCR5B |= (1 << CS52) | (1 << CS50);  
+    // enable timer compare interrupt
+    TIMSK5 |= (1 << OCIE5A);
 
     interrupts(); // Enable interrupts
 }
 
 void setup() {
-
-    // PWM frequency configuration
-    // TCCR1B = TCCR1B & B11111000 | B00000001;  // for PWM frequency of 31372.55 Hz on D11, D12
-    // TCCR3B = TCCR3B & B11111000 | B00000001;   // for PWM frequency of 31372.55 Hz on D2, D3, D5
-    // TCCR4B = TCCR4B & B11111000 | B00000001;   // for PWM frequency of 31372.55 Hz on D6, D7, D8
-
+    
     // Configure the robot state
     state.motors[0].lpwm_pin = 2;
     state.motors[0].rpwm_pin = 7;
@@ -117,15 +115,15 @@ void setup() {
     Serial.begin(57600);
     core = new RobotCore(state);
 
-    // Current Sense Setup
-    setupADC();
-    setupTimerInterrupt();
-
     // Attach interrupts
     attachInterrupt(digitalPinToInterrupt(state.motors[0].hall_a_pin), isr1, RISING);
     attachInterrupt(digitalPinToInterrupt(state.motors[1].hall_a_pin), isr2, RISING);
     attachInterrupt(digitalPinToInterrupt(state.motors[2].hall_a_pin), isr3, RISING);
     attachInterrupt(digitalPinToInterrupt(state.motors[3].hall_a_pin), isr4, RISING);
+
+    // Current Sense Setup
+    setupADC();
+    setupTimerInterrupt();
 
     // Set up onboard LED
     pinMode(13, OUTPUT);
