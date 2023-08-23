@@ -126,7 +126,7 @@ function patch() {
 }
 
 # Arduino
-alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "~/rbc/controller"' # Arduino Compile
+alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Compile
 alias au='run_in_directory "arduino-cli upload -p $ARDUINO_PORT --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
 alias acu='ac && au' # Arduino Compile and Upload
 alias patch_rosserial_arduino_port='patch "~/Arduino/libraries/ros_lib/ArduinoHardware.h" "iostream = &Serial;" "iostream = \\&Serial3;"' # Patch rosserial_arduino port
