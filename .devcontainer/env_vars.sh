@@ -14,6 +14,9 @@ if [ -z "$DEV_ENV" ]; then # Docker environment would define DEV_ENV to 1, so if
     export ROS_HOSTNAME=$DEV_BOT_HOSTNAME    
     export RBC_MASTER="bot"
 fi
+if [ -z "$ROS_DISTRO" ]; then # If ROS_DISTRO is not defined, we assume we are running on the robot
+    ROS_DISTRO=noetic
+fi
 
 # Arduino environment variables
 export ARDUINO_UPDATE_PORT="/dev/ttyACM0"
