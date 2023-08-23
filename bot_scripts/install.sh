@@ -50,11 +50,9 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bin/bash -c 'source /opt/ros/noetic/setup.bash && roscore'
+ExecStart=/bin/bash -c 'source ~/.bashrc && roscore'
 Restart=always
 User=$USER
-Environment="ROS_MASTER_URI=http://localhost:11311"
-Environment="ROS_HOSTNAME=localhost"
 
 [Install]
 WantedBy=multi-user.target

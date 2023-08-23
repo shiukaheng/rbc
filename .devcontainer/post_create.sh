@@ -1,3 +1,6 @@
+# Make link from ~/rbc/ros to ~/catkin_ws/src
+ln -s ~/rbc/ros ~/catkin_ws/src
+
 # Generate ssh keys if they don't exist at ~/.ssh/id_rsa
 if [ ! -f ~/.ssh/id_rsa ]; then
     echo -e "\e[36mGenerating ssh keys...\e[0m"
@@ -9,4 +12,4 @@ fi
 ssh-add ~/.ssh/id_rsa
 
 # Run acm
-/bin/bash -c "source ~/rbc/.devcontainer/convenience.sh && acm"
+/bin/bash -c "source ~/rbc/.devcontainer/env_vars.sh && source ~/rbc/.devcontainer/convenience.sh && acm"

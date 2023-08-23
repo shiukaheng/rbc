@@ -80,11 +80,11 @@ RUN sed -i 's/#Port 22/Port 2222/g' /etc/ssh/sshd_config
 RUN /usr/local/bin/apt-get-wrapper.sh -y install ros-noetic-robot-upstart
 
 # Copying source code over
-COPY .. /root/rbc
-COPY ./.bashrc /root/.bashrc
+# COPY .. /root/rbc
+# COPY ./.bashrc /root/.bashrc
 RUN mkdir -p /root/catkin_ws
 WORKDIR /root/catkin_ws
-RUN ln -s /root/rbc/ros src
+# RUN ln -s /root/rbc/ros src
 
 # Set password for root to be rbc
 RUN echo 'root:rbc' | chpasswd
