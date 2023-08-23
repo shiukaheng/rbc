@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-
-    <machine name="rbc_bot" address="$DEV_BOT_HOSTNAME" env-loader="~/rbc/bot_scripts/env.sh" user="$DEV_BOT_USERNAME" />
-
-</launch>

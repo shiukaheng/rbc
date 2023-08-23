@@ -6,7 +6,7 @@
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 
     <!-- slam_toolbox -->
-    <node pkg="slam_toolbox" type="localization_slam_toolbox_node" name="slam_toolbox" output="screen">
+    <!-- <node pkg="slam_toolbox" type="localization_slam_toolbox_node" name="slam_toolbox" output="screen">
         <rosparam command="load" file="$(find rbc_navigation)/config/mapper_params_localization.yaml" />
-    </node>
+    </node> -->
 </launch>

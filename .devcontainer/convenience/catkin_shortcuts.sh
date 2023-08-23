@@ -7,10 +7,10 @@ function cb() {
     refreshenv
 }
 
-function cpp() {
-    run_in_dir "$CATKIN_WS_PATH" catkin_create_pkg "$@"
+function ccp() {
+    run_in_dir "$CATKIN_WS_PATH/src" catkin_create_pkg "$@"
     refreshenv
 }
 
 export -f cb
-export -f cpp
+export -f ccp
