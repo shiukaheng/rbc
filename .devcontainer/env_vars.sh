@@ -23,4 +23,9 @@ export ARDUINO_UPDATE_PORT="/dev/ttyACM0"
 export ARDUINO_COMMUNICATION_PORT="/dev/ttyS0"
 
 # Persistent variables
+# If ~/.penv/persistent_vars.sh does not exist, create it
+if [ ! -f ~/.penv/persistent_vars.sh ]; then
+    mkdir -p ~/.penv
+    touch ~/.penv/persistent_vars.sh
+fi
 export PERSISTENT_FILE=$(realpath ~/.penv/persistent_vars.sh)

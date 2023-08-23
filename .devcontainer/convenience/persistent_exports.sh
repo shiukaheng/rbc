@@ -50,3 +50,8 @@ punset() {
     echo_success "Variable $var_name has been unset and removed from pexported variables."
     source "$PERSISTENT_FILE"
 }
+
+# Source $PERSISTENT_FILE if it exists
+if [ -f "$PERSISTENT_FILE" ]; then
+    source "$PERSISTENT_FILE"
+fi
