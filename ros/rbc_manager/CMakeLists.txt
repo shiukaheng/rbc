@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(rbc_state_manager)
+project(rbc_manager)
 
 ## Find catkin and any catkin packages
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg message_generation)

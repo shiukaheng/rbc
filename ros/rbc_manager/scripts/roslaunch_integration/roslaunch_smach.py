@@ -118,7 +118,7 @@ class Observer:
         print(f"All processes exited, success: {result}")
 
 # def main():
-#     raw_launchfile = "~/catkin_ws/src/rbc_state_manager/launch/test.launch"
+#     raw_launchfile = "~/catkin_ws/src/rbc_manager/launch/test.launch"
 #     absolute_launchfile = os.path.expanduser(raw_launchfile)
 
 #     monitored_launchfile = MonitoredLaunchfile(absolute_launchfile)

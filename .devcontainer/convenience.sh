@@ -60,20 +60,10 @@ punset() {
 }
 
 run_in_directory() {
-  local command="$1"
+  local command_to_run="$1"
   local directory="$2"
-
-  # Store the current working directory
-  local current_dir="$(pwd)"
-
-  # Change to the specified directory
-  cd "$directory" || return
-
-  # Run the command
-  eval "$command"
-
-  # Return to the original working directory
-  cd "$current_dir" || return
+  shift 2
+  (cd "$directory" && "$command_to_run" "$@")
 }
 
 check_var_not_empty() { # Takes in a variable name, value, command to run if not empty, and command to run if empty
