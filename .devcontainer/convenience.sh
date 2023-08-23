@@ -59,14 +59,31 @@ punset() {
     source "$bashrc"
 }
 
+# run_in_directory() {
+#   local command_to_run="$1"
+#   local directory="$2"
+#   shift 2
+#   (
+#     cd "$directory"
+#     "$command_to_run" "$@"
+#   )
+# }
+
 run_in_directory() {
-  local command_to_run="$1"
+  local command="$1"
   local directory="$2"
-  shift 2
-  (
-    cd "$directory"
-    "$command_to_run" "$@"
-  )
+
+  # Store the current working directory
+  local current_dir="$(pwd)"
+
+  # Change to the specified directory
+  cd "$directory" || return
+
+  # Run the command
+  eval "$command"
+
+  # Return to the original working directory
+  cd "$current_dir" || return
 }
 
 check_var_not_empty() { # Takes in a variable name, value, command to run if not empty, and command to run if empty
@@ -109,7 +126,7 @@ function patch() {
 }
 
 # Arduino
-alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Compile
+alias ac='run_in_directory "arduino-cli compile --fqbn arduino:avr:mega" "~/rbc/controller"' # Arduino Compile
 alias au='run_in_directory "arduino-cli upload -p $ARDUINO_PORT --fqbn arduino:avr:mega" "$RBC_REPO/controller"' # Arduino Upload
 alias acu='ac && au' # Arduino Compile and Upload
 alias patch_rosserial_arduino_port='patch "~/Arduino/libraries/ros_lib/ArduinoHardware.h" "iostream = &Serial;" "iostream = \\&Serial3;"' # Patch rosserial_arduino port
