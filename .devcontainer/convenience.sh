@@ -63,7 +63,10 @@ run_in_directory() {
   local command_to_run="$1"
   local directory="$2"
   shift 2
-  (cd "$directory" && "$command_to_run" "$@")
+  (
+    cd "$directory"
+    "$command_to_run" "$@"
+  )
 }
 
 check_var_not_empty() { # Takes in a variable name, value, command to run if not empty, and command to run if empty
@@ -94,7 +97,7 @@ alias cdr='cdrepo'
 alias cdws='cd $CATKIN_WS_PATH' # CD to workspace
 alias cdw='cdws'
 # Catkin
-alias cb='run_in_directory "catkin build" "$CATKIN_WS_PATH" && refreshenv' # Catkin Build and refresh environment
+alias cb='run_in_directory catkin "$CATKIN_WS_PATH" build && refreshenv'
 alias ccp='run_in_directory "catkin_create_pkg" "$CATKIN_WS_PATH/src"' # Catkin Create Package
 
 # Patch files with string replacement
@@ -513,7 +516,7 @@ function alldo() {
 }
 alias ad='alldo'
 
-alias botsync="rsync -avz ~/rbc/ $DEV_BOT_USER@$DEV_BOT_HOSTNAME:~/rbc/" # Directly sync bot repo with local repo without github
+alias botsync="rsync -avz ~/rbc/ $DEV_BOT_USER@$DEV_BOT_HOSTNAME:~/rbc/ --delete" # Directly sync bot repo with local repo without github
 alias bs='botsync'
 
 alias cbs="botsync && alldo cb" # Catkin build on both local and bot; catkin build sync
