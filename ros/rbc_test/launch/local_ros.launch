@@ -3,7 +3,7 @@
 
     <include file="$(find rbc_core)/launch/context.launch" />
 
-    <node pkg="rbc_test" type="talker.py" name="debug_topics" output="screen" />
-    <node pkg="rbc_test" type="listener.py" name="debug_topics" output="screen" />
+    <node pkg="rbc_test" type="talker.py" name="talker" output="screen" />
+    <node pkg="rbc_test" type="listener.py" name="listener" output="screen" />
 
 </launch>
