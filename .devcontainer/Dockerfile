@@ -73,6 +73,7 @@ RUN /usr/local/bin/apt-get-wrapper.sh install -y lsyncd
 RUN /usr/local/bin/apt-get-wrapper.sh install -y ros-noetic-rplidar-ros
 RUN /usr/local/bin/apt-get-wrapper.sh install -y ros-noetic-gmapping
 
+
 # Configure it to run on port 2222
 RUN sed -i 's/#Port 22/Port 2222/g' /etc/ssh/sshd_config
 
