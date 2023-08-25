@@ -9,4 +9,6 @@
     <!-- <node pkg="slam_toolbox" type="localization_slam_toolbox_node" name="slam_toolbox" output="screen">
         <rosparam command="load" file="$(find rbc_navigation)/config/mapper_params_localization.yaml" />
     </node> -->
+    
+    
 </launch>
