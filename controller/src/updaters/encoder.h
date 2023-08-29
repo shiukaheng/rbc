@@ -103,8 +103,9 @@ class Encoder : public BaseStateUpdater<MotorState> {
         */
         void hall_a_interrupt() {
 
-            // If hall B is high, we're going forward
-            if (digitalRead(state.hall_b_pin) == HIGH) {
+            // If hall B is high, we're going forward -- OUTDATED!
+            // If hall B is low, we're going backward -- New, because PCB has flipped the hall sensor pins
+            if (digitalRead(state.hall_b_pin) == LOW) {
                 delta_ticks++;
             } else {
                 delta_ticks--;

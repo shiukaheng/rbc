@@ -55,10 +55,10 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
             ROS_INFO_STREAM("Got handle for joints");
 
             // Configure base
-            base.addOmniwheel(-0.1575, -0.1575, 315 * M_PI / 180, 0.05);
-            base.addOmniwheel(-0.1575, 0.1575, 225 * M_PI / 180, 0.05);
-            base.addOmniwheel(0.1575, 0.1575, 135 * M_PI / 180, 0.05);
-            base.addOmniwheel(0.1575, -0.1575, 45 * M_PI / 180, 0.05);
+            base.addOmniwheel(-0.1575, -0.1575, 135 * M_PI / 180, 0.05);
+            base.addOmniwheel(-0.1575, 0.1575, 45 * M_PI / 180, 0.05);
+            base.addOmniwheel(0.1575, 0.1575, 315 * M_PI / 180, 0.05);
+            base.addOmniwheel(0.1575, -0.1575, 225 * M_PI / 180, 0.05);
 
             // Subscribe to cmd_vel
             cmd_vel_sub = nh.subscribe("/cmd_vel", 1, &OmniwheelBaseController::cmd_vel_callback, this);
