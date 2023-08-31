@@ -2,6 +2,7 @@
 
 import rospy
 from rosgraph_msgs.msg import Log
+from std_msgs.msg import Int32
 
 class ColorfulLogger:
 
@@ -21,6 +22,8 @@ class ColorfulLogger:
     def __init__(self):
         self.node_color_map = {}
         self.used_colors = set()
+        self.lost_sync = 0
+        self.begin_time = None
 
     def _get_color(self, node_name):
         if node_name in self.node_color_map:
@@ -49,12 +52,19 @@ class ColorfulLogger:
         }.get(level, "UNKNOWN")
 
     def callback(self, data):
+        # If string contains "lost sync" (regardless of case), increment counter
+        suffix = ""
+        lost_sync = ("lost sync" in data.msg.lower())
+        if lost_sync:
+            self.lost_sync += 1
+            suffix = f" ({self.lost_sync} lost syncs)"
         node_color = self._get_color(data.name)
         level_color = self.LEVEL_COLOR_MAP.get(data.level, "\033[1;97m")
-        print(f"\033[1;97m[\033[0m{level_color}{self._get_level_string(data.level)}\033[1;97m:\033[0m{node_color}{data.name}\033[1;97m]:\033[0m {data.msg}")
+        print(f"\033[1;97m[\033[0m{level_color}{self._get_level_string(data.level)}\033[1;97m:\033[0m{node_color}{data.name}\033[1;97m]:\033[0m {data.msg}{suffix}")
 
     def start(self):
         rospy.init_node('colorful_logger', anonymous=True)
+        self.begin_time = rospy.Time.now()
         rospy.Subscriber("/rosout_agg", Log, self.callback)
         rospy.spin()
 

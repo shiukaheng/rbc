@@ -71,6 +71,9 @@ RUN /usr/local/bin/apt-get-wrapper.sh install -y rsync
 
 RUN /usr/local/bin/apt-get-wrapper.sh install -y lsyncd
 RUN /usr/local/bin/apt-get-wrapper.sh install -y ros-noetic-rplidar-ros
+RUN /usr/local/bin/apt-get-wrapper.sh install -y ros-noetic-gmapping
+RUN /usr/local/bin/apt-get-wrapper.sh install -y ros-noetic-navigation
+RUN /usr/local/bin/apt-get-wrapper.sh -y install ros-noetic-move-base-flex
 
 
 # Configure it to run on port 2222

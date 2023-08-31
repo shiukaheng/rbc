@@ -25,6 +25,10 @@ function patch_rosserial_arduino_port() {
   patch "$HOME/Arduino/libraries/ros_lib/ArduinoHardware.h" "iostream = &Serial;" "iostream = \\&Serial3;"
 }
 
+function check_rosserial_arduino_port() {
+  grep "iostream = &Serial3;" "$HOME/Arduino/libraries/ros_lib/ArduinoHardware.h"
+}
+
 function abl() {
   rosrun rosserial_arduino make_libraries.py ~/Arduino/libraries && patch_rosserial_arduino_port
 }
