@@ -154,17 +154,22 @@ struct Pose2D {
 */
 const Pose2D updateOdom(const Pose2D& last_pose, const Eigen::Vector3d& v_b, double dt) {
     Pose2D new_pose;
-    // new_pose.rot = last_pose.rot + v_b.rot * dt;
-    new_pose.rot = last_pose.rot + v_b[0] * dt;
-    double delta_x, delta_y;
-    if (v_b[0] < 1e-6) { // Not numerically stable when v_b[0] is close to zero, so we approximate it to be zero when it is small
-        delta_x = v_b[1] * dt;
-        delta_y = v_b[2] * dt;
-    } else {
-        delta_x = (v_b[1] * sin(last_pose.rot + v_b[0] * dt) + v_b[2] * cos(last_pose.rot + v_b[0] * dt) - v_b[1] * sin(last_pose.rot) - v_b[2] * cos(last_pose.rot)) / v_b[0];
-        delta_y = (v_b[2] * sin(last_pose.rot + v_b[0] * dt) - v_b[1] * cos(last_pose.rot + v_b[0] * dt) - v_b[2] * sin(last_pose.rot) + v_b[1] * cos(last_pose.rot)) / v_b[0];
-    }
-    new_pose.lin.x() = last_pose.lin.x() + delta_x;
-    new_pose.lin.y() = last_pose.lin.y() + delta_y;
+    new_pose.rot = last_pose.rot + v_b[0] * dt; // Update rotation
+
+    // Extract linear velocities from v_b
+    double v_x = v_b[1];
+    double v_y = v_b[2];
+
+    // Rotate the linear velocities into the global frame based on the last pose's rotation
+    double c = cos(last_pose.rot);
+    double s = sin(last_pose.rot);
+    
+    double global_v_x = c * v_x - s * v_y;
+    double global_v_y = s * v_x + c * v_y;
+
+    // Update global position using the rotated velocities and dt
+    new_pose.lin[0] = last_pose.lin[0] + global_v_x * dt;
+    new_pose.lin[1] = last_pose.lin[1] + global_v_y * dt;
+    
     return new_pose;
 }
