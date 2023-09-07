@@ -29,7 +29,7 @@ struct MotorState {
     double setpoint = 0;
     double last_setpoint = 0;
     double acceleration_bounded_setpoint = 0;
-    double acceleration_limit = 25;
+    double acceleration_limit = 10;
     double output = 0;
     double error = 0;
     int icurrent = 0;
