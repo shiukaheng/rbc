@@ -6,6 +6,5 @@
     <include file="$(find rbc_base)/launch/arduino_bridge.launch" />
     <include file="$(find rbc_base)/launch/controller.launch" />
     <include file="$(find rbc_core)/launch/lidar.launch" />
-    <include file="$(find rbc_navigation)/launch/navigation.launch" />
 
 </launch>

@@ -10,4 +10,9 @@ TrajectoryPlannerROS:
   backup_vel: -0.1
   escape_vel: -0.1
   holonomic_robot: true
+  y_vels: [-0.2, -0.2, 0.2, 0.2]
+
+  yaw_goal_tolerance: 0.05
+  xy_goal_tolerance: 0.05
+  latch_xy_goal_tolerance: true
   
