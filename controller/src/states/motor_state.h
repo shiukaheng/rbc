@@ -27,6 +27,9 @@ struct MotorState {
     // *** Controller state ***
     double i_accumulator = 20;
     double setpoint = 0;
+    double last_setpoint = 0;
+    double acceleration_bounded_setpoint = 0;
+    double acceleration_limit = 25;
     double output = 0;
     double error = 0;
     int icurrent = 0;
