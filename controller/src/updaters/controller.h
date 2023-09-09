@@ -70,7 +70,7 @@ class Controller : public BaseStateUpdater<MotorState> {
                 return;
             }
             if (state.encoder_dt >= 0) { // Only update if there is a fresh encoder reading. Otherwise, the readings mean nothing!
-                state.error = state.setpoint - state.velocity; // Calculate error
+                state.error = state.acceleration_bounded_setpoint - state.velocity; // Calculate error
                 if (state.error >= state.deadband_min && state.error <= state.deadband_max) {
                     state.error = 0;
                 }
@@ -83,7 +83,7 @@ class Controller : public BaseStateUpdater<MotorState> {
                     setpoint_polarity = 1;
                     last_setpoint_polarity = 1;
                 } else { // CLASSIC_PID_B_I_FLIPPING or ADAPTIVE_PID
-                    setpoint_polarity = (state.setpoint == 0) ? 0 : (state.setpoint >= 0) ? 1 : -1;
+                    setpoint_polarity = (state.acceleration_bounded_setpoint == 0) ? 0 : (state.acceleration_bounded_setpoint >= 0) ? 1 : -1;
                 }
 
                 double bias_out = state.bias * setpoint_polarity; // Calculate bias term
@@ -101,7 +101,7 @@ class Controller : public BaseStateUpdater<MotorState> {
                     double i_out_max = constrain(state.output_max - pdb_out_temp, 0, state.output_max); // We constrain the integral term to the range of the output just to be safe
                     double i_out_min = constrain(state.output_min - pdb_out_temp, state.output_min, 0); 
                     i_temp = constrain( i_temp, i_out_min, i_out_max );
-                } else if ( state.control_mode == ADAPTIVE_PID && state.setpoint != 0 ) {
+                } else if ( state.control_mode == ADAPTIVE_PID && state.acceleration_bounded_setpoint != 0 ) {
                     // double i_out_max = constrain((state.output_max - pdb_out_temp) / state.setpoint, 0, state.output_max); // We constrain the integral term to the range of the output just to be safe
                     // double i_out_min = constrain((state.output_min - pdb_out_temp) / state.setpoint, state.output_min, 0);
                     // i_temp = constrain( i_temp, i_out_min, i_out_max );
@@ -113,7 +113,7 @@ class Controller : public BaseStateUpdater<MotorState> {
                 if ( state.control_mode == CLASSIC_PID || state.control_mode == CLASSIC_PID_B_I_FLIPPING ) {
                     temp_out = p_out + d_out + state.i_accumulator * setpoint_polarity + bias_out;
                 } else if ( state.control_mode == ADAPTIVE_PID ) {
-                    temp_out = p_out + d_out + state.i_accumulator * state.setpoint + bias_out;
+                    temp_out = p_out + d_out + state.i_accumulator * state.acceleration_bounded_setpoint + bias_out;
                 }
 
                 // Constrain using output limits

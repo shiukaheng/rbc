@@ -41,7 +41,7 @@
     <joint name="laser_joint" type="fixed">
         <parent link="chassis"/>
         <child link="laser"/>
-        <origin xyz="0 0 0.07" rpy="0 0 0"/>
+        <origin xyz="0 0 0.07" rpy="0 0 ${pi/2}"/>
     </joint>
     <link name="laser">
         <visual>
@@ -61,7 +61,7 @@
     <joint name="wheel_1_joint" type="continuous">
         <parent link="base_link"/>
         <child link="wheel_1"/>
-        <origin xyz="0.1575 0.1575 0" rpy="-${pi/2} 0 -${pi/4}"/>
+        <origin xyz="0.1575 -0.1575 0" rpy="-${pi/2} 0 ${pi/4}"/>
         <axis xyz="0 0 1"/>
     </joint>
 
@@ -96,7 +96,7 @@
     <joint name="wheel_2_joint" type="continuous">
         <parent link="base_link"/>
         <child link="wheel_2"/>
-        <origin xyz="0.1575 -0.1575 0" rpy="${pi/2} 0 ${pi/4}"/>
+        <origin xyz="0.1575 0.1575 0" rpy="${pi/2} 0 ${3*pi/4}"/>
         <axis xyz="0 0 -1"/>
     </joint>
 
@@ -131,7 +131,7 @@
     <joint name="wheel_3_joint" type="continuous">
         <parent link="base_link"/>
         <child link="wheel_3"/>
-        <origin xyz="-0.1575 0.1575 0" rpy="-${pi/2} 0 ${pi/4}"/>
+        <origin xyz="-0.1575 0.1575 0" rpy="-${pi/2} 0 ${5*pi/4}"/>
         <axis xyz="0 0 1"/>
     </joint>
 
@@ -166,7 +166,7 @@
     <joint name="wheel_4_joint" type="continuous">
         <parent link="base_link"/>
         <child link="wheel_4"/>
-        <origin xyz="-0.1575 -0.1575 0" rpy="${pi/2} 0 -${pi/4}"/>
+        <origin xyz="-0.1575 -0.1575 0" rpy="${pi/2} 0 ${7*pi/4}"/>
         <axis xyz="0 0 -1"/>
     </joint>
 

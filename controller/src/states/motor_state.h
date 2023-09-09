@@ -13,11 +13,11 @@ struct MotorState {
 
     // *** Controller settings ***
     int control_mode = 3;
-    double p_in = 0.0;
-    double i_in = 0.0;
+    double p_in = 40.0;
+    double i_in = 15.0;
     double d_in = 0.0;
-    double bias = 0;
-    double i_accumulator_min = -100;
+    double bias = 20.0;
+    double i_accumulator_min = 0;
     double i_accumulator_max = 100;
     double output_min = -255;
     double output_max = 255;
@@ -27,6 +27,9 @@ struct MotorState {
     // *** Controller state ***
     double i_accumulator = 20;
     double setpoint = 0;
+    double last_setpoint = 0;
+    double acceleration_bounded_setpoint = 0;
+    double acceleration_limit = 10;
     double output = 0;
     double error = 0;
     int icurrent = 0;
