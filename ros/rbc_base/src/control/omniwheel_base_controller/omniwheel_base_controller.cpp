@@ -46,7 +46,8 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
             // nh.param<std::string>("joint_name_4", joint_name_4, "wheel_4_joint");
 
             // Log all joint names
-            ROS_INFO_STREAM("Joint names: " << joint_name_1 << ", " << joint_name_2 << ", " << joint_name_3 << ", " << joint_name_4);
+            // ROS_INFO_STREAM("Joint names: " << joint_name_1 << ", " << joint_name_2 << ", " << joint_name_3 << ", " << joint_name_4);
+            ROS_INFO_STREAM("Joint names: " << joint_name_1 << ", " << joint_name_2 << ", " << joint_name_3);
                        
             ROS_INFO_STREAM("Initializing OmniwheelBaseController");
             vel_handle_1 = hw->getHandle(joint_name_1);
