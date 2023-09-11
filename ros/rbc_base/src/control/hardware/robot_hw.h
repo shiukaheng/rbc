@@ -15,10 +15,10 @@ class RobotHW : public hardware_interface::RobotHW {
         hardware_interface::VelocityJointInterface jnt_vel_interface; // This is the interface for commanding the joints
 
         // We then need to store the state and command of the joints
-        double cmd[4] = {0.0, 0.0, 0.0, 0.0};
-        double pos[4] = {0.0, 0.0, 0.0, 0.0};
-        double vel[4] = {0.0, 0.0, 0.0, 0.0};
-        double eff[4] = {0.0, 0.0, 0.0, 0.0};
+        double cmd[3] = {0.0, 0.0, 0.0};
+        double pos[3] = {0.0, 0.0, 0.0};
+        double vel[3] = {0.0, 0.0, 0.0};
+        double eff[3] = {0.0, 0.0, 0.0};
 
         // ROS node
         ros::Publisher wheel_vel_pub;
