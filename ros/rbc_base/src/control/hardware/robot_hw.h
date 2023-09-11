@@ -7,7 +7,7 @@
 #include <controller_manager/controller_manager.h>
 #include <sensor_msgs/JointState.h>
 
-#define NUM_MOTORS 4
+#define NUM_MOTORS 3
 
 class RobotHW : public hardware_interface::RobotHW {
     private:
