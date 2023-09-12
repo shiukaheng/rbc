@@ -78,7 +78,7 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
             cmd_vel_buffer_.writeFromNonRT(cmd_vel);
         }
         // Get wheel velocities using delta wheel positions and delta time
-        Eigen::Vector4d getWheelVelocities(double dt) {
+        Eigen::Vector3d getWheelVelocities(double dt) {
             // Get wheel positions
             double wheel_positions[4];
             wheel_positions[0] = vel_handle_1.getPosition();
@@ -87,7 +87,7 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
             // wheel_positions[3] = vel_handle_4.getPosition();
             
             // Calculate wheel velocities
-            Eigen::Vector4d wheel_velocities;
+            Eigen::Vector3d wheel_velocities;
             // for (int i = 0; i < 4; i++) {
             for (int i = 0; i < 3; i++) {
                 wheel_velocities[i] = (wheel_positions[i] - last_wheel_positions[i]) / dt;
@@ -100,7 +100,7 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
             }
             return wheel_velocities;
         }
-        void setWheelVelocities(const Eigen::Vector4d& wheel_velocities) {
+        void setWheelVelocities(const Eigen::Vector3d& wheel_velocities) {
             vel_handle_1.setCommand(wheel_velocities[0]);
             vel_handle_2.setCommand(wheel_velocities[1]);
             vel_handle_3.setCommand(wheel_velocities[2]);
@@ -112,7 +112,7 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
                 geometry_msgs::Twist cmd_vel = *(cmd_vel_buffer_.readFromRT());
                 // Get wheel velocities
                 double dt = period.toSec();
-                Eigen::Vector4d wheel_velocities = getWheelVelocities(dt);
+                Eigen::Vector3d wheel_velocities = getWheelVelocities(dt);
                 // Calculate inverse kinematics
                 InverseKinematicsResult measured_twist_result = base.inverseVb(wheel_velocities);
 
@@ -121,7 +121,7 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
                 cmd_twist[0] = cmd_vel.angular.z;
                 cmd_twist[1] = cmd_vel.linear.x;
                 cmd_twist[2] = cmd_vel.linear.y;
-                Eigen::Vector4d wheel_velocities_cmd = base.forwardVb(cmd_twist);
+                Eigen::Vector3d wheel_velocities_cmd = base.forwardVb(cmd_twist);
                 setWheelVelocities(wheel_velocities_cmd);
                 // Calculate odometry
                 pose = updateOdom(pose, measured_twist_result.twist, dt);
