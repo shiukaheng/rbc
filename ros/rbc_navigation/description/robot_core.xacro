@@ -22,7 +22,7 @@
             <!-- <origin xyz="0 0 0.75" rpy="0 0 0"/> -->
             <geometry>
                 <!-- <box size="0.54 0.54 1.5"/> -->
-                <mesh filename="package://rbc_base/meshes/frame_ultra_low_poly.stl"/>
+                <mesh filename="package://rbc_base/meshes/frame_ultra_low_poly.dae"/>
                 <!-- <mesh filename="model://frame_ultra_low_poly.stl"/> -->
             </geometry>
             <material name="white"/>

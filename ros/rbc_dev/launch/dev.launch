@@ -2,5 +2,5 @@
 <launch>
     <include file="$(find rbc_core)/launch/bringup.launch" />
     <include file="$(find rbc_dev)/launch/dev_ui.launch" />
-    <!-- <include file="$(find rbc_navigation)/launch/slam.launch" /> -->
+    <include file="$(find rbc_navigation)/launch/slam.launch" />
 </launch>
