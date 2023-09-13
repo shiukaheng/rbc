@@ -62,9 +62,9 @@ class OmniwheelBaseController : public controller_interface::Controller<hardware
             // base.addOmniwheel(-0.1575, 0.1575, 225 * M_PI / 180, 0.05);
             // base.addOmniwheel(-0.1575, -0.1575, 315 * M_PI / 180, 0.05);
 
-            base.addOmniwheel(0.45, 0, 270 * M_PI / 180, 0.05);
-            base.addOmniwheel(-0.225, -0.3897114317, 150 * M_PI / 180, 0.05);
-            base.addOmniwheel(-0.225, 0.3897114317, 30 * M_PI / 180, 0.05);
+            base.addOmniwheel(0.20, 0, 270 * M_PI / 180, 0.05);
+            base.addOmniwheel(-0.1, -0.1732050808, 150 * M_PI / 180, 0.05);
+            base.addOmniwheel(-0.1, 0.1732050808, 30 * M_PI / 180, 0.05);
 
             // Subscribe to cmd_vel
             cmd_vel_sub = nh.subscribe("/cmd_vel", 1, &OmniwheelBaseController::cmd_vel_callback, this);
