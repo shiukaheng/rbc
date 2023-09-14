@@ -56,6 +56,12 @@ RUN pip3 install ipykernel
 # Install scipy, numpy, matplotlib, pandas, scikit-learn, jupyterlab
 RUN pip3 install --upgrade numpy matplotlib scipy pandas scikit-learn ipympl jupyterlab
 
+#Install gphoto2
+RUN sudo apt-get install -y gphoto2
+
+#Install python3-gphoto2
+RUN pip3 install gphoto2 --user --only-binary :all:
+
 # Copying source code over
 COPY .. /root/rbc
 COPY ./.bashrc /root/.bashrc
