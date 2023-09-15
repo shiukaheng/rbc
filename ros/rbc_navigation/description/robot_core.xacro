@@ -29,14 +29,15 @@
         </visual>
         <!-- physics model -->
         <collision>
-            <origin xyz="0 0 0.75" rpy="0 0 0"/>
+            <origin xyz="0 0 0.77" rpy="0 0 0"/>
             <geometry>
-                <box size="0.54 0.54 1.5"/>
+                <cylinder length="1.54" radius="0.25"/>
             </geometry>
         </collision>
-        <xacro:inertial_box mass="10" x="0.54" y="0.54" z="1.5">
-            <origin xyz="0 0 0.75" rpy="0 0 0"/>
-        </xacro:inertial_box>
+        <!-- <xacro:inertial_box mass="10" x="0.54" y="0.54" z="1.5"> -->
+        <xacro:inertial_cylinder mass="20" length="1.54" radius="0.25">
+            <origin xyz="0 0 0.77" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
     </link>
     <joint name="laser_joint" type="fixed">
         <parent link="chassis"/>
