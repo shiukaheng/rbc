@@ -34,7 +34,6 @@
                 <cylinder length="1.54" radius="0.25"/>
             </geometry>
         </collision>
-        <!-- <xacro:inertial_box mass="10" x="0.54" y="0.54" z="1.5"> -->
         <xacro:inertial_cylinder mass="20" length="1.54" radius="0.25">
             <origin xyz="0 0 0.77" rpy="0 0 0"/>
         </xacro:inertial_cylinder>
