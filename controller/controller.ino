@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "src/updaters/robot_core.h"
 #include "src/utils/time.h"
+#include "src/batt/Battery.h"
 
 // Global variables
 
@@ -8,6 +9,9 @@ RobotCore* core;
 RobotState state;
 Clock clock;
 Tick tick;
+
+// Setting up the battery monitor
+Battery battery(17400, 25200, A4);
 
 // Setting up the interrupts for encoders
 
@@ -82,6 +86,9 @@ void setup() {
     // Enable motor ICs
     pinMode(36, OUTPUT);
     digitalWrite(36, HIGH);
+
+    // Enable battery monitor
+    battery.begin(5000, 5.5555556, &sigmoidal);
     
     // Configure the robot state
     state.motors[0].lpwm_pin = 2;
