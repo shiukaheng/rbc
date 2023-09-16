@@ -78,6 +78,10 @@ void setupTimerInterrupt() {
 }
 
 void setup() {
+
+    // Enable motor ICs
+    pinMode(36, OUTPUT);
+    digitalWrite(36, HIGH);
     
     // Configure the robot state
     state.motors[0].lpwm_pin = 2;
