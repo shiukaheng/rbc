@@ -10,8 +10,14 @@ RobotState state;
 Clock clock;
 Tick tick;
 
+#define ESTOP 48
+#define MOTOR_ENABLE 36
+
 // Setting up the battery monitor
 Battery battery(17400, 25200, A4);
+
+// Setting up emergency stop switch
+pinMode(ESTOP, INPUT);
 
 // Setting up the interrupts for encoders
 
@@ -84,8 +90,8 @@ void setupTimerInterrupt() {
 void setup() {
 
     // Enable motor ICs
-    pinMode(36, OUTPUT);
-    digitalWrite(36, HIGH);
+    pinMode(MOTOR_ENABLE, OUTPUT);
+    digitalWrite(MOTOR_ENABLE, HIGH);
 
     // Enable battery monitor
     battery.begin(5000, 5.5555556, &sigmoidal);
@@ -145,7 +151,17 @@ void loop() {
     tick = clock.update();
     core->update(tick);
 
-    // Update the battery leds
-    battery.leds(22, 23, 24, 25, 26);
+    
+    // battery conditions should only be checked if the 6S battery is connected and solder jumper is in place
+    if(battery.voltage() > 1000){
+        // Update the battery leds
+        battery.leds(22, 23, 24, 25, 26);
+        // if statement that turns off motor ICs if emergency stop is pressed or battery is low (<5%)
+        if (digitalRead(ESTOP) == HIGH || battery.level() < 5) {
+            digitalWrite(MOTOR_ENABLE, LOW);
+        } else {
+            digitalWrite(MOTOR_ENABLE, HIGH);
+        }
+    }
 }
 
