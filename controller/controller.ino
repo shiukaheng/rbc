@@ -144,5 +144,8 @@ void loop() {
     // Update the robot
     tick = clock.update();
     core->update(tick);
+
+    // Update the battery leds
+    battery.leds(22, 23, 24, 25, 26);
 }
 

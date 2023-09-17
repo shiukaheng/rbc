@@ -72,3 +72,14 @@ uint16_t Battery::voltage() {
 	}
 	return reading;
 }
+
+// Function that light up LEDs according to the battery level
+// LED 1: >10% LED 2: >20% LED 3: >40% LED 4: >60% LED 5: >80%
+void Battery::leds(uint8_t led1, uint8_t led2, uint8_t led3, uint8_t led4, uint8_t led5) {
+	uint8_t level = this->level();
+	digitalWrite(led1, (level > 80) ? HIGH : LOW);
+    digitalWrite(led2, (level > 60) ? HIGH : LOW);
+    digitalWrite(led3, (level > 40) ? HIGH : LOW);
+    digitalWrite(led4, (level > 20) ? HIGH : LOW);
+    digitalWrite(led5, (level > 10) ? HIGH : LOW);
+} 

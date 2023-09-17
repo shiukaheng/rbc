@@ -72,6 +72,17 @@ class Battery {
 		 */
 		uint16_t voltage();
 
+		/**
+		 * Update battery LED levels
+		 *
+		 * @param led1 Red LED > 10% 
+		 * @param led2 Green LED > 20%
+		 * @param led3 Green LED > 40%
+		 * @param led4 Green LED > 60%
+		 * @param led5 Green LED > 80%
+		 */
+		void leds(uint8_t led1, uint8_t led2, uint8_t led3, uint8_t led4, uint8_t led5); 
+
 	private:
 		uint16_t refVoltage;
 		uint16_t minVoltage;
