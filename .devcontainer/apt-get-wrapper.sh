@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This is to fix the issue of apt-get not working with the cache, which would require a full uncached rebuild otherwise!
+
 DAY_IN_SECONDS=86400
 FILE="/var/cache/apt/pkgcache.bin"
 
