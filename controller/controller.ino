@@ -87,6 +87,7 @@ void setup() {
     state.motors[0].gear_ratio = 1./82.;
     state.motors[0].ppr = 16;
     state.motors[0].isense_pin = 54;
+    // state.motors[0].setpoint = 1;
 
     state.motors[1].lpwm_pin = 3;
     state.motors[1].rpwm_pin = 8;
@@ -95,6 +96,7 @@ void setup() {
     state.motors[1].gear_ratio = 1./82.;
     state.motors[1].ppr = 16;
     state.motors[1].isense_pin = 55;
+    // state.motors[1].setpoint = 1;
 
     state.motors[2].lpwm_pin = 5;
     state.motors[2].rpwm_pin = 11;
@@ -103,6 +105,7 @@ void setup() {
     state.motors[2].gear_ratio = 1./82.;
     state.motors[2].ppr = 16;
     state.motors[2].isense_pin = 56;
+    // state.motors[2].setpoint = 1;
 
     state.motors[3].lpwm_pin = 6;
     state.motors[3].rpwm_pin = 12;
@@ -112,7 +115,7 @@ void setup() {
     state.motors[3].ppr = 16;
     state.motors[3].isense_pin = 57;
 
-    Serial.begin(57600);
+    Serial.begin(BAUD_RATE);
     core = new RobotCore(state);
 
     // Attach interrupts
@@ -127,6 +130,20 @@ void setup() {
 
     // Set up onboard LED
     pinMode(13, OUTPUT);
+
+    // Set up battery input pin as analogue input 93 (A4)
+
+    // Set up battery LED
+    pinMode(22, OUTPUT); // Lowest
+    // digitalWrite(22, LOW);
+    pinMode(23, OUTPUT);
+    // digitalWrite(23, HIGH);
+    pinMode(24, OUTPUT);
+    // digitalWrite(24, HIGH);
+    pinMode(25, OUTPUT);
+    // digitalWrite(25, HIGH);
+    pinMode(26, OUTPUT);
+    // digitalWrite(26, HIGH);
 }
 
 void loop() {

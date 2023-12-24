@@ -22,7 +22,8 @@ function acu() {
 }
 
 function patch_rosserial_arduino_port() {
-  patch "$HOME/Arduino/libraries/ros_lib/ArduinoHardware.h" "iostream = &Serial;" "iostream = \\&Serial3;"
+  # patch "$HOME/Arduino/libraries/ros_lib/ArduinoHardware.h" "iostream = &Serial;" "iostream = \\&Serial3;"
+  echo "Skipped patch"
 }
 
 function check_rosserial_arduino_port() {

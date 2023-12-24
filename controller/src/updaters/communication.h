@@ -34,7 +34,8 @@ class Communication : public BaseStateUpdater<RobotState> {
         // Wheel state publisher
         ros::Publisher base_state_publisher = ros::Publisher("base_state", &base_state_msg);
 
-        bool debug_loop_bool = false;
+        // bool debug_loop_bool = false;
+        // int debug_light = 22;
 
         /** Subscribing to topics */
 
@@ -118,11 +119,14 @@ class Communication : public BaseStateUpdater<RobotState> {
                     has_movement = true;
                 }
             }
+
             // Flip flop bool
-            debug_loop_bool = !debug_loop_bool;
+            // debug_loop_bool = !debug_loop_bool;
             // Set pin 22 according to the flip flop bool
-            digitalWrite(22, debug_loop_bool ? HIGH : LOW);
+            // digitalWrite(22, debug_loop_bool ? HIGH : LOW);
             // Set pin 13 to HIGH if there is any movement, LOW otherwise
+
+            // Update debug_light by incrementing, except until 26, then set back to 22
             digitalWrite(13, has_movement ? HIGH : LOW);
             base_state_publisher.publish(&base_state_msg);
             nh.spinOnce();
