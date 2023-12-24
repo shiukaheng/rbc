@@ -133,15 +133,30 @@ void setup() {
 
     // Set up battery
     battery.begin(5000, 5.55555555556, &sigmoidal);
+
+    for (int pin = 22; pin <= 26; pin++) {
+        pinMode(pin, OUTPUT);
+    }
 }
 
 void loop() {
     // Update the robot
     tick = clock.update();
     core->update(tick);
-    Serial.print("Battery voltage is ");
-	Serial.print(battery.voltage());
-    Serial.print(battery.level());
-	Serial.println("%)");
+    
+    // Get battery level
+    int batteryLevel = battery.level();
+
+    // Determine how many LEDs to light up
+    int ledsToLight = map(batteryLevel, 0, 100, 0, 5);
+
+    // Light up the LEDs
+    for (int pin = 22; pin <= 26; pin++) {
+        if (pin - 22 < ledsToLight) {
+            digitalWrite(pin, HIGH); // Turn on LED
+        } else {
+            digitalWrite(pin, LOW); // Turn off LED
+        }
+    }
 }
 

@@ -119,9 +119,9 @@ class Communication : public BaseStateUpdater<RobotState> {
                 }
             }
             // Flip flop bool
-            debug_loop_bool = !debug_loop_bool;
-            // Set pin 22 according to the flip flop bool
-            digitalWrite(22, debug_loop_bool ? HIGH : LOW);
+            // debug_loop_bool = !debug_loop_bool;
+            // // Set pin 22 according to the flip flop bool
+            // digitalWrite(22, debug_loop_bool ? HIGH : LOW);
             // Set pin 13 to HIGH if there is any movement, LOW otherwise
             digitalWrite(13, has_movement ? HIGH : LOW);
             base_state_publisher.publish(&base_state_msg);
