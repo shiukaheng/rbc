@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "src/updaters/robot_core.h"
 #include "src/utils/time.h"
+#include "src/utils/Battery.h"
 
 // Global variables
 
@@ -8,6 +9,8 @@ RobotCore* core;
 RobotState state;
 Clock clock;
 Tick tick;
+// Battery battery(17400, 25200, A4);      // This works for 6S LiPo (minV = 17.4V; maxV = 25.2V)
+Battery battery(10000, 14000, A4);      // test
 
 // Setting up the interrupts for encoders
 
@@ -127,11 +130,18 @@ void setup() {
 
     // Set up onboard LED
     pinMode(13, OUTPUT);
+
+    // Set up battery
+    battery.begin(5000, 5.55555555556, &sigmoidal);
 }
 
 void loop() {
     // Update the robot
     tick = clock.update();
     core->update(tick);
+    Serial.print("Battery voltage is ");
+	Serial.print(battery.voltage());
+    Serial.print(battery.level());
+	Serial.println("%)");
 }
 
