@@ -27,17 +27,13 @@ void isr3() {
     core->motors[2]->encoder.hall_a_interrupt();
 }
 
-void isr4() {
-    core->motors[3]->encoder.hall_a_interrupt();
-}
-
 // Setting up the interrupt for current sense
 
-volatile int icurrent_counter[4] = {0, 0, 0, 0};  // Counter for each motor
-volatile int maxSenseValue[4] = {0, 0, 0, 0};    // Max sense value for each motor
+volatile int icurrent_counter[NUM_MOTORS] = {0};    // Counter for current sense
+volatile int maxSenseValue[NUM_MOTORS] = {0};       // Max sense value for current sense
 
 ISR(TIMER5_COMPA_vect) {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < NUM_MOTORS; i++) {
         int senseValue = analogRead(state.motors[i].isense_pin);
         if (senseValue > maxSenseValue[i]) {
             maxSenseValue[i] = senseValue;
@@ -91,7 +87,6 @@ void setup() {
     state.motors[0].gear_ratio = 1./82.;
     state.motors[0].ppr = 16;
     state.motors[0].isense_pin = 54;
-    // state.motors[0].setpoint = 1;
 
     state.motors[1].lpwm_pin = 3;
     state.motors[1].rpwm_pin = 8;
@@ -100,7 +95,6 @@ void setup() {
     state.motors[1].gear_ratio = 1./82.;
     state.motors[1].ppr = 16;
     state.motors[1].isense_pin = 55;
-    // state.motors[1].setpoint = 1;
 
     state.motors[2].lpwm_pin = 5;
     state.motors[2].rpwm_pin = 11;
@@ -109,15 +103,6 @@ void setup() {
     state.motors[2].gear_ratio = 1./82.;
     state.motors[2].ppr = 16;
     state.motors[2].isense_pin = 56;
-    // state.motors[2].setpoint = 1;
-
-    state.motors[3].lpwm_pin = 6;
-    state.motors[3].rpwm_pin = 12;
-    state.motors[3].hall_a_pin = 21;
-    state.motors[3].hall_b_pin = 33;
-    state.motors[3].gear_ratio = 1./82.;
-    state.motors[3].ppr = 16;
-    state.motors[3].isense_pin = 57;
 
     Serial.begin(BAUD_RATE);
     core = new RobotCore(state);
@@ -126,7 +111,6 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(state.motors[0].hall_a_pin), isr1, RISING);
     attachInterrupt(digitalPinToInterrupt(state.motors[1].hall_a_pin), isr2, RISING);
     attachInterrupt(digitalPinToInterrupt(state.motors[2].hall_a_pin), isr3, RISING);
-    attachInterrupt(digitalPinToInterrupt(state.motors[3].hall_a_pin), isr4, RISING);
 
     // Current Sense Setup
     setupADC();
