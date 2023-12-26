@@ -2,6 +2,10 @@
 #include "src/updaters/robot_core.h"
 #include "src/utils/time.h"
 
+// TODO:
+// Replace with the right pins - OK
+// Add integration of activation pin, along with reset method
+
 // Global variables
 
 RobotCore* core;
@@ -130,20 +134,6 @@ void setup() {
 
     // Set up onboard LED
     pinMode(13, OUTPUT);
-
-    // Set up battery input pin as analogue input 93 (A4)
-
-    // Set up battery LED
-    pinMode(22, OUTPUT); // Lowest
-    // digitalWrite(22, LOW);
-    pinMode(23, OUTPUT);
-    // digitalWrite(23, HIGH);
-    pinMode(24, OUTPUT);
-    // digitalWrite(24, HIGH);
-    pinMode(25, OUTPUT);
-    // digitalWrite(25, HIGH);
-    pinMode(26, OUTPUT);
-    // digitalWrite(26, HIGH);
 }
 
 void loop() {
