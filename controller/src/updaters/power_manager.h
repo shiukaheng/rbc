@@ -11,10 +11,15 @@
 class PowerManager : public BaseStateUpdater<RobotState> {
 
     private:
-        Battery battery;
+        Battery battery = Battery(
+            10000, // minV = 10000 mV
+            14000, // maxV = 14000 mV
+            A4    // battery voltage sense pin
+        );
+        // Alternatively, (17400, 25200, A4) works for 6S LiPo (minV = 17.4V; maxV = 25.2V)
         bool is_first_read = true;
-        long read_period = 5000000; // us (5 seconds)
-        int read_time_elapsed = 0; // us
+        double read_period = 0.5; // s
+        double read_time_elapsed = 0; // s
 
     public:
 
@@ -26,18 +31,11 @@ class PowerManager : public BaseStateUpdater<RobotState> {
             pinMode(25, OUTPUT);
             pinMode(26, OUTPUT);
 
-            battery = Battery(
-                10000, // minV = 10000 mV
-                14000, // maxV = 14000 mV
-                A4    // battery voltage sense pin
-            );
-            // Alternatively, (17400, 25200, A4) works for 6S LiPo (minV = 17.4V; maxV = 25.2V)
-
             battery.begin(
                 5000, // Reference voltage = 5000 mV
                 5.55555555556, // Divider ratio
                 &sigmoidal
-            )
+            );
 
         }
 
@@ -82,4 +80,4 @@ class PowerManager : public BaseStateUpdater<RobotState> {
                 }
             }
         }
-}
+};

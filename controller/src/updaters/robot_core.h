@@ -8,6 +8,7 @@
 
 #include "motor.h"
 #include "communication.h"
+#include "power_manager.h"
 
 #include "../defs.h"
 
@@ -19,17 +20,14 @@ class RobotCore : public BaseStateUpdater<RobotState> {
         Motor* motors[NUM_MOTORS];
         PowerManager power_manager;
         int motor_reset_pin = 36;
-        long motor_reset_duration = 50000; // us
-        long motor_reset_time_elapsed = 0; // us
+        double motor_reset_duration = 0.05; // Minimum time to keep the motor reset pin LOW (in seconds)
+        double motor_reset_time_elapsed = 0; // Time elapsed since the motor reset pin was set LOW (in seconds)
         bool motor_reset_pin_state;
         
-        RobotCore(RobotState& state) : BaseStateUpdater<RobotState>(state) {
+        RobotCore(RobotState& state) : BaseStateUpdater<RobotState>(state), power_manager(state) {
             
             // Let's initialize the communication
             communication = new Communication(state);
-
-            // Initialize power manager
-            power_manager = PowerManager(state);
 
             // Then initialize all the motors
             for (int i = 0; i < NUM_MOTORS; i++) {
