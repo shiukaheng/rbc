@@ -1,1 +1,1 @@
-rbc_base/MotorState[4] states
+rbc_base/MotorState[3] states

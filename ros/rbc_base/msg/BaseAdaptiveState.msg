@@ -1,1 +1,1 @@
-rbc_base/MotorAdaptiveState[4] adaptive_states
+rbc_base/MotorAdaptiveState[3] adaptive_states

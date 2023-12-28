@@ -3,7 +3,7 @@
 #include "rbc_base/BaseAdaptiveState.h"
 #include "rbc_base/BaseState.h"
 
-#define NUM_MOTORS 4
+#define NUM_MOTORS 3
 
 class HardwareParameterServer {
     private:

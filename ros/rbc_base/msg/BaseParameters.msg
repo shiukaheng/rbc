@@ -1,1 +1,1 @@
-rbc_base/MotorParameters[4] parameters
+rbc_base/MotorParameters[3] parameters

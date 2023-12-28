@@ -196,17 +196,6 @@
         </actuator>
     </transmission>
 
-    <transmission name="tran4">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="wheel_4_joint">
-            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="motor_4">
-            <hardwareInterface>VelocityJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
-
     <gazebo>
         <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
         </plugin>

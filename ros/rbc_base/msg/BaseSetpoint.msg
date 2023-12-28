@@ -1,1 +1,1 @@
-rbc_base/MotorSetpoint[4] setpoints
+rbc_base/MotorSetpoint[3] setpoints
