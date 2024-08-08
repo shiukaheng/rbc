@@ -24,7 +24,7 @@
  * 
  * *** The accumulated integral value is multiplied with the setpoint before being added to the output ***
  * 
- * Out motor has a fast response time and little inertia, intuitively it makes sense that at setpoint 0,
+ * Our motor has a fast response time and little inertia, intuitively it makes sense that at setpoint 0,
  * the integral term should be zero as well. 
  * 
  * Also makes use of the assumption that the motor speed is roughly proportional to the PWM value.
